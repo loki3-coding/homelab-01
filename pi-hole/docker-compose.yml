@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    network_mode: "host"
+    restart: unless-stopped
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      FTLCONF_webserver_api_password: "matkhau_admin"
+      FTLCONF_webserver_port: "8080o,[::]:8080o,8443os,[::]:8443os"
+    volumes:
+      - ./etc-pihole:/etc/pihole
