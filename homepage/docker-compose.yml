@@ -1,0 +1,29 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+
+    ports:
+      - "3001:3000"
+
+    user: "1000:1000"
+
+    volumes:
+      - ./config:/app/config:ro
+      - ./public:/app/public:ro
+
+    environment:
+      - PUID=1000
+      - PGID=1000
+
+    security_opt:
+      - no-new-privileges:true
+
+    cap_drop:
+      - ALL
+
+    read_only: true
+
+    tmpfs:
+      - /tmp
