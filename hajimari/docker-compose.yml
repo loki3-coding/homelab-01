@@ -10,10 +10,7 @@ services:
     user: "1000:1000"
 
     volumes:
-      - ./config.yaml:/config.yaml:ro
-
-    environment:
-      - HAJIMARI_CONFIG=/config.yaml
+      - ./config:/config:ro
 
     security_opt:
       - no-new-privileges:true
