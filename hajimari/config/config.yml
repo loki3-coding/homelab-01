@@ -2,6 +2,12 @@ title: "Homelab"
 
 defaultEnable: false
 
+providers:
+  kubernetes:
+    enabled: false
+  docker:
+    enabled: false
+
 groups:
   - name: Infrastructure
     icon: mdi-server
