@@ -13,5 +13,7 @@
 }
 
 body {
-  background-color: #0f172a;
+  background:
+    linear-gradient(rgba(2,6,23,0.7), rgba(2,6,23,0.7)),
+    url("/images/bg.jpg") center / cover no-repeat fixed;
 }
