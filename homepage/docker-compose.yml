@@ -10,12 +10,13 @@ services:
     user: "1000:1000"
 
     volumes:
-      - ./config:/app/config:ro
+      - ./config:/app/config
       - ./public:/app/public:ro
 
     environment:
       - PUID=1000
       - PGID=1000
+      - HOMEPAGE_ALLOWED_HOSTS=homelab-01
 
     security_opt:
       - no-new-privileges:true
