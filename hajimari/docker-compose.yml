@@ -1,0 +1,18 @@
+services:
+  hajimari:
+    image: ghcr.io/toboshii/hajimari:latest
+    container_name: hajimari
+    restart: unless-stopped
+
+    ports:
+      - 3001:3000
+
+    user: "1000:1000"
+
+    volumes:
+      - ./config.yaml:/config.yaml:ro
+
+    command: ["--config", "/config.yaml"]
+
+    security_opt:
+      - no-new-privileges:true
