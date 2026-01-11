@@ -8,7 +8,7 @@ A compact, Docker Compose–driven personal homelab repository for local/home se
 
 This repository collects docker-compose stacks and configuration for the services I run at home. It groups each service in its own directory so you can run, update, and manage them independently.
 
-My local homepage is available at: `http://homelab-01/`
+My local homepage is available at: [http://homelab-01/](http://homelab-01/)
 
 **Included services:** Gitea (self-hosted Git), a static homepage, Nginx reverse proxy (with TLS certs), Pi-hole, and a Postgres instance for service data.
 
