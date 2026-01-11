@@ -3,10 +3,6 @@ subtitle: Internal Services
 theme: dark
 color: slate        # slate / zinc / neutral / stone
 headerStyle: clean  # clean | boxed | underlined
-background:
-  image: /images/bg.jpg
-  blur: sm        # none | sm | md | lg
-  opacity: 0.25   # 0.0 → 1.0
 layout:
   Infrastructure:
     style: row

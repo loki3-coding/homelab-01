@@ -11,9 +11,3 @@
   font-weight: 600;
   letter-spacing: 0.3px;
 }
-
-body {
-  background:
-    linear-gradient(rgba(2,6,23,0.7), rgba(2,6,23,0.7)),
-    url("/images/bg.jpg") center / cover no-repeat fixed;
-}
