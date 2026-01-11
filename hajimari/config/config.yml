@@ -2,11 +2,10 @@ title: "Homelab"
 
 defaultEnable: false
 
-providers:
-  kubernetes:
-    enabled: false
-  docker:
-    enabled: false
+kubernetes:
+  enabled: false
+docker:
+  enabled: false
 
 groups:
   - name: Infrastructure
