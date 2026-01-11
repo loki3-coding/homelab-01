@@ -1,7 +1,16 @@
----
-# For configuration options and examples, please see:
-# https://gethomepage.dev/configs/settings/
-
-providers:
-  openweathermap: openweathermapapikey
-  weatherapi: weatherapiapikey
+title: Homelab
+subtitle: Internal Services
+theme: dark
+color: slate        # slate / zinc / neutral / stone
+headerStyle: clean  # clean | boxed | underlined
+background:
+  image: https://images.unsplash.com/photo-1500530855697-b586d89ba3ee
+  blur: sm
+  opacity: 0.25
+layout:
+  Infrastructure:
+    style: row
+    columns: 4
+  Monitoring:
+    style: row
+    columns: 3

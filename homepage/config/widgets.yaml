@@ -1,7 +1,7 @@
-- search:
-    provider: google
-
 - datetime:
     format:
-      dateStyle: long
+      dateStyle: full
       timeStyle: short
+
+- search:
+    provider: google

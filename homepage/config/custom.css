@@ -1,0 +1,17 @@
+.service-card {
+  border-radius: 14px;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  transition: 0.2s ease;
+}
+
+.header-title {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+body {
+  background-color: #0f172a;
+}
