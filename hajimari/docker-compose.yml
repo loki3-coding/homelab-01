@@ -12,7 +12,8 @@ services:
     volumes:
       - ./config.yaml:/config.yaml:ro
 
-    command: ["--config", "/config.yaml"]
+    environment:
+      - HAJIMARI_CONFIG=/config.yaml
 
     security_opt:
       - no-new-privileges:true
