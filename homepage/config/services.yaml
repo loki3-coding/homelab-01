@@ -18,3 +18,8 @@
         icon: docker
         href: http://homelab-01:9000
         description: Docker UI
+
+    - pgAdmin:
+        icon: pgadmin
+        href: http://homelab-01:5050
+        description: PostgreSQL Admin

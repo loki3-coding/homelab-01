@@ -10,7 +10,7 @@ This repository collects docker-compose stacks and configuration for the service
 
 My local homepage is available at: [http://homelab-01/](http://homelab-01/)
 
-**Included services:** Gitea (self-hosted Git), a static homepage, Nginx reverse proxy (with TLS certs), Pi-hole, and a Postgres instance for service data.
+**Included services:** Gitea (self-hosted Git), a static homepage, Immich (photo & video management), Nginx reverse proxy (with TLS certs), Pi-hole, and a Postgres instance for service data.
 
 **Note:** This repo is actively expanded — more services will be added over time (for example: monitoring, backups, home automation, metrics, etc.). Check the repository issues or the (planned) `ROADMAP.md` for planned additions, or open an issue to suggest a service.
 
@@ -22,6 +22,7 @@ My local homepage is available at: [http://homelab-01/](http://homelab-01/)
 | --- | --- | --- |
 | [Gitea](https://about.gitea.com/) | Self-hosted Git service (repositories, issues, web UI) | [`gitea/`](gitea/) |
 | [Homepage](https://gethomepage.dev/) | Static homepage and site settings (`homepage/config/`) | [`homepage/`](homepage/) |
+| [Immich](https://immich.app/) | Self-hosted photo & video backup solution | [`immich/`](immich/) |
 | [Nginx](https://nginx.org/) | Reverse proxy, TLS termination and vhost configs (`conf.d/`, `certs/`) | [`nginx/`](nginx/) |
 | [Pi-hole](https://pi-hole.net/) | Network-level ad and tracker blocking | [`pi-hole/`](pi-hole/) |
 | [Postgres](https://www.postgresql.org/) | Dedicated PostgreSQL instance for service data | [`postgres/`](postgres/) |
@@ -42,19 +43,19 @@ cd nginx && docker compose up -d
 Start multiple services at once (example combining files):
 
 ```bash
-docker compose -f nginx/docker-compose.yml -f gitea/docker-compose.yml -f homepage/docker-compose.yml -f pi-hole/docker-compose.yml -f postgres/docker-compose.yml up -d
+docker compose -f nginx/docker-compose.yml -f gitea/docker-compose.yml -f homepage/docker-compose.yml -f immich/docker-compose.yml -f pi-hole/docker-compose.yml -f postgres/docker-compose.yml up -d
 ```
 
-**Important:** Start `postgres` before `gitea`. Gitea requires a reachable Postgres database at startup; if Postgres isn't available, Gitea may fail to initialize and exit.
+**Important:** Start `postgres` before `gitea` and `immich`. Both require a reachable Postgres database at startup; if Postgres isn't available, they may fail to initialize and exit.
 
 Recommended ways to start in order:
 
 ```bash
-# start Postgres first, then Gitea
-docker compose -f postgres/docker-compose.yml up -d && docker compose -f gitea/docker-compose.yml up -d
+# start Postgres first, then Gitea and Immich
+docker compose -f postgres/docker-compose.yml up -d && docker compose -f gitea/docker-compose.yml -f immich/docker-compose.yml up -d
 
 # or start Postgres first followed by the rest
-docker compose -f postgres/docker-compose.yml up -d && docker compose -f nginx/docker-compose.yml -f gitea/docker-compose.yml -f homepage/docker-compose.yml -f pi-hole/docker-compose.yml up -d
+docker compose -f postgres/docker-compose.yml up -d && docker compose -f nginx/docker-compose.yml -f gitea/docker-compose.yml -f homepage/docker-compose.yml -f immich/docker-compose.yml -f pi-hole/docker-compose.yml up -d
 ```
 
 Notes:
