@@ -1,0 +1,54 @@
+services:
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:release
+    container_name: immich-server
+    restart: always
+    volumes:
+      - /home/loki3/immich:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - DB_HOSTNAME=postgres
+      - DB_PORT=5432
+      - DB_DATABASE_NAME=${IMMICH_DB_NAME:-immich}
+      - DB_USERNAME=${IMMICH_DB_USER:-immich}
+      - DB_PASSWORD=${IMMICH_DB_PASSWORD}
+      - REDIS_HOSTNAME=immich-redis
+      - REDIS_PORT=6379
+    ports:
+      - "2283:2283"
+    depends_on:
+      - immich-redis
+    networks:
+      - db-net
+      - immich-net
+
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    container_name: immich-machine-learning
+    restart: always
+    volumes:
+      - immich-model-cache:/cache
+    environment:
+      - MACHINE_LEARNING_CACHE_FOLDER=/cache
+    networks:
+      - immich-net
+
+  immich-redis:
+    image: redis:7-alpine
+    container_name: immich-redis
+    restart: always
+    volumes:
+      - immich-redis-data:/data
+    networks:
+      - immich-net
+
+volumes:
+  immich-model-cache:
+  immich-redis-data:
+
+networks:
+  db-net:
+    external: true
+  immich-net:
+    driver: bridge
+

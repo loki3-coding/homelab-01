@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:16
+    # Using tensorchord/pgvecto-rs for Immich compatibility (includes vector extension)
+    # If you don't need Immich, you can use postgres:16 instead
+    image: tensorchord/pgvecto-rs:pg16-v0.2.1
     container_name: postgres
     restart: always
     environment:
@@ -10,6 +12,25 @@ services:
       - ./data:/var/lib/postgresql/data
     networks:
       - db-net
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - db-net
+    depends_on:
+      - postgres
+
+volumes:
+  pgadmin-data:
 
 networks:
   db-net:
