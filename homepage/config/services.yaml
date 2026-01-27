@@ -1,13 +1,19 @@
+- Applications:
+    - Gitea:
+        icon: gitea
+        href: http://homelab-01:3000
+        description: Self-hosted Git
+
+    - Immich:
+        icon: immich
+        href: http://homelab-01:2283
+        description: Photo & Video Backup
+
 - Infrastructure:
     - Cockpit:
         icon: cockpit
         href: http://homelab-01:9090
         description: Server Management
-
-    - Gitea:
-        icon: gitea
-        href: http://homelab-01:3000
-        description: Self-hosted Git
 
     - Pi-hole:
         icon: pi-hole
