@@ -9,21 +9,37 @@
         href: http://homelab-01:2283
         description: Photo & Video Backup
 
+- Monitoring:
+    - Grafana:
+        icon: grafana
+        href: http://homelab-01:3002
+        description: Dashboards & Metrics
+
+    - Prometheus:
+        icon: prometheus
+        href: http://homelab-01:9091
+        description: Metrics Database
+
+    - Loki:
+        icon: loki
+        href: http://homelab-01:3002/explore?orgId=1&left=%7B%22datasource%22:%22loki%22%7D
+        description: Log Aggregation
+
 - Infrastructure:
     - Cockpit:
         icon: cockpit
         href: http://homelab-01:9090
         description: Server Management
 
-    - Pi-hole:
-        icon: pi-hole
-        href: http://homelab-01:8080/admin
-        description: DNS & Adblock
-
     - Portainer:
         icon: docker
         href: http://homelab-01:9000
         description: Docker UI
+
+    - Pi-hole:
+        icon: pi-hole
+        href: http://homelab-01:8080/admin
+        description: DNS & Adblock
 
     - pgAdmin:
         icon: pgadmin

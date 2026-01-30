@@ -1,12 +1,15 @@
 title: Homelab
 subtitle: Internal Services
 theme: dark
-color: slate        # slate / zinc / neutral / stone
-headerStyle: clean  # clean | boxed | underlined
+color: slate
+headerStyle: clean
 layout:
-  Infrastructure:
+  Applications:
     style: row
-    columns: 4
+    columns: 2
   Monitoring:
     style: row
     columns: 3
+  Infrastructure:
+    style: row
+    columns: 4
