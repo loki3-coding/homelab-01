@@ -196,7 +196,7 @@ main() {
     log "  - Immich:      http://localhost:2283"
     log "  - PgAdmin:     http://localhost:5050"
     log "  - Pi-hole:     http://localhost:8080/admin"
-    log "  - Grafana:     http://localhost:3001"
+    log "  - Grafana:     http://localhost:3002"
     log "  - Prometheus:  http://localhost:9091"
     echo ""
 }

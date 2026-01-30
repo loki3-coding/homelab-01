@@ -124,7 +124,7 @@ homelab-01/
  │         ▼         └────┬─────┘   │                  │
  │  ┌─────────────┐       │    ┌────┴─────┐           │
  │  │   Grafana   │◄──────┘    │ Promtail │           │
- │  │   :3001     │            │ (logs)   │           │
+ │  │   :3002     │            │ (logs)   │           │
  │  └─────────────┘            └──────────┘           │
  └─────────────────────────────────────────────────────┘
 ```
@@ -158,7 +158,7 @@ homelab-01/
 | Homepage | homepage | 3000:3000 | None | Dashboard and service links |
 | Pi-hole | pihole | 53, 8080:80 | None | DNS-based ad blocking |
 | Prometheus | prometheus | 9091:9090 | None | Metrics collection and storage |
-| Grafana | grafana | 3001:3000 | prometheus, loki | Visualization dashboards |
+| Grafana | grafana | 3002:3000 | prometheus, loki | Visualization dashboards |
 | Loki | loki | Internal (3100) | None | Log aggregation |
 | Promtail | promtail | None | loki | Log shipping agent |
 | Node Exporter | node-exporter | Internal (9100) | None | Host system metrics |
@@ -376,7 +376,7 @@ Recent commits focus on:
 - **Immich**: http://localhost:2283
 - **PgAdmin**: http://localhost:5050
 - **Pi-hole**: http://localhost:8080/admin
-- **Grafana**: http://localhost:3001
+- **Grafana**: http://localhost:3002
 - **Prometheus**: http://localhost:9091
 
 ## Notes for Claude AI

@@ -7,7 +7,7 @@ Complete monitoring solution for homelab-01 using Prometheus, Grafana, and Loki.
 | Service | Purpose | Port |
 |---------|---------|------|
 | Prometheus | Metrics collection and storage | 9091 |
-| Grafana | Visualization and dashboards | 3001 |
+| Grafana | Visualization and dashboards | 3002 |
 | Loki | Log aggregation | 3100 (internal) |
 | Promtail | Log shipping agent | - |
 | Node Exporter | Host system metrics | 9100 (internal) |
@@ -30,7 +30,7 @@ Complete monitoring solution for homelab-01 using Prometheus, Grafana, and Loki.
 │         ▼         └────┬─────┘      │               │
 │  ┌─────────────┐       │       ┌────┴─────┐        │
 │  │   Grafana   │◄──────┘       │ Promtail │        │
-│  │   :3001     │               │ (logs)   │        │
+│  │   :3002     │               │ (logs)   │        │
 │  └─────────────┘               └──────────┘        │
 └─────────────────────────────────────────────────────┘
 ```
@@ -50,7 +50,7 @@ Complete monitoring solution for homelab-01 using Prometheus, Grafana, and Loki.
    ```
 
 3. **Access services**:
-   - Grafana: http://localhost:3001 (admin / your_password)
+   - Grafana: http://localhost:3002 (admin / your_password)
    - Prometheus: http://localhost:9091
    - cAdvisor: http://localhost:8081
 
