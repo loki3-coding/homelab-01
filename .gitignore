@@ -8,6 +8,10 @@ platform/gitea/data
 platform/postgres/data
 apps/pi-hole/etc-pihole
 apps/homepage/config/logs
+apps/homepage/config/custom.js
+apps/homepage/config/docker.yaml
+apps/homepage/config/kubernetes.yaml
+apps/homepage/config/proxmox.yaml
 
 # Monitoring data (stored in Docker volumes, but ignore any local data)
 monitoring/data
