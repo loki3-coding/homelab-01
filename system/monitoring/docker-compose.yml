@@ -107,12 +107,10 @@ services:
 
   # cAdvisor - Container metrics
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.51.0
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
     container_name: cadvisor
     restart: unless-stopped
     privileged: true
-    command:
-      - "--store_container_labels=true"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
