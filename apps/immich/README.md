@@ -33,13 +33,13 @@ IMMICH_DB_PASSWORD=your_secure_password_here
 
 1. First, ensure PostgreSQL is running:
    ```bash
-   cd ../postgres
+   cd ../../platform/postgres
    docker compose up -d
    ```
 
 2. Start Immich:
    ```bash
-   cd ../immich
+   cd ../../apps/immich
    docker compose up -d
    ```
 

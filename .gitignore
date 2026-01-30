@@ -3,3 +3,6 @@ gitea/data
 pi-hole/etc-pihole
 
 postgres/data
+
+# Private notes and documentation
+ExportBlock-*/

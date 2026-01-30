@@ -15,9 +15,15 @@ This document provides context for Claude AI (and other developers) about the ho
 
 ### Development Environment
 - **Primary Machine**: MacBook Pro (Apple M1, 16GB RAM) - Used for development, IDE, browser
-- **Homeserver**: Dedicated machine running Docker services (loki3)
-- **OS**: macOS (development) / Linux (homeserver)
+- **Homeserver**: Acer Aspire V3-572G
+  - CPU: Intel Core (5th gen)
+  - RAM: 8GB DDR3
+  - Storage: 128GB SSD (OS, Docker images) + 500GB HDD (data storage)
+  - OS: Ubuntu Server 24.04 LTS
+  - Hostname: homelab-01
+  - User: loki3
 - **Container Runtime**: Docker Engine with Docker Compose v2
+- **VPN**: Tailscale (for remote access with SSH and exit node)
 - **Local Domain**: Services accessible via http://homelab-01/
 
 ## Repository Structure
@@ -25,36 +31,50 @@ This document provides context for Claude AI (and other developers) about the ho
 ```
 homelab-01/
 ├── README.md              # User-facing documentation
-├── CLAUDE.md             # This file - AI/developer context
 ├── .gitignore
 │
-├── postgres/             # Shared PostgreSQL database
-│   ├── docker-compose.yml
-│   ├── .env             # Database credentials
-│   └── data/            # Postgres data (gitignored)
+├── docs/                  # Documentation
+│   ├── CLAUDE.md         # This file - AI/developer context
+│   ├── SERVER-SETUP.md   # Server setup guide
+│   └── STARTUP.md        # Startup automation docs
 │
-├── nginx/               # Reverse proxy and TLS termination
-│   ├── docker-compose.yml
-│   ├── conf.d/          # Nginx vhost configs
-│   └── certs/           # TLS certificates
+├── scripts/               # Automation scripts
+│   ├── start-all-services.sh      # Start all services
+│   ├── stop-all-services.sh       # Stop all services
+│   ├── server-setup.sh            # Server installation
+│   ├── setup-ssh.sh               # SSH hardening
+│   ├── setup-dns.sh               # DNS configuration
+│   ├── setup-firewall-services.sh # Firewall rules
+│   └── homelab.service            # Systemd service
 │
-├── gitea/               # Self-hosted Git service
-│   ├── docker-compose.yml
-│   └── .env            # Gitea DB credentials
+├── platform/              # Platform services
+│   ├── gitea/            # Self-hosted Git service
+│   │   ├── docker-compose.yml
+│   │   └── .env          # Gitea DB credentials
+│   └── postgres/         # Shared PostgreSQL database
+│       ├── docker-compose.yml
+│       ├── .env          # Database credentials
+│       └── data/         # Postgres data (gitignored)
 │
-├── immich/              # Photo & video management
-│   ├── docker-compose.yml
-│   ├── .env            # Immich DB credentials
-│   ├── init-db.sql     # Database initialization
-│   └── README.md       # Immich-specific docs
+├── apps/                  # Application services
+│   ├── homepage/         # Dashboard homepage
+│   │   ├── docker-compose.yml
+│   │   └── config/       # Homepage configuration
+│   ├── immich/           # Photo & video management
+│   │   ├── docker-compose.yml
+│   │   ├── .env          # Immich DB credentials
+│   │   ├── init-db.sql   # Database initialization
+│   │   └── README.md     # Immich-specific docs
+│   └── pi-hole/          # Network-level ad blocking
+│       ├── docker-compose.yml
+│       └── .env          # Pi-hole admin password
 │
-├── homepage/            # Dashboard homepage
-│   ├── docker-compose.yml
-│   └── config/         # Homepage configuration
+├── system/                # System services
+│   └── nginx/            # Reverse proxy and TLS termination
+│       ├── docker-compose.yml
+│       ├── conf.d/       # Nginx vhost configs
+│       └── certs/        # TLS certificates
 │
-└── pi-hole/            # Network-level ad blocking
-    ├── docker-compose.yml
-    └── .env            # Pi-hole admin password
 ```
 
 ## Services Architecture
@@ -125,10 +145,10 @@ homelab-01/
    - `pi-hole/.env`: WEBPASSWORD (admin interface)
 
 3. **Data Persistence**:
-   - Postgres: `./postgres/data` volume
-   - Immich uploads: `/home/loki3/immich` on homeserver (HDD mount)
-   - Gitea: Docker volumes for repos and data
-   - PgAdmin: Named volume `pgadmin-data`
+   - Postgres: `./platform/postgres/data` volume (stored on 128GB SSD)
+   - Immich uploads: `/home/loki3/immich` on homeserver (500GB HDD mount for large media files)
+   - Gitea: Docker volumes for repos and data (128GB SSD)
+   - PgAdmin: Named volume `pgadmin-data` (128GB SSD)
 
 4. **Startup Order**:
    - Postgres MUST start before Gitea and Immich
@@ -138,16 +158,24 @@ homelab-01/
 
 ### Starting Services
 
-Start all services in correct order:
+**Recommended**: Use the automated startup script (includes Tailscale):
 ```bash
-# Start Postgres first
-docker compose -f postgres/docker-compose.yml up -d
+./scripts/start-all-services.sh
+```
+
+Manual startup in correct order:
+```bash
+# Start Tailscale first
+sudo tailscale up --ssh --advertise-exit-node
+
+# Start Postgres
+docker compose -f platform/postgres/docker-compose.yml up -d
 
 # Then start dependent services
-docker compose -f gitea/docker-compose.yml -f immich/docker-compose.yml up -d
+docker compose -f platform/gitea/docker-compose.yml -f apps/immich/docker-compose.yml up -d
 
 # Start remaining services
-docker compose -f nginx/docker-compose.yml -f homepage/docker-compose.yml -f pi-hole/docker-compose.yml up -d
+docker compose -f system/nginx/docker-compose.yml -f apps/homepage/docker-compose.yml -f apps/pi-hole/docker-compose.yml up -d
 ```
 
 Start a single service:
