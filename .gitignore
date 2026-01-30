@@ -4,5 +4,8 @@ pi-hole/etc-pihole
 
 postgres/data
 
+# Monitoring data (stored in Docker volumes, but ignore any local data)
+monitoring/data
+
 # Private notes and documentation
 ExportBlock-*/

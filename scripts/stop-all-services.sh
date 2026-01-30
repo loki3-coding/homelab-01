@@ -85,26 +85,31 @@ main() {
     log "Stopping services in reverse dependency order..."
     echo ""
 
-    # Phase 1: Stop independent services
-    log "Phase 1: Stopping independent services..."
+    # Phase 1: Stop monitoring stack
+    log "Phase 1: Stopping monitoring services..."
+    stop_service "Monitoring (Prometheus, Grafana, Loki)" "system/monitoring" || log_error "Failed to stop Monitoring"
+    echo ""
+
+    # Phase 2: Stop independent services
+    log "Phase 2: Stopping independent services..."
     stop_service "Pi-hole" "apps/pi-hole" || log_error "Failed to stop Pi-hole"
     stop_service "Homepage" "apps/homepage" || log_error "Failed to stop Homepage"
     stop_service "Nginx" "system/nginx" || log_error "Failed to stop Nginx"
     echo ""
 
-    # Phase 2: Stop database-dependent services
-    log "Phase 2: Stopping database-dependent services..."
+    # Phase 3: Stop database-dependent services
+    log "Phase 3: Stopping database-dependent services..."
     stop_service "Immich" "apps/immich" || log_error "Failed to stop Immich"
     stop_service "Gitea" "platform/gitea" || log_error "Failed to stop Gitea"
     echo ""
 
-    # Phase 3: Stop database
-    log "Phase 3: Stopping database services..."
+    # Phase 4: Stop database
+    log "Phase 4: Stopping database services..."
     stop_service "PostgreSQL + PgAdmin" "platform/postgres" || log_error "Failed to stop PostgreSQL"
     echo ""
 
-    # Phase 4: Stop Tailscale (optional - uncomment if you want to stop Tailscale)
-    # log "Phase 4: Stopping Tailscale VPN..."
+    # Phase 5: Stop Tailscale (optional - uncomment if you want to stop Tailscale)
+    # log "Phase 5: Stopping Tailscale VPN..."
     # stop_tailscale || log_error "Failed to stop Tailscale"
     # echo ""
 
@@ -114,7 +119,7 @@ main() {
     log "========================================"
     echo ""
     log "Checking remaining containers..."
-    docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "postgres|gitea|immich|nginx|homepage|pihole" || log_success "All homelab services stopped"
+    docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "postgres|gitea|immich|nginx|homepage|pihole|prometheus|grafana|loki|promtail|node-exporter|cadvisor" || log_success "All homelab services stopped"
     echo ""
 }
 

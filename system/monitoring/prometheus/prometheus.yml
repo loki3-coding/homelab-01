@@ -1,0 +1,73 @@
+# Prometheus Configuration
+# Documentation: https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: "homelab-01"
+
+# Alerting configuration (optional - can add Alertmanager later)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: []
+
+# Rule files (optional - can add alert rules later)
+# rule_files:
+#   - "alert_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+        labels:
+          instance: "prometheus"
+
+  # Node Exporter - Host system metrics
+  - job_name: "node-exporter"
+    static_configs:
+      - targets: ["node-exporter:9100"]
+        labels:
+          instance: "homelab-01"
+
+  # cAdvisor - Container metrics
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8080"]
+        labels:
+          instance: "homelab-01"
+
+  # Grafana metrics
+  - job_name: "grafana"
+    static_configs:
+      - targets: ["grafana:3000"]
+        labels:
+          instance: "grafana"
+
+  # Loki metrics (if enabled)
+  - job_name: "loki"
+    static_configs:
+      - targets: ["loki:3100"]
+        labels:
+          instance: "loki"
+
+  # Gitea metrics (if enabled in Gitea config)
+  # Uncomment and configure if Gitea exposes metrics
+  # - job_name: "gitea"
+  #   static_configs:
+  #     - targets: ["gitea:3000"]
+  #       labels:
+  #         instance: "gitea"
+  #   metrics_path: /metrics
+
+  # Immich metrics (if available)
+  # Uncomment if Immich exposes Prometheus metrics
+  # - job_name: "immich"
+  #   static_configs:
+  #     - targets: ["immich-server:3001"]
+  #       labels:
+  #         instance: "immich"
+  #   metrics_path: /api/server-info/metrics

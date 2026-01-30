@@ -70,10 +70,17 @@ homelab-01/
 │       └── .env          # Pi-hole admin password
 │
 ├── system/                # System services
-│   └── nginx/            # Reverse proxy and TLS termination
+│   ├── nginx/            # Reverse proxy and TLS termination
+│   │   ├── docker-compose.yml
+│   │   ├── conf.d/       # Nginx vhost configs
+│   │   └── certs/        # TLS certificates
+│   └── monitoring/       # Prometheus + Grafana + Loki stack
 │       ├── docker-compose.yml
-│       ├── conf.d/       # Nginx vhost configs
-│       └── certs/        # TLS certificates
+│       ├── .env          # Grafana admin password
+│       ├── prometheus/   # Prometheus scrape config
+│       ├── loki/         # Loki log storage config
+│       ├── promtail/     # Log shipping config
+│       └── grafana/      # Grafana provisioning
 │
 ```
 
@@ -103,6 +110,23 @@ homelab-01/
  ┌──────────┐   ┌──────────┐
  │ Homepage │   │ Pi-hole  │  (Independent services)
  └──────────┘   └──────────┘
+
+ ┌─────────────────────────────────────────────────────┐
+ │              Monitoring Stack                        │
+ │                                                      │
+ │  ┌─────────────┐   ┌──────────┐   ┌──────────────┐ │
+ │  │ Prometheus  │◄──│ cAdvisor │   │ Node Exporter│ │
+ │  │   :9091     │   │  :8081   │   │    :9100     │ │
+ │  └──────┬──────┘   └──────────┘   └──────────────┘ │
+ │         │         ┌──────────┐                      │
+ │         │         │   Loki   │◄──┐                  │
+ │         │         │  :3100   │   │                  │
+ │         ▼         └────┬─────┘   │                  │
+ │  ┌─────────────┐       │    ┌────┴─────┐           │
+ │  │   Grafana   │◄──────┘    │ Promtail │           │
+ │  │   :3001     │            │ (logs)   │           │
+ │  └─────────────┘            └──────────┘           │
+ └─────────────────────────────────────────────────────┘
 ```
 
 ### Network Architecture
@@ -133,6 +157,12 @@ homelab-01/
 | Nginx | nginx-proxy | 80:80 | None | Reverse proxy and TLS termination |
 | Homepage | homepage | 3000:3000 | None | Dashboard and service links |
 | Pi-hole | pihole | 53, 8080:80 | None | DNS-based ad blocking |
+| Prometheus | prometheus | 9091:9090 | None | Metrics collection and storage |
+| Grafana | grafana | 3001:3000 | prometheus, loki | Visualization dashboards |
+| Loki | loki | Internal (3100) | None | Log aggregation |
+| Promtail | promtail | None | loki | Log shipping agent |
+| Node Exporter | node-exporter | Internal (9100) | None | Host system metrics |
+| cAdvisor | cadvisor | 8081:8080 | None | Container metrics |
 
 ### Important Configuration Notes
 
@@ -143,6 +173,7 @@ homelab-01/
    - `gitea/.env`: Database credentials for Gitea
    - `immich/.env`: IMMICH_DB_NAME, IMMICH_DB_USER, IMMICH_DB_PASSWORD
    - `pi-hole/.env`: WEBPASSWORD (admin interface)
+   - `monitoring/.env`: GRAFANA_ADMIN_PASSWORD
 
 3. **Data Persistence**:
    - Postgres: `./platform/postgres/data` volume (stored on 128GB SSD)
@@ -320,10 +351,8 @@ lsof -i :<port-number>
 ## Future Roadmap
 
 Planned additions (check repository issues for details):
-- Monitoring stack (Prometheus, Grafana)
 - Backup automation
 - Home automation integration
-- Metrics and observability
 - Additional services as needed
 
 ## Git Workflow
@@ -347,6 +376,8 @@ Recent commits focus on:
 - **Immich**: http://localhost:2283
 - **PgAdmin**: http://localhost:5050
 - **Pi-hole**: http://localhost:8080/admin
+- **Grafana**: http://localhost:3001
+- **Prometheus**: http://localhost:9091
 
 ## Notes for Claude AI
 

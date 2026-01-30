@@ -176,6 +176,11 @@ main() {
     start_service "Pi-hole" "apps/pi-hole" || log_warning "Pi-hole failed to start, continuing..."
     echo ""
 
+    # Phase 4: Start monitoring stack
+    log "Phase 4: Starting monitoring services..."
+    start_service "Monitoring (Prometheus, Grafana, Loki)" "system/monitoring" || log_warning "Monitoring failed to start, continuing..."
+    echo ""
+
     # Summary
     log "========================================"
     log "Startup Complete"
@@ -191,6 +196,8 @@ main() {
     log "  - Immich:      http://localhost:2283"
     log "  - PgAdmin:     http://localhost:5050"
     log "  - Pi-hole:     http://localhost:8080/admin"
+    log "  - Grafana:     http://localhost:3001"
+    log "  - Prometheus:  http://localhost:9091"
     echo ""
 }
 

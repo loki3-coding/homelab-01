@@ -42,9 +42,10 @@ My local homepage is available at: [http://homelab-01/](http://homelab-01/)
 | --- | --- | --- |
 | [Nginx](https://nginx.org/) | Reverse proxy, TLS termination and vhost configs | [`system/nginx/`](system/nginx/) |
 | [Postgres](https://www.postgresql.org/) | Dedicated PostgreSQL instance for service data | [`platform/postgres/`](platform/postgres/) |
+| [Monitoring](https://grafana.com/) | Prometheus, Grafana, Loki monitoring stack | [`system/monitoring/`](system/monitoring/) |
 
 ### Planned / Future
-Monitoring, backups, home automation, metrics, etc. (tracked in `ROADMAP.md`)
+Backups, home automation, etc. (tracked in `ROADMAP.md`)
 
 ---
 

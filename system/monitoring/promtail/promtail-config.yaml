@@ -1,0 +1,92 @@
+# Promtail Configuration
+# Documentation: https://grafana.com/docs/loki/latest/clients/promtail/configuration/
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # Docker container logs
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      # Keep only running containers
+      - source_labels: ["__meta_docker_container_id"]
+        target_label: container_id
+
+      # Use container name as label
+      - source_labels: ["__meta_docker_container_name"]
+        regex: "/(.*)"
+        target_label: container
+
+      # Add compose service name if available
+      - source_labels: ["__meta_docker_container_label_com_docker_compose_service"]
+        target_label: service
+
+      # Add compose project name if available
+      - source_labels: ["__meta_docker_container_label_com_docker_compose_project"]
+        target_label: project
+
+      # Add container image
+      - source_labels: ["__meta_docker_container_image"]
+        target_label: image
+
+    pipeline_stages:
+      # Parse JSON logs (common for many containers)
+      - json:
+          expressions:
+            level: level
+            msg: msg
+            message: message
+            time: time
+            timestamp: timestamp
+        output:
+          source: message
+
+      # Add level label from parsed JSON
+      - labels:
+          level:
+
+      # Parse common log levels
+      - regex:
+          expression: "(?i)(?P<level>error|warn|info|debug)"
+      - labels:
+          level:
+
+  # System logs (syslog)
+  - job_name: syslog
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: syslog
+          host: homelab-01
+          __path__: /var/log/syslog
+
+  # Auth logs
+  - job_name: auth
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: auth
+          host: homelab-01
+          __path__: /var/log/auth.log
+
+  # Docker daemon logs
+  - job_name: docker-daemon
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: docker-daemon
+          host: homelab-01
+          __path__: /var/log/docker.log
