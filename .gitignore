@@ -1,11 +1,17 @@
+# Old paths (kept for backwards compatibility)
 gitea/data
-
 pi-hole/etc-pihole
-
 postgres/data
+
+# New reorganized paths
+platform/gitea/data
+platform/postgres/data
+apps/pi-hole/etc-pihole
+apps/homepage/config/logs
 
 # Monitoring data (stored in Docker volumes, but ignore any local data)
 monitoring/data
+system/monitoring/data
 
 # Private notes and documentation
 ExportBlock-*/
