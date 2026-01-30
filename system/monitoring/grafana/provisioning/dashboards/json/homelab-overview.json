@@ -279,7 +279,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "count(container_last_seen{id=~\"/system.slice/docker-.*\"})",
+          "expr": "count(container_last_seen{container_name!=\"\"})",
           "legendFormat": "Containers",
           "refId": "A"
         }
@@ -567,8 +567,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "label_replace(sum(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker-.*\"}[5m])) by (id) * 100, \"container\", \"$1\", \"id\", \".*/docker-(.{12}).*\")",
-          "legendFormat": "{{container}}",
+          "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total{container_name!=\"\"}[5m])) * 100",
+          "legendFormat": "{{container_name}}",
           "refId": "A"
         }
       ],
@@ -660,8 +660,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker-.*\"}, \"container\", \"$1\", \"id\", \".*/docker-(.{12}).*\")",
-          "legendFormat": "{{container}}",
+          "expr": "container_memory_usage_bytes{container_name!=\"\"}",
+          "legendFormat": "{{container_name}}",
           "refId": "A"
         }
       ],

@@ -111,6 +111,9 @@ services:
     container_name: cadvisor
     restart: unless-stopped
     privileged: true
+    command:
+      - "--store_container_labels=true"
+      - "--whitelisted_container_labels=com.docker.compose.service,com.docker.compose.project"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
