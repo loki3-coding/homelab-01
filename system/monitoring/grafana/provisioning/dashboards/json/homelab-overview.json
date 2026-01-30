@@ -279,7 +279,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "count(container_last_seen{container_name!=\"\"})",
+          "expr": "count(container_last_seen{id=~\"/system.slice/docker-.*\"})",
           "legendFormat": "Containers",
           "refId": "A"
         }
@@ -567,12 +567,30 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total{container_name!=\"\"}[5m])) * 100",
-          "legendFormat": "{{container_name}}",
+          "expr": "sum by (container) (label_replace(rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker-.*\"}[5m]), \"container\", \"$1\", \"id\", \".*/docker-(.{12}).*\")) * 100",
+          "legendFormat": "{{container}}",
           "refId": "A"
         }
       ],
       "title": "Container CPU Usage",
+      "transformations": [
+        {"id": "renameByRegex", "options": {"regex": "1ff544841067", "renamePattern": "grafana"}},
+        {"id": "renameByRegex", "options": {"regex": "cbc41e80e1cb", "renamePattern": "promtail"}},
+        {"id": "renameByRegex", "options": {"regex": "d4ee810ca7cf", "renamePattern": "prometheus"}},
+        {"id": "renameByRegex", "options": {"regex": "24fd335f7e11", "renamePattern": "loki"}},
+        {"id": "renameByRegex", "options": {"regex": "3f66b7297575", "renamePattern": "node-exporter"}},
+        {"id": "renameByRegex", "options": {"regex": "4a7ae7cdf46b", "renamePattern": "cadvisor"}},
+        {"id": "renameByRegex", "options": {"regex": "9dbc90e422a9", "renamePattern": "homepage"}},
+        {"id": "renameByRegex", "options": {"regex": "710b76764beb", "renamePattern": "pihole"}},
+        {"id": "renameByRegex", "options": {"regex": "f4bd37b773d3", "renamePattern": "nginx-proxy"}},
+        {"id": "renameByRegex", "options": {"regex": "431d5537f31c", "renamePattern": "immich-server"}},
+        {"id": "renameByRegex", "options": {"regex": "d5bef742b467", "renamePattern": "immich-redis"}},
+        {"id": "renameByRegex", "options": {"regex": "1f60de05cdfe", "renamePattern": "immich-ml"}},
+        {"id": "renameByRegex", "options": {"regex": "cd1fb4577524", "renamePattern": "gitea"}},
+        {"id": "renameByRegex", "options": {"regex": "823b0c720ec5", "renamePattern": "pgadmin"}},
+        {"id": "renameByRegex", "options": {"regex": "ea87ceab81ea", "renamePattern": "postgres"}},
+        {"id": "renameByRegex", "options": {"regex": "c9c369fe367f", "renamePattern": "portainer"}}
+      ],
       "type": "timeseries"
     },
     {
@@ -660,12 +678,30 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "container_memory_usage_bytes{container_name!=\"\"}",
-          "legendFormat": "{{container_name}}",
+          "expr": "label_replace(container_memory_usage_bytes{id=~\"/system.slice/docker-.*\"}, \"container\", \"$1\", \"id\", \".*/docker-(.{12}).*\")",
+          "legendFormat": "{{container}}",
           "refId": "A"
         }
       ],
       "title": "Container Memory Usage",
+      "transformations": [
+        {"id": "renameByRegex", "options": {"regex": "1ff544841067", "renamePattern": "grafana"}},
+        {"id": "renameByRegex", "options": {"regex": "cbc41e80e1cb", "renamePattern": "promtail"}},
+        {"id": "renameByRegex", "options": {"regex": "d4ee810ca7cf", "renamePattern": "prometheus"}},
+        {"id": "renameByRegex", "options": {"regex": "24fd335f7e11", "renamePattern": "loki"}},
+        {"id": "renameByRegex", "options": {"regex": "3f66b7297575", "renamePattern": "node-exporter"}},
+        {"id": "renameByRegex", "options": {"regex": "4a7ae7cdf46b", "renamePattern": "cadvisor"}},
+        {"id": "renameByRegex", "options": {"regex": "9dbc90e422a9", "renamePattern": "homepage"}},
+        {"id": "renameByRegex", "options": {"regex": "710b76764beb", "renamePattern": "pihole"}},
+        {"id": "renameByRegex", "options": {"regex": "f4bd37b773d3", "renamePattern": "nginx-proxy"}},
+        {"id": "renameByRegex", "options": {"regex": "431d5537f31c", "renamePattern": "immich-server"}},
+        {"id": "renameByRegex", "options": {"regex": "d5bef742b467", "renamePattern": "immich-redis"}},
+        {"id": "renameByRegex", "options": {"regex": "1f60de05cdfe", "renamePattern": "immich-ml"}},
+        {"id": "renameByRegex", "options": {"regex": "cd1fb4577524", "renamePattern": "gitea"}},
+        {"id": "renameByRegex", "options": {"regex": "823b0c720ec5", "renamePattern": "pgadmin"}},
+        {"id": "renameByRegex", "options": {"regex": "ea87ceab81ea", "renamePattern": "postgres"}},
+        {"id": "renameByRegex", "options": {"regex": "c9c369fe367f", "renamePattern": "portainer"}}
+      ],
       "type": "timeseries"
     },
     {
