@@ -93,18 +93,18 @@ services:
     command:
       - "--path.procfs=/host/proc"
       - "--path.sysfs=/host/sys"
-      - "--path.rootfs=/rootfs"
+      - "--path.rootfs=/host"
       - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
-      - /:/rootfs:ro
-      - /home/loki3/immich:/rootfs/home/loki3/immich:ro
+      - /:/host:ro
     ports:
       - "9100:9100"
     networks:
       - monitoring-net
     pid: host
+    privileged: true
 
   # cAdvisor - Container metrics
   cadvisor:
