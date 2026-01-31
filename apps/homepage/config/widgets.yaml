@@ -1,7 +1,1 @@
-- datetime:
-    format:
-      dateStyle: full
-      timeStyle: short
-
-- search:
-    provider: google
+# Widgets removed
