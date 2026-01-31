@@ -1,17 +1,5 @@
-- Development:
-    - Homelab Github:
-        icon: mdi-github
-        href: https://github.com/loki3-coding/homelab-01
-        description: Github repo
-
-- Infrastructure:
-    - Tailscale Admin:
-        icon: mdi-vpn
-        href: https://login.tailscale.com/admin/machines
-        description: Network management
-
 - Community:
     - r/selfhosted:
-        icon: mdi-reddit
-        href: https://www.reddit.com/r/selfhosted/
-        description: Self-hosting community
+        - abbr: SH
+          href: https://www.reddit.com/r/selfhosted/
+          description: Self-hosting community

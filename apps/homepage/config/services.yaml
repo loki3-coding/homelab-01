@@ -9,6 +9,11 @@
         href: http://homelab-01:2283
         description: Photo & Video Backup
 
+    - Homelab Github:
+        icon: mdi-github
+        href: https://github.com/loki3-coding/homelab-01
+        description: Github repo
+
 - Monitoring:
     - Grafana:
         icon: grafana
@@ -45,3 +50,8 @@
         icon: pgadmin
         href: http://homelab-01:5050
         description: PostgreSQL Admin
+
+    - Tailscale Admin:
+        icon: mdi-vpn
+        href: https://login.tailscale.com/admin/machines
+        description: Network management

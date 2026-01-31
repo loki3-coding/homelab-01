@@ -3,6 +3,7 @@ subtitle: Internal Services
 theme: dark
 color: slate
 headerStyle: clean
+background: /images/background.jpg
 layout:
   Applications:
     style: row
