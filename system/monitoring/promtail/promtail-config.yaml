@@ -48,16 +48,16 @@ scrape_configs:
             message: message
             time: time
             timestamp: timestamp
-        output:
-          source: message
 
       # Add level label from parsed JSON
       - labels:
           level:
 
-      # Parse common log levels
+      # Parse common log levels from text
       - regex:
           expression: "(?i)(?P<level>error|warn|info|debug)"
+
+      # Add level label from regex
       - labels:
           level:
 
