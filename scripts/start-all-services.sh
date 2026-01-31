@@ -142,9 +142,16 @@ main() {
     log "========================================"
     echo ""
 
-    # Phase 0: Start Tailscale VPN
-    log "Phase 0: Starting Tailscale VPN..."
+    # Phase 0: Start Tailscale VPN and SSH
+    log "Phase 0: Starting Tailscale VPN and SSH..."
     start_tailscale
+
+    log "Starting SSH service..."
+    if sudo systemctl start ssh 2>/dev/null; then
+        log_success "SSH service started"
+    else
+        log_warning "SSH service may already be running or not installed"
+    fi
     echo ""
 
     # Check prerequisites

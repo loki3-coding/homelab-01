@@ -272,6 +272,12 @@ phase8_configure_firewall() {
     log "Denying DNS on ${TAILSCALE_INTERFACE}..."
     ufw deny in on ${TAILSCALE_INTERFACE} to any port 53
 
+    # Enable SSH service
+    log "Enabling SSH service..."
+    systemctl enable ssh
+    systemctl start ssh
+    log_success "SSH service enabled and started"
+
     # Allow SSH on LAN interface only
     log "Allowing SSH (port 22) on ${LAN_INTERFACE}..."
     ufw allow in on ${LAN_INTERFACE} to any port 22
