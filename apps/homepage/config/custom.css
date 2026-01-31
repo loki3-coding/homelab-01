@@ -37,22 +37,28 @@ body::before {
   backdrop-filter: blur(8px);
 }
 
-/* Reduce button opacity for subtle appearance */
-button,
-[role="button"],
-a[class*="button"],
+/* Reduce button opacity for subtle appearance (excluding headers) */
+button:not(.header-title):not([class*="header"]),
+[role="button"]:not(.header-title):not([class*="header"]),
+a[class*="button"]:not(.header-title):not([class*="header"]),
 .service-card a {
   opacity: 0.7 !important;
   transition: all 0.2s ease;
 }
 
-/* Make buttons darker and more visible on hover */
-button:hover,
-[role="button"]:hover,
-a[class*="button"]:hover,
+/* Make buttons darker and more visible on hover (excluding headers) */
+button:not(.header-title):not([class*="header"]):hover,
+[role="button"]:not(.header-title):not([class*="header"]):hover,
+a[class*="button"]:not(.header-title):not([class*="header"]):hover,
 .service-card a:hover {
   opacity: 1 !important;
   background: rgba(10, 15, 28, 0.95) !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure section headers maintain full opacity */
+.header-title,
+[class*="header"] {
+  opacity: 1 !important;
 }
