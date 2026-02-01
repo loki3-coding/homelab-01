@@ -96,10 +96,12 @@ services:
       - "--path.sysfs=/host/sys"
       - "--path.rootfs=/host"
       - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+      - "--collector.textfile.directory=/textfile-collector"
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/host:ro
+      - ./textfile-collector:/textfile-collector:ro
     ports:
       - "9100:9100"
     networks:

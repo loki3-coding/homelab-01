@@ -925,7 +925,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker-.*\",container_name!=\"\"}[5m])) * 100",
+          "expr": "sum by (container_id) (rate(container_cpu_usage_seconds_total{id=~\"/system.slice/docker-.*\"}[5m])) * 100 * on(container_id) group_left(container_name) container_name_info",
           "legendFormat": "{{container_name}}",
           "refId": "A"
         }
@@ -1018,7 +1018,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "container_memory_usage_bytes{id=~\"/system.slice/docker-.*\",container_name!=\"\"}",
+          "expr": "container_memory_usage_bytes{id=~\"/system.slice/docker-.*\"} * on(container_id) group_left(container_name) container_name_info",
           "legendFormat": "{{container_name}}",
           "refId": "A"
         }
