@@ -82,6 +82,19 @@ docker exec -it postgres psql -U <user>      # Access database
 4. Respect service dependencies (Postgres first)
 5. Update relevant README when changing services
 
+## Container Name Mapping (Grafana)
+
+The monitoring stack uses a textfile collector approach for container names:
+- Script: `system/monitoring/scripts/export-container-names.sh`
+- Runs via cron every minute to update container ID → name mappings
+- Exposed as `container_name_info` metric via Node Exporter
+- Grafana dashboards join this with container metrics for proper names
+
+**Verify it's working:**
+```bash
+curl http://localhost:9100/metrics | grep container_name_info
+```
+
 ## Quick Troubleshooting
 
 **Service won't start:**
@@ -100,4 +113,12 @@ docker exec -it postgres psql -U <admin-user> -l   # List databases
 **Fix Immich permissions:**
 ```bash
 sudo chown -R 1000:1000 /home/loki3/immich
+```
+
+**Container names showing as hashes in Grafana:**
+```bash
+# Check if export script is running
+cat /tmp/export-container-names.log
+# Manually run the export script
+cd ~/github/homelab/system/monitoring/scripts && ./export-container-names.sh
 ```
