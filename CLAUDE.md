@@ -89,10 +89,17 @@ The monitoring stack uses a textfile collector approach for container names:
 - Runs via cron every minute to update container ID → name mappings
 - Exposed as `container_name_info` metric via Node Exporter
 - Grafana dashboards join this with container metrics for proper names
+- **Important**: Uses cAdvisor v0.47.2 (compatible with Docker API 1.41)
 
 **Verify it's working:**
 ```bash
 curl http://localhost:9100/metrics | grep container_name_info
+```
+
+**How the join works:**
+```promql
+container_memory_usage_bytes{id=~"/system.slice/docker-.*"}
+  * on(container_id) group_left(container_name) container_name_info
 ```
 
 ## Quick Troubleshooting
