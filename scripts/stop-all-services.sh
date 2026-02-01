@@ -103,9 +103,16 @@ main() {
     stop_service "Gitea" "platform/gitea" || log_error "Failed to stop Gitea"
     echo ""
 
-    # Phase 4: Stop database
+    # Phase 4: Stop database (pgAdmin excluded - stop manually if running)
     log "Phase 4: Stopping database services..."
-    stop_service "PostgreSQL + PgAdmin" "platform/postgres" || log_error "Failed to stop PostgreSQL"
+    log "Stopping PostgreSQL (pgAdmin excluded - stop manually if needed)..."
+
+    cd "${PROJECT_ROOT}/platform/postgres"
+    if docker compose stop postgres; then
+        log_success "PostgreSQL stopped successfully"
+    else
+        log_error "Failed to stop PostgreSQL"
+    fi
     echo ""
 
     # Phase 5: Stop Tailscale (optional - uncomment if you want to stop Tailscale)
@@ -120,6 +127,9 @@ main() {
     echo ""
     log "Checking remaining containers..."
     docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "postgres|gitea|immich|nginx|homepage|pihole|prometheus|grafana|loki|promtail|node-exporter|cadvisor" || log_success "All homelab services stopped"
+    echo ""
+    log "Note: If pgAdmin is running, stop it manually:"
+    log "  cd platform/postgres && docker compose stop pgadmin"
     echo ""
 }
 

@@ -26,8 +26,8 @@ homelab-01/
 
 | Service | Container | Ports | Dependencies | Access |
 |---------|-----------|-------|--------------|--------|
-| Postgres | postgres | Internal | None | - |
-| PgAdmin | pgadmin | 5050 | postgres | http://localhost:5050 |
+| Postgres | postgres | Internal | None | Auto-start |
+| PgAdmin | pgadmin | 5050 | postgres | Manual start - http://localhost:5050 |
 | Gitea | gitea | 3000, 2222 | postgres | Via nginx proxy |
 | Immich | immich-server | 2283 | postgres, redis | http://localhost:2283 |
 | Homepage | homepage | 3000 | None | http://homelab-01/ |
@@ -41,6 +41,16 @@ homelab-01/
 **Start all services:**
 ```bash
 ./scripts/start-all-services.sh
+```
+
+**Note:** pgAdmin is excluded from automatic startup. Start manually when needed:
+```bash
+cd platform/postgres && docker compose up -d pgadmin
+```
+
+**Stop pgAdmin:**
+```bash
+cd platform/postgres && docker compose stop pgadmin
 ```
 
 **Manual service management:**

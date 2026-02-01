@@ -166,7 +166,16 @@ main() {
 
     # Phase 1: Start PostgreSQL (required by Gitea and Immich)
     log "Phase 1: Starting database services..."
-    start_service "PostgreSQL + PgAdmin" "platform/postgres" || exit 1
+    log "Starting PostgreSQL (pgAdmin excluded - start manually if needed)..."
+
+    cd "${PROJECT_ROOT}/platform/postgres"
+    if docker compose up -d postgres; then
+        log_success "PostgreSQL started successfully"
+    else
+        log_error "Failed to start PostgreSQL"
+        exit 1
+    fi
+
     wait_for_postgres || exit 1
     echo ""
 
@@ -201,10 +210,12 @@ main() {
     log "Access points:"
     log "  - Homepage:    http://homelab-01/"
     log "  - Immich:      http://localhost:2283"
-    log "  - PgAdmin:     http://localhost:5050"
     log "  - Pi-hole:     http://localhost:8080/admin"
     log "  - Grafana:     http://localhost:3002"
     log "  - Prometheus:  http://localhost:9091"
+    echo ""
+    log "To start pgAdmin manually:"
+    log "  cd platform/postgres && docker compose up -d pgadmin"
     echo ""
 }
 
