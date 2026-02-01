@@ -39,17 +39,17 @@ scrape_configs:
       - targets: ["cadvisor:8080"]
         labels:
           instance: "homelab-01"
-    # Extract container name from Docker Compose service label
+    # Extract short container ID from cgroup path
     metric_relabel_configs:
-      - source_labels: [container_label_com_docker_compose_service]
-        target_label: container_name
-        regex: (.+)
-        replacement: $1
-      # Also extract short container ID from cgroup path as fallback
       - source_labels: [id]
         target_label: container_id
         regex: ".*/docker-(.{12}).*"
         replacement: $1
+      # Create container_name from ID using mapping (will be enhanced with external labels)
+      - source_labels: [container_id]
+        target_label: container_name
+        regex: "(.+)"
+        replacement: "$1"
 
   # Grafana metrics
   - job_name: "grafana"
