@@ -31,11 +31,6 @@
         description: Log Aggregation
 
 - Infrastructure:
-    - Cockpit:
-        icon: cockpit
-        href: http://homelab-01:9090
-        description: Server Management
-
     - Portainer:
         icon: docker
         href: http://homelab-01:9000

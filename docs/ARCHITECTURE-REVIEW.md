@@ -620,11 +620,12 @@ repos:
 ### Current State (Score: 4/10)
 
 **Current Monitoring:**
-- ✅ Cockpit for system metrics
-- ✅ Portainer for Docker
-- ❌ No application-level monitoring
-- ❌ No log aggregation
-- ❌ No alerting
+- ✅ Grafana + Prometheus for metrics
+- ✅ Loki for log aggregation
+- ✅ Portainer for Docker management
+- ✅ Node Exporter for system metrics
+- ✅ cAdvisor for container metrics
+- ❌ No alerting configured yet
 
 ### Recommendations
 

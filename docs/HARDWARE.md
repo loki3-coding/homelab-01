@@ -66,7 +66,7 @@ With 8GB RAM, the homelab can comfortably run:
 - ✓ Pi-hole (DNS ad blocking)
 - ✓ Homepage (dashboard)
 - ✓ Portainer (Docker management)
-- ✓ Cockpit (system monitoring)
+- ✓ Grafana + Prometheus (monitoring)
 
 **Current Usage:**
 ```
@@ -77,7 +77,7 @@ Available: ~1GB
 ```
 
 **Tips:**
-- Monitor memory with `free -h` and Cockpit
+- Monitor memory with `free -h` and Grafana
 - Docker uses memory efficiently with shared layers
 - Avoid running memory-intensive builds on server
 - Use MacBook for development/compilation
@@ -172,10 +172,11 @@ sensors
 
 ### Resource Monitoring
 
-**Via Cockpit:**
-- Access: https://homelab-01:9090
+**Via Grafana:**
+- Access: http://homelab-01:3002
 - Real-time CPU, RAM, disk, network graphs
-- Process monitoring
+- Container metrics via cAdvisor
+- System metrics via Node Exporter
 - Service status
 
 **Via Command Line:**

@@ -161,7 +161,6 @@ The main setup script installs and configures:
 - Docker and Docker Compose
 - Tailscale VPN
 - Portainer (Docker GUI)
-- Cockpit (system monitoring)
 - UFW firewall
 - Docker networks
 
@@ -340,7 +339,7 @@ Each service needs initial configuration:
 - **Immich**: http://homelab-01:2283 - Create admin account
 - **PgAdmin**: http://homelab-01:5050 - Add server connections
 - **Portainer**: http://homelab-01:9000 - Set admin password
-- **Cockpit**: https://homelab-01:9090 - Login with system user
+- **Grafana**: http://homelab-01:3002 - Login with admin credentials
 
 ## Troubleshooting
 
@@ -504,7 +503,8 @@ Important directories to backup:
 
 Access monitoring interfaces:
 
-- **Cockpit**: https://homelab-01:9090
+- **Grafana**: http://homelab-01:3002
+- **Prometheus**: http://homelab-01:9091
 - **Portainer**: http://homelab-01:9000
 - **Pi-hole**: http://homelab-01:8080/admin
 
@@ -553,10 +553,11 @@ Current configuration from notes:
 | 2222 | Gitea SSH | LAN + Tailscale |
 | 2283 | Immich | LAN + Tailscale |
 | 3000 | Gitea Web | LAN + Tailscale |
+| 3002 | Grafana | LAN + Tailscale |
 | 5050 | PgAdmin | LAN + Tailscale |
 | 8080 | Pi-hole Admin | LAN + Docker |
 | 9000 | Portainer | LAN + Tailscale |
-| 9090 | Cockpit | LAN + Tailscale |
+| 9091 | Prometheus | LAN + Tailscale |
 
 ---
 

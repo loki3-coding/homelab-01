@@ -10,7 +10,7 @@
 # - Tailscale VPN
 # - SSH hardening
 # - Firewall (UFW)
-# - System monitoring tools (Cockpit, lm-sensors)
+# - System monitoring tools (lm-sensors)
 # - Portainer for Docker management
 #
 # Usage: sudo ./server-setup.sh
@@ -201,27 +201,10 @@ phase5_install_tailscale() {
     echo ""
 }
 
-# Phase 6: Install Cockpit
-phase6_install_cockpit() {
+# Phase 6: Create Docker Networks
+phase6_create_networks() {
     log "========================================"
-    log "Phase 6: Cockpit Installation"
-    log "========================================"
-    echo ""
-
-    log "Installing Cockpit..."
-    apt install -y cockpit cockpit-pcp
-
-    log "Enabling Cockpit..."
-    systemctl enable --now cockpit.socket
-
-    log_success "Cockpit installed at https://${HOMELAB_HOSTNAME}:9090"
-    echo ""
-}
-
-# Phase 7: Create Docker Networks
-phase7_create_networks() {
-    log "========================================"
-    log "Phase 7: Docker Networks"
+    log "Phase 6: Docker Networks"
     log "========================================"
     echo ""
 
@@ -235,10 +218,10 @@ phase7_create_networks() {
     echo ""
 }
 
-# Phase 8: Configure Firewall
-phase8_configure_firewall() {
+# Phase 7: Configure Firewall
+phase7_configure_firewall() {
     log "========================================"
-    log "Phase 8: Firewall Configuration"
+    log "Phase 7: Firewall Configuration"
     log "========================================"
     echo ""
 
@@ -298,8 +281,8 @@ phase8_configure_firewall() {
     echo ""
 }
 
-# Phase 9: Summary and Next Steps
-phase9_summary() {
+# Phase 8: Summary and Next Steps
+phase8_summary() {
     log "========================================"
     log "Setup Complete!"
     log "========================================"
@@ -309,9 +292,7 @@ phase9_summary() {
     log "  ✓ Docker and Docker Compose"
     log "  ✓ Portainer (http://${HOMELAB_HOSTNAME}:9000)"
     log "  ✓ Tailscale VPN (with SSH and exit node)"
-    log "  ✓ Cockpit (https://${HOMELAB_HOSTNAME}:9090)"
     log "  ✓ UFW Firewall"
-    log "  ✓ System monitoring tools"
     echo ""
 
     log "Docker networks created:"
@@ -363,10 +344,9 @@ main() {
     phase3_install_docker
     phase4_install_portainer
     phase5_install_tailscale
-    phase6_install_cockpit
-    phase7_create_networks
-    phase8_configure_firewall
-    phase9_summary
+    phase6_create_networks
+    phase7_configure_firewall
+    phase8_summary
 }
 
 # Run main function
