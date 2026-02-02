@@ -5,7 +5,7 @@
 ## 📚 Documentation Navigation
 
 - **[← Back to Immich README](README.md)**
-- **[💾 Backup Guide](../../scripts/IMMICH_BACKUP_README.md)** - Backup before migration
+- **[💾 Backup Guide](IMMICH_BACKUP_README.md)** - Backup before migration
 - **[📜 Scripts README](../../scripts/README.md)** - All automation scripts
 - **[📖 CLAUDE.md](../../CLAUDE.md)** - Quick reference
 
@@ -13,14 +13,13 @@
 
 ## Document Status
 - **Last Updated:** 2026-02-02
-- **Current State:** ⚠️ NOT YET APPLIED - Configuration ready, waiting for backup to complete
 - **Purpose:** Implementation guide for moving thumbnails to SSD
 
-⚠️ **IMPORTANT: All commands in this document must be run on the homelab server (`ssh loki3@homelab-01`), not locally.**
+**IMPORTANT: All commands in this document must be run on the homelab server (`ssh loki3@homelab-01`), not locally.**
 
 ## Why This Is Needed
 
-Your HDD (/dev/sdb) has **64 reallocated sectors** (bad sectors), which is causing thumbnail corruption. Moving thumbnails to the SSD will:
+Main HDD (/dev/sdb) has **64 reallocated sectors** (bad sectors), which is causing thumbnail corruption. Moving thumbnails to the SSD will:
 - Eliminate thumbnail corruption errors
 - Significantly speed up thumbnail loading
 - Reduce wear on the failing HDD
@@ -34,7 +33,7 @@ Power-On: 19,004 hours (~2.2 years)
 Temperature: 48°C
 CRC Errors: 29
 
-⚠️ RECOMMENDATION: Plan to replace this HDD soon
+RECOMMENDATION: Plan to replace this HDD soon
 ```
 
 ## What Changed in docker-compose.yml
@@ -99,13 +98,8 @@ docker ps | grep immich
 # Should show nothing
 ```
 
-### 3. Move existing thumbnails to SSD (optional but recommended)
+### 3. Move existing thumbnails to SSD
 
-**Should you do this?**
-- ✅ **YES** (recommended): Preserves existing thumbnails, no regeneration needed
-- ❌ **NO**: You'll regenerate all thumbnails (Step 6), which may take hours
-
-**If you choose YES:**
 ```bash
 # Check if source thumbnails exist
 ls -lh /home/loki3/immich/thumbs 2>/dev/null
@@ -126,34 +120,7 @@ fi
 du -sh /home/loki3/immich-thumbs
 ```
 
-**If you choose NO:** Skip to step 4.
-
-### 4. Apply configuration changes
-
-**Option A: Pull from git (if you're following this guide after changes were committed)**
-```bash
-cd ~/github/homelab/apps/immich
-git pull origin main
-
-# Verify docker-compose.yml has SSD mounts
-grep -A 2 "immich-thumbs" docker-compose.yml
-```
-
-**Expected output:**
-```yaml
-- /home/loki3/immich-thumbs:/usr/src/app/upload/thumbs
-- /home/loki3/immich-thumbs:/usr/src/app/upload/encoded-video
-```
-
-**Option B: Manually verify if configuration is already present**
-```bash
-cd ~/github/homelab-01/apps/immich
-cat docker-compose.yml | grep "immich-thumbs"
-```
-
-If you don't see the SSD mounts, the configuration needs to be added manually or pulled from git.
-
-### 5. Restart Immich
+### 4. Restart Immich
 
 ```bash
 cd ~/github/homelab/apps/immich
@@ -165,43 +132,6 @@ docker ps | grep immich
 # Should show: immich-server, immich-machine-learning, immich-redis
 ```
 
-### 6. Regenerate thumbnails (if needed)
-
-**Access Immich Admin Panel:**
-- URL: `http://homelab-01:2283` or `http://localhost:2283` (if using SSH port forward)
-- Login with your admin account
-
-**Regeneration Options:**
-- **"Generate Missing"** (recommended if you copied thumbnails in step 3) - Only creates missing (~5-30 min)
-- **"Generate All"** (if you skipped step 3) - Recreates ALL thumbnails (~2-4 hours for 163GB library)
-
-**Steps:**
-1. Log into Immich as admin
-2. Navigate to **Administration → Jobs**
-3. Find "**Generate Thumbnails**" job
-4. Click:
-   - **"Generate Missing"** if you copied thumbnails
-   - **"Generate All"** if you skipped the copy
-5. Monitor progress in the Jobs page
-
-**Monitor progress from command line:**
-```bash
-# Watch thumbnail directory size grow
-watch -n 5 "du -sh /home/loki3/immich-thumbs"
-
-# Check Immich logs for errors
-docker compose logs -f immich-server | grep -i thumb
-```
-
-### 6. Verify SSD usage
-
-```bash
-# Check that thumbnails are being written to SSD
-watch -n 2 "du -sh /home/loki3/immich-thumbs"
-
-# Check container logs
-docker compose logs -f immich-server
-```
 
 ## Expected Results
 
@@ -234,58 +164,8 @@ docker compose logs immich-server --tail 100 | grep -i error
 docker stats --no-stream
 ```
 
-## Rollback (if needed)
+## Restore from backup
 
-**If thumbnails are corrupted or something went wrong:**
-
-### Quick Rollback (keeps thumbnails on SSD, just reverts mount points)
-
-```bash
-# On server
-ssh loki3@homelab-01
-cd ~/github/homelab/apps/immich
-
-# Find commit before SSD changes
-git log --oneline docker-compose.yml | head -5
-
-# Checkout specific commit (replace COMMIT_HASH with actual hash)
-git checkout COMMIT_HASH docker-compose.yml
-
-# Restart
-docker compose down && docker compose up -d
-```
-
-### Full Rollback (restore thumbnails to HDD)
-
-```bash
-# On server
-ssh loki3@homelab-01
-
-# 1. Stop Immich
-cd ~/github/homelab-01/apps/immich
-docker compose down
-
-# 2. Move thumbnails back to HDD (if you moved them in step 3)
-sudo mkdir -p /home/loki3/immich/thumbs
-sudo mkdir -p /home/loki3/immich/encoded-video
-
-sudo rsync -av /home/loki3/immich-thumbs/ /home/loki3/immich/thumbs/ 2>/dev/null || true
-sudo rsync -av /home/loki3/immich-thumbs/encoded-video/ /home/loki3/immich/encoded-video/ 2>/dev/null || true
-
-# Fix permissions
-sudo chown -R 1000:1000 /home/loki3/immich
-
-# 3. Revert docker-compose.yml
-git log --oneline docker-compose.yml | head -5  # Find commit before SSD
-git checkout COMMIT_HASH docker-compose.yml  # Replace COMMIT_HASH
-
-# 4. Restart
-docker compose up -d
-```
-
-### Ultimate Fallback (restore from backup)
-
-**If rollback fails or data is corrupted:**
 ```bash
 ssh loki3@homelab-01
 cd ~/github/homelab/scripts

@@ -25,19 +25,6 @@ Complete guide for setting up a new Ubuntu Server for the homelab from scratch.
   - 500GB HDD - Large data storage (Immich media, backups)
 - **Network**: Gigabit Ethernet (wired connection)
 
-**Minimum Requirements:**
-- 8GB RAM (for running all services simultaneously)
-- 128GB SSD for OS and Docker (recommended)
-- Additional HDD/SSD for data storage (recommended for media services)
-- Wired network connection (recommended for reliability)
-- USB drive for Ubuntu Server installation (8GB+)
-
-### Software
-
-- Ubuntu Server 24.04 LTS (or 22.04 LTS)
-- SSH client on your management machine
-- Git installed on server
-
 ### Network Information
 
 Collect this information before starting:
@@ -341,140 +328,19 @@ Each service needs initial configuration:
 - **Portainer**: http://homelab-01:9000 - Set admin password
 - **Grafana**: http://homelab-01:3002 - Login with admin credentials
 
-## Troubleshooting
-
-### Network Issues
-
-```bash
-# Check interface status
-ip link show
-
-# Check IP configuration
-ip addr show
-
-# Check routes
-ip route show
-
-# Test connectivity
-ping -c 4 192.168.100.1  # Gateway
-ping -c 4 1.1.1.1        # Internet
-ping -c 4 google.com     # DNS
-```
-
-### Docker Issues
-
-```bash
-# Check Docker status
-sudo systemctl status docker
-
-# Check Docker info
-docker info
-
-# View Docker logs
-sudo journalctl -u docker -n 50
-
-# Restart Docker
-sudo systemctl restart docker
-```
-
-### Tailscale Issues
-
-```bash
-# Check Tailscale status
-sudo tailscale status
-
-# Check Tailscale logs
-sudo journalctl -u tailscaled -n 50
-
-# Restart Tailscale
-sudo tailscale down
-sudo tailscale up --ssh --advertise-exit-node
-```
-
-### Firewall Issues
-
-```bash
-# Check firewall status
-sudo ufw status verbose
-
-# View numbered rules
-sudo ufw status numbered
-
-# Delete a rule by number
-sudo ufw delete <number>
-
-# Disable firewall temporarily (for debugging)
-sudo ufw disable
-
-# Re-enable firewall
-sudo ufw enable
-```
-
-### SSH Issues
-
-```bash
-# Test SSH configuration
-sudo sshd -t
-
-# Check SSH logs
-sudo journalctl -u ssh -n 50
-
-# Restart SSH
-sudo systemctl restart ssh
-
-# Check SSH is listening
-sudo netstat -tlnp | grep :22
-```
-
-### Service Not Starting
-
-```bash
-# Check service logs
-cd ~/github/homelab-01/<service>
-docker compose logs -f
-
-# Check container status
-docker ps -a
-
-# Restart service
-docker compose restart
-
-# Rebuild and restart
-docker compose down
-docker compose up -d
-```
-
-### DNS Resolution Issues
-
-```bash
-# Check resolv.conf
-cat /etc/resolv.conf
-
-# Test DNS resolution
-nslookup google.com
-dig google.com
-
-# Check if Pi-hole is running
-docker ps | grep pihole
-
-# Check Pi-hole logs
-cd ~/github/homelab-01/pi-hole
-docker compose logs -f
-```
-
 ## Security Checklist
 
 After setup is complete, verify:
 
-- [ ] UFW firewall is enabled and configured
-- [ ] SSH password authentication is disabled
-- [ ] SSH root login is disabled
-- [ ] SSH is restricted to LAN interface
-- [ ] Tailscale is configured with ACLs
-- [ ] All service default passwords are changed
-- [ ] Unattended upgrades are enabled
+- [x] UFW firewall is enabled and configured
+- [x] SSH password authentication is disabled
+- [x] SSH root login is disabled
+- [x] SSH is restricted to LAN interface
+- [x] Tailscale is configured with ACLs
+- [x] All service default passwords are changed
+- [x] Unattended upgrades are enabled
 - [ ] Fail2ban is installed (optional)
-- [ ] Services are not exposed to public internet
+- [x] Services are not exposed to public internet
 
 ## Maintenance
 
@@ -490,23 +356,6 @@ cd ~/github/homelab-01
 docker compose pull
 docker compose up -d
 ```
-
-### Backups
-
-Important directories to backup:
-
-- `/home/loki3/github/homelab-01/` - Configuration
-- Docker volumes - Service data
-- `/etc/` - System configuration
-
-### Monitoring
-
-Access monitoring interfaces:
-
-- **Grafana**: http://homelab-01:3002
-- **Prometheus**: http://homelab-01:9091
-- **Portainer**: http://homelab-01:9000
-- **Pi-hole**: http://homelab-01:8080/admin
 
 ## Reference
 
@@ -560,7 +409,3 @@ Current configuration from notes:
 | 9091 | Prometheus | LAN + Tailscale |
 
 ---
-
-**Last Updated**: 2026-01-30
-**Author**: vynguyen
-**Version**: 1.0

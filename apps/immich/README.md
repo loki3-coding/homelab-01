@@ -10,7 +10,7 @@ Self-hosted photo and video backup solution with automatic organization, facial 
 
 - **[← Back to Main README](../../README.md)**
 - **[📖 Quick Reference (CLAUDE.md)](../../CLAUDE.md#immich-backup--restore)** - Common Immich commands
-- **[💾 Backup Guide](../../scripts/IMMICH_BACKUP_README.md)** - Complete backup/restore procedures
+- **[💾 Backup Guide](IMMICH_BACKUP_README.md)** - Complete backup/restore procedures
 - **[🚀 SSD Setup Guide](SSD_THUMBNAILS_SETUP.md)** - Move thumbnails to SSD (performance fix)
 
 ---
@@ -93,101 +93,15 @@ docker ps | grep immich
 ### View Logs
 
 ```bash
-cd ~/github/homelab-01/apps/immich
+cd ~/github/homelab/apps/immich
 docker compose logs -f
 ```
 
 ### Restart Immich
 
 ```bash
-cd ~/github/homelab-01/apps/immich
+cd ~/github/homelab/apps/immich
 docker compose restart
-```
-
----
-
-## 💾 Backup & Restore
-
-**⚠️ IMPORTANT: Always backup before major changes!**
-
-### Run Backup
-
-```bash
-# SSH to server
-ssh loki3@homelab-01
-
-# Mount backup drive
-sudo mount /dev/sdc1 /mnt/backup
-
-# Run backup (Immich will be DOWN for 10-30 min)
-cd ~/github/homelab-01/scripts
-./backup-immich.sh
-```
-
-**What gets backed up:**
-- All photos and videos (163GB)
-- Database with metadata, albums, users
-- Docker volumes (ML models, cache)
-
-**Duration:** First backup 2-4 hours, incremental 10-30 minutes
-
-📖 **[Complete Backup Guide →](../../scripts/IMMICH_BACKUP_README.md)**
-
----
-
-## 🔧 Common Issues & Solutions
-
-### Thumbnail Corruption / Missing Thumbnails
-
-**Problem:** Thumbnails show errors, need regeneration frequently
-**Cause:** HDD has 64 bad sectors causing file corruption
-**Solution:** Move thumbnails to SSD
-
-```bash
-# Check HDD health
-ssh loki3@homelab-01
-sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending|Uncorrectable)"
-```
-
-🚀 **[SSD Thumbnail Setup Guide →](SSD_THUMBNAILS_SETUP.md)**
-
-### Permission Errors
-
-**Problem:** Can't upload photos, permission denied errors in logs
-**Fix:**
-
-```bash
-ssh loki3@homelab-01
-sudo chown -R 1000:1000 /home/loki3/immich
-sudo chown -R 1000:1000 /home/loki3/immich-thumbs
-```
-
-### Immich Won't Start
-
-```bash
-# 1. Check Postgres is running (required!)
-docker ps | grep postgres
-
-# 2. If not running, start it
-cd ~/github/homelab-01
-./scripts/start-all-services.sh
-
-# 3. Check Immich logs
-cd ~/github/homelab-01/apps/immich
-docker compose logs -f
-```
-
-### Out of Space
-
-```bash
-# Check HDD space
-df -h /home/loki3/immich
-
-# Check SSD space
-df -h /
-
-# Check backup drive
-df -h /mnt/backup
 ```
 
 ---
@@ -239,13 +153,6 @@ du -sh /home/loki3/immich-thumbs
 du -h --max-depth=1 /home/loki3/immich | sort -h
 ```
 
-### Check Container Health
-
-```bash
-docker ps | grep immich
-docker stats --no-stream | grep immich
-```
-
 ### Check HDD Health
 
 ```bash
@@ -259,17 +166,6 @@ sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending)"  # Bad sectors
 
 - **[Main README](../../README.md)** - Project overview
 - **[CLAUDE.md](../../CLAUDE.md)** - Quick reference for all services
-- **[Backup Guide](../../scripts/IMMICH_BACKUP_README.md)** - Detailed backup procedures
+- **[Backup Guide](IMMICH_BACKUP_README.md)** - Detailed backup procedures
 - **[SSD Setup](SSD_THUMBNAILS_SETUP.md)** - Move thumbnails to SSD
 - **[Scripts README](../../scripts/README.md)** - All automation scripts
-
----
-
-## 🆘 Need Help?
-
-1. Check logs: `docker compose logs -f`
-2. See [CLAUDE.md](../../CLAUDE.md) troubleshooting section
-3. Review [Immich documentation](https://immich.app/docs)
-4. Check [backup guide](../../scripts/IMMICH_BACKUP_README.md) for restore procedures
-
-**Emergency:** Restore from backup using `~/github/homelab-01/scripts/restore-immich.sh`

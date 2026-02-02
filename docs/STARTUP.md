@@ -66,9 +66,9 @@ Edit `scripts/homelab.service` and update these lines to match your system:
 
 ```ini
 User=loki3
-WorkingDirectory=/home/loki3/homelab-01
-ExecStart=/home/loki3/homelab-01/start-all-services.sh
-ExecStop=/home/loki3/homelab-01/stop-all-services.sh
+WorkingDirectory=/home/loki3/homelab
+ExecStart=/home/loki3/homelab/start-all-services.sh
+ExecStop=/home/loki3/homelab/stop-all-services.sh
 ```
 
 Change `loki3` to your username and update paths accordingly.
@@ -141,85 +141,6 @@ username ALL=(ALL) NOPASSWD: /usr/bin/tailscale
 
 Or for the systemd service to work properly, ensure the service user has appropriate sudo privileges.
 
-## Troubleshooting
-
-### Tailscale fails to start
-
-Check if Tailscale is installed:
-```bash
-which tailscale
-tailscale version
-```
-
-Check Tailscale status:
-```bash
-sudo tailscale status
-```
-
-Manually start Tailscale:
-```bash
-sudo tailscale up --ssh --advertise-exit-node
-```
-
-### Script fails with "Docker is not running"
-
-Ensure Docker is started:
-```bash
-sudo systemctl start docker
-# or on macOS:
-open -a Docker
-```
-
-### PostgreSQL fails to start
-
-Check if the data directory has correct permissions:
-```bash
-ls -la postgres/data/
-# Should be owned by user/group with appropriate permissions
-```
-
-### Service fails to start
-
-Check individual service logs:
-```bash
-cd <service-directory>
-docker compose logs -f
-```
-
-### Networks don't exist
-
-The script automatically creates networks, but you can create them manually:
-```bash
-docker network create db-net
-docker network create proxy
-```
-
-### Port conflicts
-
-Check if ports are already in use:
-```bash
-# Check specific port
-sudo lsof -i :5432  # Postgres
-sudo lsof -i :80    # Nginx
-sudo lsof -i :53    # Pi-hole DNS
-
-# List all listening ports
-sudo lsof -i -P | grep LISTEN
-```
-
-### Systemd service fails
-
-Check the service logs:
-```bash
-sudo journalctl -u homelab -n 50 --no-pager
-```
-
-Verify the paths in scripts/homelab.service are correct:
-```bash
-# Test the script manually
-sudo -u loki3 /home/loki3/homelab-01/start-all-services.sh
-```
-
 ## Testing
 
 ### Test startup script
@@ -249,47 +170,6 @@ sudo systemctl status homelab
 sudo journalctl -u homelab -n 100 --no-pager
 ```
 
-## Customization
-
-### Adding a new service
-
-1. Edit `start-all-services.sh`
-2. Add the service to the appropriate phase:
-   - Phase 1: If it requires Postgres
-   - Phase 2: If it's independent
-
-Example:
-```bash
-# In Phase 3 (independent services)
-start_service "NewService" "newservice" || log_warning "NewService failed to start, continuing..."
-```
-
-3. Edit `stop-all-services.sh`
-4. Add the service to Phase 1 (stop independent services first)
-
-### Changing startup delay
-
-To add delay between service starts, modify the script:
-```bash
-start_service "ServiceName" "service-dir"
-sleep 5  # Wait 5 seconds
-```
-
-### Modifying PostgreSQL wait timeout
-
-Edit `wait_for_postgres()` function in `start-all-services.sh`:
-```bash
-local max_attempts=30  # Change this value (30 attempts × 2 seconds = 60 seconds)
-```
-
-## Best Practices
-
-1. **Test scripts after changes**: Always test manually before enabling systemd
-2. **Check logs**: Use `journalctl` to monitor service startup
-3. **Backup before updates**: Backup Docker volumes before major changes
-4. **Monitor resources**: Keep an eye on RAM/CPU usage during startup
-5. **Staged rollout**: Test new services individually before adding to startup script
-
 ## Access Points After Startup
 
 Once all services are running:
@@ -316,8 +196,3 @@ Ensure all `.env` files are present in their respective service directories:
 - `pi-hole/.env` - Pi-hole admin password
 
 The scripts do not manage `.env` files - they must exist before running.
-
----
-
-**Last Updated**: 2026-01-30
-**Related**: See CLAUDE.md for full project documentation

@@ -11,23 +11,14 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 **Start here:**
 
 1. **[CLAUDE.md](CLAUDE.md)** - Quick reference for Claude AI sessions and daily operations
-   - SSH access, service commands, common tasks
-   - ⭐ **Read this first for operational tasks**
 
 2. **[Immich Guide](apps/immich/README.md)** - Photo management setup
-   - Backup/restore procedures
-   - SSD thumbnail configuration
-   - HDD health monitoring
 
 3. **[Scripts Reference](scripts/README.md)** - Automation scripts
-   - Backup/restore scripts
-   - Service management
-   - Startup automation
 
 **Detailed Guides:**
 - [SERVER-SETUP.md](docs/SERVER-SETUP.md) - Initial server setup from scratch
 - [STARTUP.md](docs/STARTUP.md) - Auto-start configuration
-- [HARDWARE.md](docs/HARDWARE.md) - Hardware specs and notes
 - [ARCHITECTURE-REVIEW.md](docs/ARCHITECTURE-REVIEW.md) - Architecture analysis
 
 ---
@@ -48,16 +39,6 @@ ssh loki3@homelab-01
 cd ~/github/homelab-01
 ./scripts/start-all-services.sh
 ```
-
-### Start Individual Service
-
-```bash
-ssh loki3@homelab-01
-cd ~/github/homelab-01/apps/immich  # or any service directory
-docker compose up -d
-```
-
-**Important:** Postgres must start before Gitea and Immich. The `start-all-services.sh` script handles this automatically.
 
 ---
 
@@ -87,17 +68,16 @@ docker compose up -d
 
 ## 🖥️ Infrastructure
 
-**Local Machine (Development):**
+**Local Machine:**
 - MacBook Pro M1, 16GB RAM
-- Repository: `/Users/standard-xvy/Github/homelab-01`
 - Used for: editing, AI, browser
 
-**Homelab Server (Production):**
+**Homelab Server:**
 - Acer Aspire V3-572G
 - 8GB RAM, 128GB SSD + 500GB HDD
 - Ubuntu Server 24.04 LTS
 - Static IP: 192.168.100.200
-- Repository: `/home/loki3/github/homelab-01`
+- Repository: `/home/loki3/github/homelab`
 - All Docker containers run here
 
 **SSH Access:**
@@ -111,26 +91,6 @@ ssh loki3@homeLAN-01
 
 ---
 
-## 🔧 Common Tasks
-
-```bash
-# View logs
-docker compose logs -f
-
-# Update service
-docker compose pull && docker compose up -d
-
-# Stop service
-docker compose down
-
-# Restart service
-docker compose restart
-
-# Check status
-docker ps
-```
-
----
 
 ## 📁 Repository Structure
 
@@ -150,26 +110,3 @@ homelab-01/
 - Backups: `/mnt/backup` (916GB external HDD)
 
 ---
-
-## 🆘 Troubleshooting
-
-**Services won't start:**
-1. Check Postgres is running: `docker ps | grep postgres`
-2. Check logs: `docker compose logs`
-3. See [CLAUDE.md](CLAUDE.md) for detailed troubleshooting
-
-**Immich issues:**
-- See [apps/immich/README.md](apps/immich/README.md)
-- HDD health: `sudo smartctl -a /dev/sdb`
-
-**Network issues:**
-- Check Pi-hole: `docker logs pihole`
-- Check Nginx: `docker logs nginx-proxy`
-
----
-
-## 📝 License
-
-No license file included. For personal use.
-
-**Questions?** Open an issue in this repository.

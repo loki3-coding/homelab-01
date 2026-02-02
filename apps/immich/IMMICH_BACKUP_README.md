@@ -6,10 +6,9 @@
 
 ## 📚 Documentation Navigation
 
-- **[← Back to Scripts README](README.md)**
-- **[📦 Immich Guide](../apps/immich/README.md)** - Main Immich documentation
-- **[🚀 SSD Setup](../apps/immich/SSD_THUMBNAILS_SETUP.md)** - Thumbnail performance fix
-- **[📖 CLAUDE.md](../CLAUDE.md)** - Quick reference
+- **[📦 Immich Guide](README.md)** - Main Immich documentation
+- **[🚀 SSD Setup](SSD_THUMBNAILS_SETUP.md)** - Thumbnail performance fix
+- **[📖 CLAUDE.md](../../CLAUDE.md)** - Quick reference
 
 ---
 
@@ -23,7 +22,7 @@ ssh loki3@homelab-01
 sudo mount /dev/sdc1 /mnt/backup
 
 # 3. Run backup
-cd ~/github/homelab-01-01/scripts
+cd ~/github/homelab/scripts
 ./backup-immich.sh
 ```
 
@@ -76,13 +75,13 @@ df -h /mnt/backup
 # Should show: 916G total with sufficient free space
 
 # 5. Make scripts executable (one-time setup)
-chmod +x ~/github/homelab-01/scripts/backup-immich.sh
-chmod +x ~/github/homelab-01/scripts/restore-immich.sh
+chmod +x ~/github/homelab/scripts/backup-immich.sh
+chmod +x ~/github/homelab/scripts/restore-immich.sh
 ```
 
 **If Postgres is NOT running:**
 ```bash
-cd ~/github/homelab-01
+cd ~/github/homelab
 ./scripts/start-all-services.sh
 # Wait 30 seconds for Postgres to start
 docker ps | grep postgres
@@ -96,7 +95,7 @@ docker ps | grep postgres
 # Make sure you're on the server
 ssh loki3@homelab-01
 
-cd ~/github/homelab-01/scripts
+cd ~/github/homelab/scripts
 ./backup-immich.sh
 ```
 
@@ -357,8 +356,3 @@ du -sh /mnt/backup/immich-backup/*
 sudo umount /mnt/backup
 ```
 
-## Need Help?
-
-- Check logs: `/mnt/backup/immich-backup/backup.log`
-- Immich logs: `docker compose logs -f` (from apps/immich directory)
-- See main homelab docs: `~/github/homelab-01/CLAUDE.md`
