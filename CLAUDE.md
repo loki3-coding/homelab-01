@@ -1,27 +1,46 @@
 # CLAUDE.md - Homelab-01 Quick Reference
 
 ## Server Access
-All Docker containers run on the homelab server.
 
-**SSH Access:**
-- Local LAN: `ssh loki3@homeLAN-01`
-- Remote (Tailscale): `ssh loki3@homelab-01` (recommended for Claude sessions)
+**Important Context:**
+- **Claude Code** runs on the LOCAL machine (`/Users/standard-xvy/Github/homelab-01`)
+- **Docker containers** run on the REMOTE homelab server
+- Most operations require SSH to the server
+
+**SSH to Homelab Server:**
+```bash
+# From anywhere (Tailscale VPN - recommended for Claude sessions)
+ssh loki3@homelab-01
+
+# From local network only
+ssh loki3@homeLAN-01
+```
 
 **For Claude Code Sessions:**
-- Use the Tailscale address: `ssh loki3@homelab-01`
-- SSH keys are configured for passwordless authentication
-- Can execute commands remotely via: `ssh loki3@homelab-01 "command"`
-- Git operations work directly over SSH
+- Use: `ssh loki3@homelab-01` (works locally and remotely via Tailscale)
+- SSH keys configured for passwordless authentication
+- Execute remote commands: `ssh loki3@homelab-01 "cd ~/github/homelab-01 && docker ps"`
+- Git operations work over SSH
 
 ## Project Structure
+
+**Local Repository** (`/Users/standard-xvy/Github/homelab-01`):
 ```
 homelab-01/
-├── platform/          # Postgres, Gitea
-├── apps/              # Homepage, Immich, Pi-hole
+├── platform/          # Postgres, Gitea + their .env files
+├── apps/              # Homepage, Immich, Pi-hole + their .env files
+│   └── immich/        # Includes SSD_THUMBNAILS_SETUP.md
 ├── system/            # Nginx, Monitoring (Prometheus/Grafana/Loki)
-├── scripts/           # Automation scripts
-└── docs/              # Documentation
+│   └── monitoring/scripts/  # Container name export script
+├── scripts/           # Automation scripts + IMMICH_BACKUP_README.md
+└── CLAUDE.md          # This file (main reference)
 ```
+
+**Server Data Paths** (`loki3@homelab-01`):
+- Repository clone: `~/github/homelab-01/`
+- Immich uploads: `/home/loki3/immich` (163GB on 500GB HDD - **has 64 bad sectors!**)
+- Immich thumbnails: `/home/loki3/immich-thumbs` (SSD - configured but not yet applied)
+- Backup drive: `/mnt/backup` (916GB external HDD - manually mounted)
 
 ## Service Architecture
 
@@ -78,45 +97,56 @@ docker exec -it postgres psql -U <user>      # Access database
 
 ## Immich Backup & Restore
 
-**Backup Location:** External HDD mounted at `/mnt/backup` (916GB, `/dev/sdc1`)
+⚠️ **CRITICAL: All backup/restore commands run ON THE SERVER, not locally**
 
-**Mount backup drive:**
+**Quick Reference:**
 ```bash
-sudo mount /dev/sdc1 /mnt/backup
+# 1. SSH to server
+ssh loki3@homelab-01
+
+# 2. Verify prerequisites
+docker ps | grep postgres  # Postgres MUST be running
+mountpoint /mnt/backup     # If not mounted: sudo mount /dev/sdc1 /mnt/backup
+
+# 3. Run backup
+cd ~/github/homelab-01/scripts
+./backup-immich.sh  # ⚠️ Immich DOWN for 10-30 min (2-4 hours first time)
 ```
 
-**Run backup:**
-```bash
-cd ~/github/homelab/scripts
-./backup-immich.sh
-```
+**Current Data Size:** 163GB actual (not 500GB as originally estimated)
 
-**Restore from backup:**
-```bash
-cd ~/github/homelab/scripts
-./restore-immich.sh
-```
-
-**What gets backed up:**
-- Upload directory: `/home/loki3/immich` (~500GB photos/videos)
+**What Gets Backed Up:**
+- Upload directory: `/home/loki3/immich` (163GB photos/videos on failing HDD)
 - Postgres database: `immich` database with all metadata
 - Docker volumes: ML model cache and Redis data
-- Automatic cleanup keeps last 3 backups
+- Auto-cleanup: Keeps last 3 backups only
 
-**Backup structure:**
+**Backup Duration:**
+- **First backup:** 2-4 hours (copies all 163GB)
+- **Incremental:** 10-30 minutes (only changed files)
+- ⚠️ **Immich is INACCESSIBLE during entire backup**
+
+**Restore:**
+```bash
+ssh loki3@homelab-01
+cd ~/github/homelab-01/scripts
+./restore-immich.sh  # Interactive - select backup to restore
+```
+
+**Backup Location:** `/mnt/backup/immich-backup/` (916GB external HDD, manually mounted)
 ```
 /mnt/backup/immich-backup/
-├── [timestamp]/
-│   ├── uploads/
+├── 20260202_143000/  # Timestamped backups
+│   ├── uploads/ (163GB)
 │   ├── database/immich_backup.sql.gz
 │   ├── volumes/
 │   └── backup-manifest.txt
 └── backup.log
 ```
 
-**Important:** First backup takes several hours (~500GB). Subsequent backups are faster (rsync only copies changes).
+**Automation Status:** ❌ NOT configured (manual backups only)
 
-See `scripts/IMMICH_BACKUP_README.md` for detailed documentation.
+**Detailed Guide:** `scripts/IMMICH_BACKUP_README.md`
 
 ## Key Configuration
 
@@ -127,10 +157,12 @@ See `scripts/IMMICH_BACKUP_README.md` for detailed documentation.
 - `pi-hole/.env`: WEBPASSWORD
 - `monitoring/.env`: GRAFANA_ADMIN_PASSWORD
 
-**Data Storage:**
-- Postgres: `./platform/postgres/data`
-- Immich uploads: `/home/loki3/immich` (500GB HDD)
-- Gitea: Docker volumes
+**Data Storage (on homelab server):**
+- Postgres: `/home/loki3/github/homelab-01/platform/postgres/data`
+- Immich uploads: `/home/loki3/immich` (163GB on 500GB HDD - ⚠️ **64 bad sectors!**)
+- Immich thumbnails: `/home/loki3/immich-thumbs` (SSD - configured, not yet applied)
+- Gitea: Docker volumes (managed by Docker)
+- Backup drive: `/mnt/backup` (916GB external HDD - manually mounted)
 
 ## Development Guidelines
 
@@ -175,15 +207,21 @@ docker exec postgres pg_isready -U <admin-user>    # Check Postgres health
 docker exec -it postgres psql -U <admin-user> -l   # List databases
 ```
 
-**Fix Immich permissions:**
+**Fix Immich permissions (on server):**
 ```bash
+# Run on server
+ssh loki3@homelab-01
+
+# Fix permissions (1000:1000 is the Immich container user)
 sudo chown -R 1000:1000 /home/loki3/immich
+sudo chown -R 1000:1000 /home/loki3/immich-thumbs  # If using SSD thumbnails
 ```
+**When to use:** After restore, manual file operations, or permission denied errors
 
 **Container names showing as hashes in Grafana:**
 ```bash
 # Check if export script is running
 cat /tmp/export-container-names.log
 # Manually run the export script
-cd ~/github/homelab/system/monitoring/scripts && ./export-container-names.sh
+cd ~/github/homelab-01/system/monitoring/scripts && ./export-container-names.sh
 ```
