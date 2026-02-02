@@ -45,10 +45,12 @@ log_info() {
 # Check if backup drive is mounted
 check_backup_drive() {
     if ! mountpoint -q /mnt/backup; then
-        log_error "Backup drive is not mounted at /mnt/backup"
-        log_info "Please mount the drive first: sudo mount /dev/sdc1 /mnt/backup"
+        echo -e "${RED}[ERROR] Backup drive is not mounted at /mnt/backup${NC}"
+        echo -e "${YELLOW}[INFO] Please mount the drive first: sudo mount /dev/sdc1 /mnt/backup${NC}"
         exit 1
     fi
+    # Create backup root directory if it doesn't exist
+    mkdir -p "${BACKUP_ROOT}"
     log_success "Backup drive is mounted"
 }
 
