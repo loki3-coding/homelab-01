@@ -81,10 +81,13 @@ backup_uploads() {
     log_info "Destination: ${BACKUP_DIR}/uploads/"
 
     # Find most recent backup for incremental backup with hard links
-    LATEST_BACKUP=$(ls -t "${BACKUP_ROOT}" 2>/dev/null | grep -E '^[0-9]{8}_[0-9]{6}$' | head -1)
+    # Exclude the current backup directory being created
+    CURRENT_DIR=$(basename "${BACKUP_DIR}")
+    LATEST_BACKUP=$(ls -t "${BACKUP_ROOT}" 2>/dev/null | grep -E '^[0-9]{8}_[0-9]{6}$' | grep -v "^${CURRENT_DIR}$" | head -1)
 
     if [ -n "$LATEST_BACKUP" ] && [ -d "${BACKUP_ROOT}/${LATEST_BACKUP}/uploads" ]; then
-        log_info "Using incremental backup with hard links from: ${LATEST_BACKUP}"
+        log_info "Found previous backup: ${LATEST_BACKUP}"
+        log_info "Using incremental backup with hard links..."
         # Incremental: only changed files take new space, unchanged files are hard-linked
         rsync -av --info=progress2 --link-dest="${BACKUP_ROOT}/${LATEST_BACKUP}/uploads" \
             "${IMMICH_UPLOAD_DIR}/" "${BACKUP_DIR}/uploads/"
