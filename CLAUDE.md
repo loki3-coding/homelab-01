@@ -5,7 +5,13 @@ All Docker containers run on the homelab server.
 
 **SSH Access:**
 - Local LAN: `ssh loki3@homeLAN-01`
-- Remote (Tailscale): `ssh loki3@homelab-01`
+- Remote (Tailscale): `ssh loki3@homelab-01` (recommended for Claude sessions)
+
+**For Claude Code Sessions:**
+- Use the Tailscale address: `ssh loki3@homelab-01`
+- SSH keys are configured for passwordless authentication
+- Can execute commands remotely via: `ssh loki3@homelab-01 "command"`
+- Git operations work directly over SSH
 
 ## Project Structure
 ```
@@ -69,6 +75,48 @@ docker compose logs <service>                # View specific service logs
 docker network ls                            # List networks
 docker exec -it postgres psql -U <user>      # Access database
 ```
+
+## Immich Backup & Restore
+
+**Backup Location:** External HDD mounted at `/mnt/backup` (916GB, `/dev/sdc1`)
+
+**Mount backup drive:**
+```bash
+sudo mount /dev/sdc1 /mnt/backup
+```
+
+**Run backup:**
+```bash
+cd ~/github/homelab/scripts
+./backup-immich.sh
+```
+
+**Restore from backup:**
+```bash
+cd ~/github/homelab/scripts
+./restore-immich.sh
+```
+
+**What gets backed up:**
+- Upload directory: `/home/loki3/immich` (~500GB photos/videos)
+- Postgres database: `immich` database with all metadata
+- Docker volumes: ML model cache and Redis data
+- Automatic cleanup keeps last 3 backups
+
+**Backup structure:**
+```
+/mnt/backup/immich-backup/
+├── [timestamp]/
+│   ├── uploads/
+│   ├── database/immich_backup.sql.gz
+│   ├── volumes/
+│   └── backup-manifest.txt
+└── backup.log
+```
+
+**Important:** First backup takes several hours (~500GB). Subsequent backups are faster (rsync only copies changes).
+
+See `scripts/IMMICH_BACKUP_README.md` for detailed documentation.
 
 ## Key Configuration
 
