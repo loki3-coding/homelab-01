@@ -80,8 +80,19 @@ backup_uploads() {
     log_info "Source: ${IMMICH_UPLOAD_DIR}"
     log_info "Destination: ${BACKUP_DIR}/uploads/"
 
-    # Use rsync for efficient copying with progress
-    rsync -av --info=progress2 "${IMMICH_UPLOAD_DIR}/" "${BACKUP_DIR}/uploads/"
+    # Find most recent backup for incremental backup with hard links
+    LATEST_BACKUP=$(ls -t "${BACKUP_ROOT}" 2>/dev/null | grep -E '^[0-9]{8}_[0-9]{6}$' | head -1)
+
+    if [ -n "$LATEST_BACKUP" ] && [ -d "${BACKUP_ROOT}/${LATEST_BACKUP}/uploads" ]; then
+        log_info "Using incremental backup with hard links from: ${LATEST_BACKUP}"
+        # Incremental: only changed files take new space, unchanged files are hard-linked
+        rsync -av --info=progress2 --link-dest="${BACKUP_ROOT}/${LATEST_BACKUP}/uploads" \
+            "${IMMICH_UPLOAD_DIR}/" "${BACKUP_DIR}/uploads/"
+    else
+        log_info "No previous backup found. Performing full backup..."
+        # First backup: full copy
+        rsync -av --info=progress2 "${IMMICH_UPLOAD_DIR}/" "${BACKUP_DIR}/uploads/"
+    fi
 
     UPLOAD_SIZE=$(du -sh "${BACKUP_DIR}/uploads" | cut -f1)
     log_success "Upload directory backup complete (${UPLOAD_SIZE})"
