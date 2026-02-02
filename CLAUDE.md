@@ -1,5 +1,18 @@
 # CLAUDE.md - Homelab-01 Quick Reference
 
+⭐ **This is the main operational reference for Claude AI sessions and daily tasks**
+
+---
+
+## 📚 Documentation Navigation
+
+- **[🏠 Main README](README.md)** - Project overview and getting started
+- **[📦 Immich Guide](apps/immich/README.md)** - Photo management operations
+- **[📜 Scripts](scripts/README.md)** - Automation and backup scripts
+- **[💾 Backup Guide](scripts/IMMICH_BACKUP_README.md)** - Detailed backup procedures
+
+---
+
 ## Server Access
 
 **Important Context:**

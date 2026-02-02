@@ -2,6 +2,17 @@
 
 ⚠️ **IMPORTANT: All commands in this document must be run on the homelab server, not your local machine.**
 
+---
+
+## 📚 Documentation Navigation
+
+- **[← Back to Scripts README](README.md)**
+- **[📦 Immich Guide](../apps/immich/README.md)** - Main Immich documentation
+- **[🚀 SSD Setup](../apps/immich/SSD_THUMBNAILS_SETUP.md)** - Thumbnail performance fix
+- **[📖 CLAUDE.md](../CLAUDE.md)** - Quick reference
+
+---
+
 ## Quick Start
 
 ```bash

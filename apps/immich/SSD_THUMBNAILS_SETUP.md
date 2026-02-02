@@ -1,5 +1,16 @@
 # Moving Immich Thumbnails to SSD
 
+---
+
+## 📚 Documentation Navigation
+
+- **[← Back to Immich README](README.md)**
+- **[💾 Backup Guide](../../scripts/IMMICH_BACKUP_README.md)** - Backup before migration
+- **[📜 Scripts README](../../scripts/README.md)** - All automation scripts
+- **[📖 CLAUDE.md](../../CLAUDE.md)** - Quick reference
+
+---
+
 ## Document Status
 - **Last Updated:** 2026-02-02
 - **Current State:** ⚠️ NOT YET APPLIED - Configuration ready, waiting for backup to complete
