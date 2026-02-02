@@ -19,7 +19,6 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 **Detailed Guides:**
 - [SERVER-SETUP.md](docs/SERVER-SETUP.md) - Initial server setup from scratch
 - [STARTUP.md](docs/STARTUP.md) - Auto-start configuration
-- [ARCHITECTURE-REVIEW.md](docs/ARCHITECTURE-REVIEW.md) - Architecture analysis
 
 ---
 
