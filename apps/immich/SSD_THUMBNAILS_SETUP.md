@@ -56,7 +56,7 @@ CRC Errors: 29
 ```bash
 ssh loki3@homelab-01
 sudo mount /dev/sdc1 /mnt/backup
-cd ~/github/homelab-01/scripts
+cd ~/github/homelab/scripts
 ./backup-immich.sh
 ```
 
@@ -91,7 +91,7 @@ ls -ld /home/loki3/immich-thumbs
 ### 2. Stop Immich services
 
 ```bash
-cd ~/github/homelab-01/apps/immich
+cd ~/github/homelab/apps/immich
 docker compose down
 
 # Verify stopped
@@ -132,7 +132,7 @@ du -sh /home/loki3/immich-thumbs
 
 **Option A: Pull from git (if you're following this guide after changes were committed)**
 ```bash
-cd ~/github/homelab-01/apps/immich
+cd ~/github/homelab/apps/immich
 git pull origin main
 
 # Verify docker-compose.yml has SSD mounts
@@ -156,7 +156,7 @@ If you don't see the SSD mounts, the configuration needs to be added manually or
 ### 5. Restart Immich
 
 ```bash
-cd ~/github/homelab-01/apps/immich
+cd ~/github/homelab/apps/immich
 docker compose up -d
 
 # Wait 10 seconds, then verify services started
@@ -243,7 +243,7 @@ docker stats --no-stream
 ```bash
 # On server
 ssh loki3@homelab-01
-cd ~/github/homelab-01/apps/immich
+cd ~/github/homelab/apps/immich
 
 # Find commit before SSD changes
 git log --oneline docker-compose.yml | head -5
@@ -288,7 +288,7 @@ docker compose up -d
 **If rollback fails or data is corrupted:**
 ```bash
 ssh loki3@homelab-01
-cd ~/github/homelab-01/scripts
+cd ~/github/homelab/scripts
 ./restore-immich.sh
 # Select the backup from before the SSD migration
 ```
