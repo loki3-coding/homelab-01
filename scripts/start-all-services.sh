@@ -187,7 +187,6 @@ main() {
 
     # Phase 3: Start independent services
     log "Phase 3: Starting independent services..."
-    start_service "Nginx" "system/nginx" || log_warning "Nginx failed to start, continuing..."
     start_service "Homepage" "apps/homepage" || log_warning "Homepage failed to start, continuing..."
     start_service "Pi-hole" "apps/pi-hole" || log_warning "Pi-hole failed to start, continuing..."
     echo ""

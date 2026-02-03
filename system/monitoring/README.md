@@ -37,19 +37,19 @@ Complete monitoring solution for homelab-01 using Prometheus, Grafana, and Loki.
 
 ## Quick Start
 
-1. **Configure environment**:
+1.**Configure environment**:
    ```bash
    # Copy and edit the .env file
    cp ../../config/env-templates/monitoring.env.example .env
    # Edit .env and set a secure GRAFANA_ADMIN_PASSWORD
    ```
 
-2. **Start the stack**:
+2.**Start the stack**:
    ```bash
    docker compose up -d
    ```
 
-3. **Access services**:
+3.**Access services**:
    - Grafana: http://localhost:3002 (admin / your_password)
    - Prometheus: http://localhost:9091
    - cAdvisor: http://localhost:8081
@@ -102,7 +102,7 @@ Estimated memory usage for the monitoring stack:
 | Promtail | 50-100 MB |
 | Node Exporter | 20-30 MB |
 | cAdvisor | 100-200 MB |
-| **Total** | **~700-1200 MB** |
+|**Total** |**~700-1200 MB** |
 
 ## Troubleshooting
 
@@ -152,7 +152,7 @@ container_memory_usage_bytes{name!=""}
 {job="docker"}
 
 # Logs from specific container
-{container="nginx-proxy"}
+{container="immich-server"}
 
 # Error logs
 {job="docker"} |= "error"

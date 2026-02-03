@@ -25,36 +25,36 @@ Stop all services:
 ### Features
 
 The startup script includes:
-- ✓ Tailscale VPN startup (with SSH and exit node advertising)
-- ✓ Docker availability check
-- ✓ Automatic network creation (db-net, proxy)
-- ✓ Correct dependency ordering (Postgres first)
-- ✓ PostgreSQL health check before starting dependent services
-- ✓ Colored output with timestamps
-- ✓ Error handling and status reporting
-- ✓ Summary of running containers
-- ✓ Access point URLs
+- Tailscale VPN startup (with SSH and exit node advertising)
+- Docker availability check
+- Automatic network creation (db-net, proxy)
+- Correct dependency ordering (Postgres first)
+- PostgreSQL health check before starting dependent services
+- Colored output with timestamps
+- Error handling and status reporting
+- Summary of running containers
+- Access point URLs
 
 The shutdown script includes:
-- ✓ Reverse dependency ordering (database last)
-- ✓ Graceful container shutdown
-- ✓ Status verification
+- Reverse dependency ordering (database last)
+- Graceful container shutdown
+- Status verification
 
 ## Startup Order
 
 The scripts follow this order:
 
 ### Start Sequence
-1. **Phase 0**: Tailscale VPN (with --ssh --advertise-exit-node flags)
-2. **Phase 1**: PostgreSQL + PgAdmin (wait for ready)
-3. **Phase 2**: Gitea, Immich (depend on Postgres)
-4. **Phase 3**: Nginx, Homepage, Pi-hole (independent)
+1.**Phase 0**: Tailscale VPN (with --ssh --advertise-exit-node flags)
+2.**Phase 1**: PostgreSQL + PgAdmin (wait for ready)
+3.**Phase 2**: Gitea, Immich (depend on Postgres)
+4.**Phase 3**: Homepage, Pi-hole (independent)
 
 ### Stop Sequence
-1. **Phase 1**: Pi-hole, Homepage, Nginx (independent)
-2. **Phase 2**: Immich, Gitea (database-dependent)
-3. **Phase 3**: PostgreSQL + PgAdmin (database)
-4. **Phase 4**: Tailscale VPN (optional - disabled by default)
+1.**Phase 1**: Pi-hole, Homepage (independent)
+2.**Phase 2**: Immich, Gitea (database-dependent)
+3.**Phase 3**: PostgreSQL + PgAdmin (database)
+4.**Phase 4**: Tailscale VPN (optional - disabled by default)
 
 ## Automatic Startup on Boot (Systemd)
 
@@ -178,14 +178,14 @@ Once all services are running:
 - Immich: http://localhost:2283
 - PgAdmin: http://localhost:5050
 - Pi-hole Admin: http://localhost:8080/admin
-- Gitea: Via Nginx reverse proxy
+- Gitea: http://localhost:3000
 
 ## Recovery After Power Failure
 
 If the server experiences a power failure:
 
-1. **With systemd enabled**: Services auto-start after boot (recommended)
-2. **Without systemd**: SSH into server and run `./scripts/start-all-services.sh`
+1.**With systemd enabled**: Services auto-start after boot (recommended)
+2.**Without systemd**: SSH into server and run `./scripts/start-all-services.sh`
 
 ## Environment Variables
 

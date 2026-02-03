@@ -4,14 +4,13 @@ Collection of automation scripts for backup, service management, and system main
 
 ---
 
-## 📚 Documentation Navigation
+##  Documentation Navigation
 
 - **[← Back to Main README](../README.md)**
-- **[📖 CLAUDE.md](../CLAUDE.md)** - Quick reference
 
 ---
 
-## 📜 Available Scripts
+##  Available Scripts
 
 ### Service Management
 

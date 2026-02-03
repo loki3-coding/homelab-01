@@ -2,12 +2,12 @@
 
 ---
 
-## 📚 Documentation Navigation
+##  Documentation Navigation
 
 - **[← Back to Immich README](README.md)**
-- **[💾 Backup Guide](IMMICH_BACKUP_README.md)** - Backup before migration
-- **[📜 Scripts README](../../scripts/README.md)** - All automation scripts
-- **[📖 CLAUDE.md](../../CLAUDE.md)** - Quick reference
+- **[ Backup Guide](IMMICH_BACKUP_README.md)** - Backup before migration
+- **[ Scripts README](../../scripts/README.md)** - All automation scripts
+- **[ CLAUDE.md](../../CLAUDE.md)** - Quick reference
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Why This Is Needed
 
-Main HDD (/dev/sdb) has **64 reallocated sectors** (bad sectors), which is causing thumbnail corruption. Moving thumbnails to the SSD will:
+Main HDD (/dev/sdb) has**64 reallocated sectors** (bad sectors), which is causing thumbnail corruption. Moving thumbnails to the SSD will:
 - Eliminate thumbnail corruption errors
 - Significantly speed up thumbnail loading
 - Reduce wear on the failing HDD
@@ -38,12 +38,12 @@ RECOMMENDATION: Plan to replace this HDD soon
 
 ## What Changed in docker-compose.yml
 
-1. **Added SSD volume mounts:**
+1.**Added SSD volume mounts:**
    - Thumbnails: `/home/loki3/immich-thumbs` (on SSD)
    - Encoded videos: `/home/loki3/immich-thumbs/encoded-video` (on SSD)
    - Original uploads: Still on HDD `/home/loki3/immich`
 
-2. **Increased memory limits:**
+2.**Increased memory limits:**
    - Immich server: 2GB limit, 1GB reserved
    - ML container: 4GB limit, 2GB reserved
 
@@ -147,7 +147,7 @@ Thumbnails typically use 10-20% of original photo size:
 - Expected thumbnails: ~16-32GB
 - Available on SSD: 58GB
 
-✅ You have plenty of SSD space!
+ You have plenty of SSD space!
 
 ## Monitoring
 
@@ -176,9 +176,9 @@ cd ~/github/homelab/scripts
 ## Future Recommendation
 
 Your HDD is showing signs of failure (64 bad sectors). Consider:
-1. **Short term:** Current setup (thumbnails on SSD) ✅
-2. **Medium term:** Monitor HDD health weekly
-3. **Long term:** Replace HDD and move all Immich data to new drive or SSD
+1.**Short term:** Current setup (thumbnails on SSD) 
+2.**Medium term:** Monitor HDD health weekly
+3.**Long term:** Replace HDD and move all Immich data to new drive or SSD
 
 Check HDD health regularly:
 ```bash

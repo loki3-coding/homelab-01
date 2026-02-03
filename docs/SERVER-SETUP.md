@@ -242,12 +242,12 @@ sudo reboot
 
 ### Tailscale Configuration
 
-1. **Approve Exit Node** (if using Tailscale as VPN):
+1.**Approve Exit Node** (if using Tailscale as VPN):
    - Go to Tailscale admin console
    - Find your homelab-01 device
    - Approve as exit node
 
-2. **Configure ACLs** (optional):
+2.**Configure ACLs** (optional):
    - Set up access controls
    - Tag devices (tag:server, tag:macbook)
    - Configure SSH permissions
@@ -298,7 +298,7 @@ This will start:
 - Tailscale (Phase 0)
 - PostgreSQL + PgAdmin (Phase 1)
 - Gitea + Immich (Phase 2)
-- Nginx + Homepage + Pi-hole (Phase 3)
+- Homepage + Pi-hole (Phase 3)
 
 ### 2. Update DNS After Pi-hole Starts
 
@@ -380,16 +380,27 @@ Common names:
 Current configuration from notes:
 
 ```
+loki3@homelab-01:~$ sudo ufw status numbered
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
 [ 1] Anywhere on tailscale0     ALLOW IN    Anywhere
-[ 2] Anywhere                   ALLOW IN    192.168.100.100
-[ 3] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on tailscale0
-[ 4] 53 on enp1s0f1             ALLOW IN    Anywhere
-[ 5] 53 on tailscale0           DENY IN     Anywhere
-[ 6] 22 on enp1s0f1             ALLOW IN    Anywhere
-[ 7] 22                         DENY IN     Anywhere
-[ 8] 22 on tailscale0           DENY IN     Anywhere
-[ 9] 8080/tcp                   ALLOW IN    172.18.0.0/16
-[10] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on br-<proxy>
+[ 2] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on tailscale0
+[ 3] 53 on enp1s0f1             ALLOW IN    Anywhere
+[ 4] 53 on tailscale0           ALLOW IN    Anywhere
+[ 5] 22 on enp1s0f1             ALLOW IN    Anywhere
+[ 6] 22 on tailscale0           DENY IN     Anywhere
+[ 7] 8080/tcp                   ALLOW IN    172.18.0.0/16
+[ 8] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on br-3a82f996c3e5
+[ 9] Anywhere (v6) on tailscale0 ALLOW IN    Anywhere (v6)
+[10] Anywhere (v6) on enp1s0f1  ALLOW FWD   Anywhere (v6) on tailscale0
+[11] 53 (v6) on enp1s0f1        ALLOW IN    Anywhere (v6)
+[12] 53 (v6) on tailscale0      ALLOW IN    Anywhere (v6)
+[13] 22 (v6) on enp1s0f1        ALLOW IN    Anywhere (v6)
+[14] 22 (v6) on tailscale0      DENY IN     Anywhere (v6)
+[15] Anywhere (v6) on enp1s0f1  ALLOW FWD   Anywhere (v6) on docker0
+[16] Anywhere (v6) on enp1s0f1  ALLOW FWD   Anywhere (v6) on br-3a82f996c3e5
 ```
 
 ### Service Ports
@@ -398,7 +409,6 @@ Current configuration from notes:
 |------|---------|--------|
 | 22 | SSH | LAN only |
 | 53 | DNS (Pi-hole) | LAN only |
-| 80 | Nginx | LAN + Tailscale |
 | 2222 | Gitea SSH | LAN + Tailscale |
 | 2283 | Immich | LAN + Tailscale |
 | 3000 | Gitea Web | LAN + Tailscale |

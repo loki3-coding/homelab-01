@@ -1,15 +1,15 @@
 # CLAUDE.md - Homelab-01 Quick Reference
 
-⭐ **This is the main operational reference for Claude AI sessions and daily tasks**
+**This is the main operational reference for Claude AI sessions and daily tasks**
 
 ---
 
-## 📚 Documentation Navigation
+## Documentation Navigation
 
-- **[🏠 Main README](README.md)** - Project overview and getting started
-- **[📦 Immich Guide](apps/immich/README.md)** - Photo management operations
-- **[📜 Scripts](scripts/README.md)** - Automation and backup scripts
-- **[💾 Backup Guide](scripts/IMMICH_BACKUP_README.md)** - Detailed backup procedures
+- **[Main README](README.md)** - Project overview and getting started
+- **[Immich Guide](apps/immich/README.md)** - Photo management operations
+- **[Scripts](scripts/README.md)** - Automation and backup scripts
+- **[Backup Guide](scripts/IMMICH_BACKUP_README.md)** - Detailed backup procedures
 
 ---
 
@@ -43,7 +43,7 @@ homelab-01/
 ├── platform/          # Postgres, Gitea + their .env files
 ├── apps/              # Homepage, Immich, Pi-hole + their .env files
 │   └── immich/        # Includes SSD_THUMBNAILS_SETUP.md
-├── system/            # Nginx, Monitoring (Prometheus/Grafana/Loki)
+├── system/            # Monitoring (Prometheus/Grafana/Loki)
 │   └── monitoring/scripts/  # Container name export script
 ├── scripts/           # Automation scripts + IMMICH_BACKUP_README.md
 └── CLAUDE.md          # This file (main reference)
@@ -60,7 +60,6 @@ homelab-01/
 **Critical Dependencies:**
 - Postgres MUST start before Gitea and Immich
 - Services use `db-net` network for database connections
-- Nginx uses `proxy` network for reverse proxy
 
 | Service | Container | Ports | Dependencies | Access |
 |---------|-----------|-------|--------------|--------|
@@ -70,7 +69,6 @@ homelab-01/
 | Immich | immich-server | 2283 | postgres, redis | http://localhost:2283 |
 | Homepage | homepage | 3000 | None | http://homelab-01/ |
 | Pi-hole | pihole | 53, 8080 | None | http://localhost:8080/admin |
-| Nginx | nginx-proxy | 80 | None | - |
 | Prometheus | prometheus | 9091 | None | http://localhost:9091 |
 | Grafana | grafana | 3002 | prometheus, loki | http://localhost:3002 |
 
@@ -110,7 +108,7 @@ docker exec -it postgres psql -U <user>      # Access database
 
 ## Immich Backup & Restore
 
-⚠️ **CRITICAL: All backup/restore commands run ON THE SERVER, not locally**
+**CRITICAL: All backup/restore commands run ON THE SERVER, not locally**
 
 **Quick Reference:**
 ```bash
@@ -123,7 +121,7 @@ mountpoint /mnt/backup     # If not mounted: sudo mount /dev/sdc1 /mnt/backup
 
 # 3. Run backup
 cd ~/github/homelab-01/scripts
-./backup-immich.sh  # ⚠️ Immich DOWN for 10-30 min (2-4 hours first time)
+./backup-immich.sh  # Immich DOWN for 10-30 min (2-4 hours first time)
 ```
 
 **Current Data Size:** 163GB actual (not 500GB as originally estimated)
@@ -137,7 +135,7 @@ cd ~/github/homelab-01/scripts
 **Backup Duration:**
 - **First backup:** 2-4 hours (copies all 163GB)
 - **Incremental:** 10-30 minutes (only changed files)
-- ⚠️ **Immich is INACCESSIBLE during entire backup**
+- **Immich is INACCESSIBLE during entire backup**
 
 **Restore:**
 ```bash
@@ -157,7 +155,7 @@ cd ~/github/homelab-01/scripts
 └── backup.log
 ```
 
-**Automation Status:** ❌ NOT configured (manual backups only)
+**Automation Status:** NOT configured (manual backups only)
 
 **Detailed Guide:** `scripts/IMMICH_BACKUP_README.md`
 
@@ -172,7 +170,7 @@ cd ~/github/homelab-01/scripts
 
 **Data Storage (on homelab server):**
 - Postgres: `/home/loki3/github/homelab-01/platform/postgres/data`
-- Immich uploads: `/home/loki3/immich` (163GB on 500GB HDD - ⚠️ **64 bad sectors!**)
+- Immich uploads: `/home/loki3/immich` (163GB on 500GB HDD - **64 bad sectors!**)
 - Immich thumbnails: `/home/loki3/immich-thumbs` (SSD - configured, not yet applied)
 - Gitea: Docker volumes (managed by Docker)
 - Backup drive: `/mnt/backup` (916GB external HDD - manually mounted)

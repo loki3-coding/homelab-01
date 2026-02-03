@@ -2,27 +2,27 @@
 
 Self-hosted photo and video backup solution with automatic organization, facial recognition, and mobile apps.
 
-**📱 Access:** [http://homelab-01:2283](http://homelab-01:2283) or [http://localhost:2283](http://localhost:2283)
+** Access:** [http://homelab-01:2283](http://homelab-01:2283) or [http://localhost:2283](http://localhost:2283)
 
 ---
 
-## 📚 Documentation Navigation
+##  Documentation Navigation
 
 - **[← Back to Main README](../../README.md)**
-- **[📖 Quick Reference (CLAUDE.md)](../../CLAUDE.md#immich-backup--restore)** - Common Immich commands
-- **[💾 Backup Guide](IMMICH_BACKUP_README.md)** - Complete backup/restore procedures
-- **[🚀 SSD Setup Guide](SSD_THUMBNAILS_SETUP.md)** - Move thumbnails to SSD (performance fix)
+- **[ Quick Reference (CLAUDE.md)](../../CLAUDE.md#immich-backup--restore)** - Common Immich commands
+- **[ Backup Guide](IMMICH_BACKUP_README.md)** - Complete backup/restore procedures
+- **[ SSD Setup Guide](SSD_THUMBNAILS_SETUP.md)** - Move thumbnails to SSD (performance fix)
 
 ---
 
-## 📁 Immich Folder Structure
+##  Immich Folder Structure
 
 ### Current Storage Layout
 
 ```
 Server: loki3@homelab-01
 
-📦 Immich Data (500GB HDD /dev/sdb - ⚠️ 64 bad sectors!)
+ Immich Data (500GB HDD /dev/sdb -  64 bad sectors!)
 /home/loki3/immich/                     [163GB total]
 ├── library/                            # User uploads
 │   └── [user-id]/
@@ -33,24 +33,24 @@ Server: loki3@homelab-01
 │       └── 2025/
 ├── upload/                             # Temporary upload staging
 ├── profile/                            # User profile pictures
-└── thumbs/                             # ⚠️ Will be moved to SSD
+└── thumbs/                             #  Will be moved to SSD
     ├── [asset-id]/
     │   ├── preview.webp                # Preview thumbnails
     │   └── thumbnail.webp              # Small thumbnails
     └── encoded-video/                  # Transcoded videos
 
-💾 Immich Thumbnails (SSD /dev/sda - FAST, NO BAD SECTORS)
+ Immich Thumbnails (SSD /dev/sda - FAST, NO BAD SECTORS)
 /home/loki3/immich-thumbs/              [~20-30GB estimated]
 ├── [asset-id]/                         # Thumbnail cache
 │   ├── preview.webp                    # Fast loading previews
 │   └── thumbnail.webp                  # Grid view thumbnails
 └── encoded-video/                      # Transcoded video cache
 
-🗄️ Docker Volumes (Managed by Docker)
+🗄 Docker Volumes (Managed by Docker)
 immich-model-cache                      # ML models (face recognition)
 immich-redis-data                       # Cache and job queue
 
-🗃️ Database (Postgres)
+🗃 Database (Postgres)
 Database: immich                        # All metadata
 ├── users, albums, sharing              # User data
 ├── assets metadata                     # EXIF, dates, locations
@@ -62,19 +62,19 @@ Database: immich                        # All metadata
 
 | Location | Storage | Speed | Purpose | Notes |
 |----------|---------|-------|---------|-------|
-| `/home/loki3/immich` | 500GB HDD | Slow | Original uploads | ⚠️ **64 bad sectors** causing corruption |
-| `/home/loki3/immich-thumbs` | 128GB SSD | **Fast** | Thumbnails & videos | 🚀 Eliminates thumbnail bugs |
+| `/home/loki3/immich` | 500GB HDD | Slow | Original uploads | **64 bad sectors** causing corruption |
+| `/home/loki3/immich-thumbs` | 128GB SSD |**Fast** | Thumbnails & videos |  Eliminates thumbnail bugs |
 | Docker volumes | SSD | Fast | ML models, cache | Managed automatically |
 | Postgres DB | SSD | Fast | Metadata | Lives with other DBs |
 
 **Current Status:**
-- ✅ Uploads on HDD (163GB used)
-- ⚠️ Thumbnails still on HDD (configured to move to SSD, not yet applied)
-- ⚠️ HDD has bad sectors causing thumbnail corruption
+- Uploads on HDD (163GB used)
+- Thumbnails still on HDD (configured to move to SSD, not yet applied)
+- HDD has bad sectors causing thumbnail corruption
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Start Immich
 
@@ -106,7 +106,7 @@ docker compose restart
 
 ---
 
-## ⚙️ Configuration
+##  Configuration
 
 ### Environment Variables
 
@@ -138,7 +138,7 @@ IMMICH_DB_PASSWORD=changeit
 
 ---
 
-## 🔍 Monitoring
+##  Monitoring
 
 ### Check Storage Usage
 
@@ -162,7 +162,7 @@ sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending)"  # Bad sectors
 
 ---
 
-## 📖 Related Documentation
+##  Related Documentation
 
 - **[Main README](../../README.md)** - Project overview
 - **[CLAUDE.md](../../CLAUDE.md)** - Quick reference for all services

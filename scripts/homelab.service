@@ -32,13 +32,13 @@ RemainAfterExit=yes
 
 # Change this to your actual username and repository path
 User=loki3
-WorkingDirectory=/home/loki3/homelab-01
+WorkingDirectory=/home/loki3/homelab
 
 # Start services
-ExecStart=/home/loki3/homelab-01/scripts/start-all-services.sh
+ExecStart=/home/loki3/homelab/scripts/start-all-services.sh
 
 # Stop services on shutdown/restart
-ExecStop=/home/loki3/homelab-01/scripts/stop-all-services.sh
+ExecStop=/home/loki3/homelab/scripts/stop-all-services.sh
 
 # Restart policy
 Restart=on-failure

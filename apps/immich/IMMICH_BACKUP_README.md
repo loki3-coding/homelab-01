@@ -1,14 +1,14 @@
 # Immich Backup & Restore Guide
 
-⚠️ **IMPORTANT: All commands in this document must be run on the homelab server, not your local machine.**
+**IMPORTANT: All commands in this document must be run on the homelab server, not your local machine.**
 
 ---
 
-## 📚 Documentation Navigation
+##  Documentation Navigation
 
-- **[📦 Immich Guide](README.md)** - Main Immich documentation
-- **[🚀 SSD Setup](SSD_THUMBNAILS_SETUP.md)** - Thumbnail performance fix
-- **[📖 CLAUDE.md](../../CLAUDE.md)** - Quick reference
+- **[ Immich Guide](README.md)** - Main Immich documentation
+- **[ SSD Setup](SSD_THUMBNAILS_SETUP.md)** - Thumbnail performance fix
+- **[ CLAUDE.md](../../CLAUDE.md)** - Quick reference
 
 ---
 
@@ -31,21 +31,21 @@ cd ~/github/homelab/scripts
 These scripts provide a complete backup and restore solution for your Immich photo management system.
 
 **Critical Information:**
-- Immich will be **INACCESSIBLE** during backup (2-4 hours first time, 10-30 min incremental)
-- All commands run on **homelab server** (`ssh loki3@homelab-01`), not locally
+- Immich will be**INACCESSIBLE** during backup (2-4 hours first time, 10-30 min incremental)
+- All commands run on**homelab server** (`ssh loki3@homelab-01`), not locally
 - Postgres must be running before backup/restore
 
 ### What Gets Backed Up
 
-1. **Upload Directory** (`/home/loki3/immich`)
+1.**Upload Directory** (`/home/loki3/immich`)
    - All your photos, videos, and assets
    - Approximately 500GB on old HDD
 
-2. **Postgres Database** (`immich` database)
+2.**Postgres Database** (`immich` database)
    - User accounts, albums, metadata
    - Sharing settings, tags, and search data
 
-3. **Docker Volumes**
+3.**Docker Volumes**
    - Machine learning model cache
    - Redis data
 
@@ -101,15 +101,15 @@ cd ~/github/homelab/scripts
 
 ### What Happens During Backup
 
-1. ✓ Checks if backup drive is mounted
-2. ✓ Creates timestamped backup directory
-3. ⚠️ **Stops Immich services** (Immich becomes INACCESSIBLE)
-4. ✓ Backs up uploads directory using rsync (THIS IS THE SLOW STEP)
-5. ✓ Exports and compresses database
-6. ✓ Backs up Docker volumes
-7. ✓ **Restarts Immich services** (Immich becomes accessible again)
-8. ✓ Creates backup manifest with checksums
-9. ✓ Keeps only last 3 backups (auto-cleanup)
+1.  Checks if backup drive is mounted
+2.  Creates timestamped backup directory
+3. **Stops Immich services** (Immich becomes INACCESSIBLE)
+4.  Backs up uploads directory using rsync (THIS IS THE SLOW STEP)
+5.  Exports and compresses database
+6.  Backs up Docker volumes
+7. **Restarts Immich services** (Immich becomes accessible again)
+8.  Creates backup manifest with checksums
+9.  Keeps only last 3 backups (auto-cleanup)
 
 ### Backup Duration
 
@@ -117,11 +117,11 @@ cd ~/github/homelab/scripts
 
 | Backup Type | Duration | Notes |
 |-------------|----------|-------|
-| **First backup** | 2-4 hours | Copies all 163GB |
-| **Incremental** | 10-30 minutes | Only changed files |
-| **Database only** | 1-2 minutes | ~few hundred MB |
+|**First backup** | 2-4 hours | Copies all 163GB |
+|**Incremental** | 10-30 minutes | Only changed files |
+|**Database only** | 1-2 minutes | ~few hundred MB |
 
-⚠️ **Immich is DOWN during the entire backup process**
+**Immich is DOWN during the entire backup process**
 
 ### Monitor Progress
 
@@ -153,7 +153,7 @@ watch -n 5 "du -sh /mnt/backup/immich-backup/$(ls -t /mnt/backup/immich-backup/ 
 
 ### Automated Backups (Optional - NOT YET CONFIGURED)
 
-**⚠️ WARNINGS before automating:**
+** WARNINGS before automating:**
 - Immich will be DOWN during backup (10-30 min for incremental, 2-4 hours if full)
 - Choose a time when photo uploads are unlikely
 - Backup drive must be auto-mounted (not currently configured)
@@ -213,19 +213,19 @@ cd ~/github/homelab-01/scripts
 ### What Happens During Restore
 
 1. Lists available backups with timestamps
-2. **You select which backup to restore** (interactive prompt)
+2.**You select which backup to restore** (interactive prompt)
 3. Shows backup manifest for review
-4. **Asks for confirmation - type 'yes'** (destructive operation!)
+4.**Asks for confirmation - type 'yes'** (destructive operation!)
 5. Stops Immich services
 6. Backs up current data to `/home/loki3/immich.old`
 7. Restores uploads, database, and volumes
 8. Restarts Immich services
 
-⏱️ **Duration:** 30 minutes to 2 hours depending on backup size
+⏱**Duration:** 30 minutes to 2 hours depending on backup size
 
 ### Restore Warning
 
-⚠️ **CRITICAL**: Restore will **OVERWRITE** all current Immich data!
+**CRITICAL**: Restore will**OVERWRITE** all current Immich data!
 
 - Your existing data is backed up to `/home/loki3/immich.old` before restore
 - The restore process cannot be undone (except by restoring another backup)
@@ -329,11 +329,11 @@ The first backup copies everything and may take hours. Subsequent backups use rs
 
 ## Best Practices
 
-1. **Regular Backups**: Run weekly or before major changes
-2. **Test Restores**: Periodically test restore process to ensure backups work
-3. **Multiple Locations**: Consider backing up to cloud storage as well
-4. **Monitor Space**: Keep an eye on both source and backup drive space
-5. **Verify Backups**: Check the manifest file after each backup
+1.**Regular Backups**: Run weekly or before major changes
+2.**Test Restores**: Periodically test restore process to ensure backups work
+3.**Multiple Locations**: Consider backing up to cloud storage as well
+4.**Monitor Space**: Keep an eye on both source and backup drive space
+5.**Verify Backups**: Check the manifest file after each backup
 
 ## Quick Reference
 

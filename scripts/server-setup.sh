@@ -297,7 +297,7 @@ phase8_summary() {
 
     log "Docker networks created:"
     log "  ✓ db-net (for database connections)"
-    log "  ✓ proxy (for nginx reverse proxy)"
+    log "  ✓ proxy (for reverse proxy)"
     echo ""
 
     log "Next steps:"
