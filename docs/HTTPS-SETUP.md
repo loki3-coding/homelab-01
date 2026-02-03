@@ -48,9 +48,9 @@
 ```
 
 ## Pi Hole Local DNS
-gitea.homelab.com	100.126.93.59	
-grafana.homelab.com	100.126.93.59	
-immich.homelab.com	100.126.93.59	
-loki.homelab.com	100.126.93.59	
-portainer.homelab.com	100.126.93.59	
-prometheus.homelab.com	100.126.93.59
+gitea.homelab.com	100.x.y.z	
+grafana.homelab.com	100.x.y.z	
+immich.homelab.com	100.x.y.z	
+loki.homelab.com	100.x.y.z	
+portainer.homelab.com	100.x.y.z	
+prometheus.homelab.com	100.x.y.z

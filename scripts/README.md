@@ -19,8 +19,8 @@ Starts all homelab services in correct dependency order.
 
 **Usage:**
 ```bash
-ssh loki3@homelab-01
-cd ~/github/homelab
+ssh username@homelab-01
+cd ~/github/homelab-01
 ./scripts/start-all-services.sh
 ```
 
@@ -39,7 +39,7 @@ Stops all homelab services gracefully.
 
 **Usage:**
 ```bash
-ssh loki3@homelab-01
-cd ~/github/homelab
+ssh username@homelab-01
+cd ~/github/homelab-01
 ./scripts/stop-all-services.sh
 ```

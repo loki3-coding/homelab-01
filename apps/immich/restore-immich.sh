@@ -6,7 +6,7 @@ set -e  # Exit on error
 
 # Configuration
 BACKUP_ROOT="/mnt/backup/immich-backup"
-IMMICH_UPLOAD_DIR="/home/loki3/immich"
+IMMICH_UPLOAD_DIR="/home/username/immich"
 IMMICH_COMPOSE_DIR="$HOME/github/homelab/apps/immich"
 
 # Database configuration

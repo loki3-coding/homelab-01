@@ -11,7 +11,7 @@ BACKUP_DIR="${BACKUP_ROOT}/${TIMESTAMP}"
 LOG_FILE="${BACKUP_ROOT}/backup.log"
 
 # Immich paths
-IMMICH_UPLOAD_DIR="/home/loki3/immich"
+IMMICH_UPLOAD_DIR="/home/username/immich"
 IMMICH_COMPOSE_DIR="$HOME/github/homelab/apps/immich"
 
 # Database configuration (from .env file)

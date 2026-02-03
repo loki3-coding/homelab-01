@@ -29,11 +29,11 @@ Complete guide for setting up a new Ubuntu Server for the homelab from scratch.
 
 Collect this information before starting:
 
-- Server static IP: `192.168.100.200` (example)
-- Gateway: `192.168.100.1`
+- Server static IP: `192.168.x.200` (example)
+- Gateway: `192.168.x.1`
 - Subnet: `192.168.100.0/24`
 - DNS: `1.1.1.1, 8.8.8.8`
-- Management machine IP: `192.168.100.100`
+- Management machine IP: `192.168.x.100`
 
 ## Initial Server Installation
 
@@ -86,7 +86,7 @@ network:
   ethernets:
     enp1s0f1:  # Your interface name (use 'ip link' to find it)
       addresses:
-        - 192.168.100.200/24
+        - 192.168.x.200/24
       routes:
         - to: default
           via: 192.168.100.1
@@ -190,10 +190,10 @@ After verifying SSH access works with your key:
 ssh-keygen -t ed25519 -a 100 -f ~/.ssh/id_ed25519_homelab-01 -C "homelab-01"
 
 # Copy SSH key to server
-ssh-copy-id -i ~/.ssh/id_ed25519_homelab-01.pub loki3@192.168.100.200
+ssh-copy-id -i ~/.ssh/id_ed25519_homelab-01.pub loki3@192.168.x.200
 
 # Test SSH access
-ssh -i ~/.ssh/id_ed25519_homelab-01 loki3@192.168.100.200
+ssh -i ~/.ssh/id_ed25519_homelab-01 loki3@192.168.x.200
 
 # On server, run SSH hardening script
 sudo ./scripts/setup-ssh.sh
@@ -202,7 +202,7 @@ sudo ./scripts/setup-ssh.sh
 nano ~/.ssh/authorized_keys
 
 # Add before your public key:
-from="192.168.100.100",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAA...
+from="192.168.x.100",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAA...
 ```
 
 ### 4. DNS Configuration
@@ -259,14 +259,14 @@ Add to `~/.ssh/config`:
 ```ssh
 # OpenSSH via LAN
 Host homeLAN-01
-    HostName 192.168.100.200
+    HostName 192.168.x.200
     User loki3
     IdentityFile ~/.ssh/id_ed25519_homelab-01
     IdentitiesOnly yes
 
 # Tailscale SSH
 Host homelab-01
-    HostName 100.126.93.59  # Your Tailscale IP
+    HostName 100.x.y.z  # Your Tailscale IP
     User loki3
     IdentitiesOnly yes
 ```
@@ -380,7 +380,7 @@ Common names:
 Current configuration from notes:
 
 ```
-loki3@homelab-01:~$ sudo ufw status numbered
+username@homelab-01:~$ sudo ufw status numbered
 Status: active
 
      To                         Action      From

@@ -23,7 +23,7 @@ The `export-container-names.sh` script exports Docker container ID to name mappi
 
    Add this line:
    ```
-   * * * * * /home/loki3/github/homelab/system/monitoring/scripts/export-container-names.sh
+   * * * * * /home/username/github/homelab/system/monitoring/scripts/export-container-names.sh
    ```
 
    Or use the one-liner:

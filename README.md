@@ -25,12 +25,12 @@ A compact, Docker Compose-driven personal homelab for local/home server services
                    │                              │
 ┌──────────────────┼──────────────────────────────┼──────────────────────┐
 │                  │       Homelab Server         │                      │
-│                  │  Tailscale IP: 100.126.93.59 │                      │
-│                  │   LAN IP: 192.168.100.200    │                      │
+│                  │  Tailscale IP: 100.x.y.z │                      │
+│                  │   LAN IP: 192.168.x.200    │                      │
 │                  ▼                              ▼                      │
 │  ┌──────────────────────────────────┐  ┌──────────────────────────┐   │
 │  │      Pi-hole DNS (:53)           │  │  Caddy Reverse Proxy     │   │
-│  │  *.homelab.com → 100.126.93.59   │  │       (:443)             │   │
+│  │  *.homelab.com → 100.x.y.z   │  │       (:443)             │   │
 │  └──────────────────────────────────┘  │  TLS Termination +       │   │
 │                                         │  Host Routing            │   │
 │                                         │  immich.homelab.com      │   │
@@ -57,6 +57,70 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 │  └─────────────┘  └─────────────┘  └─────────────┘                   │
 └───────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Quick Setup
+
+### Prerequisites
+- Docker Engine and Docker Compose v2
+- Ubuntu Server (or similar Linux distribution)
+- Tailscale account (for VPN access)
+
+### Initial Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/homelab-01.git
+   cd homelab-01
+   ```
+
+2. **Configure environment files:**
+
+   Copy the example files and set your own secure passwords:
+   ```bash
+   # Platform services
+   cp platform/postgres/.env.example platform/postgres/.env
+   cp platform/gitea/.env.example platform/gitea/.env
+
+   # Applications
+   cp apps/immich/.env.example apps/immich/.env
+   cp apps/pi-hole/.env.example apps/pi-hole/.env
+
+   # Monitoring
+   cp system/monitoring/.env.example system/monitoring/.env
+   ```
+
+3. **Edit each `.env` file:**
+   ```bash
+   # Replace all instances of "your-secure-password-here" with strong passwords
+   nano platform/postgres/.env
+   nano platform/gitea/.env
+   nano apps/immich/.env
+   nano apps/pi-hole/.env
+   nano system/monitoring/.env
+   ```
+
+4. **Start all services:**
+   ```bash
+   # SSH to your homelab server
+   ssh username@homelab-01
+
+   # Navigate to repository
+   cd ~/github/homelab-01
+
+   # Start everything
+   ./scripts/start-all-services.sh
+   ```
+
+5. **Access services:**
+   - Homepage: http://homelab-01/
+   - Immich: http://homelab-01:2283
+   - Gitea: http://homelab-01:3000
+   - Pi-hole Admin: http://homelab-01:8080/admin
+   - Grafana: http://homelab-01:3002
+
+**For detailed setup instructions, see [SERVER-SETUP.md](docs/SERVER-SETUP.md)**
 
 ---
 
@@ -111,8 +175,8 @@ homelab-01/
 ```
 
 **Data Storage on Server:**
-- Immich uploads: `/home/loki3/immich` (163GB on 500GB HDD)
-- Immich thumbnails: `/home/loki3/immich-thumbs` (SSD)
+- Immich uploads: `/home/username/immich` (163GB on 500GB HDD)
+- Immich thumbnails: `/home/username/immich-thumbs` (SSD)
 - Backups: `/mnt/backup` (916GB external HDD)
 
 ---

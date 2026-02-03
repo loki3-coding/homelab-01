@@ -31,14 +31,14 @@ Type=oneshot
 RemainAfterExit=yes
 
 # Change this to your actual username and repository path
-User=loki3
-WorkingDirectory=/home/loki3/homelab
+User=username
+WorkingDirectory=/home/username/homelab
 
 # Start services
-ExecStart=/home/loki3/homelab/scripts/start-all-services.sh
+ExecStart=/home/username/homelab/scripts/start-all-services.sh
 
 # Stop services on shutdown/restart
-ExecStop=/home/loki3/homelab/scripts/stop-all-services.sh
+ExecStop=/home/username/homelab/scripts/stop-all-services.sh
 
 # Restart policy
 Restart=on-failure

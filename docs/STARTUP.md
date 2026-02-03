@@ -65,10 +65,10 @@ To make services start automatically when the server boots:
 Edit `scripts/homelab.service` and update these lines to match your system:
 
 ```ini
-User=loki3
-WorkingDirectory=/home/loki3/homelab
-ExecStart=/home/loki3/homelab/start-all-services.sh
-ExecStop=/home/loki3/homelab/stop-all-services.sh
+User=username
+WorkingDirectory=/home/username/homelab
+ExecStart=/home/username/homelab/start-all-services.sh
+ExecStop=/home/username/homelab/stop-all-services.sh
 ```
 
 Change `loki3` to your username and update paths accordingly.

@@ -15,7 +15,7 @@
 - **Last Updated:** 2026-02-02
 - **Purpose:** Implementation guide for moving thumbnails to SSD
 
-**IMPORTANT: All commands in this document must be run on the homelab server (`ssh loki3@homelab-01`), not locally.**
+**IMPORTANT: All commands in this document must be run on the homelab server (`ssh username@homelab-01`), not locally.**
 
 ## Why This Is Needed
 
@@ -39,9 +39,9 @@ RECOMMENDATION: Plan to replace this HDD soon
 ## What Changed in docker-compose.yml
 
 1.**Added SSD volume mounts:**
-   - Thumbnails: `/home/loki3/immich-thumbs` (on SSD)
-   - Encoded videos: `/home/loki3/immich-thumbs/encoded-video` (on SSD)
-   - Original uploads: Still on HDD `/home/loki3/immich`
+   - Thumbnails: `/home/username/immich-thumbs` (on SSD)
+   - Encoded videos: `/home/username/immich-thumbs/encoded-video` (on SSD)
+   - Original uploads: Still on HDD `/home/username/immich`
 
 2.**Increased memory limits:**
    - Immich server: 2GB limit, 1GB reserved
@@ -53,24 +53,24 @@ RECOMMENDATION: Plan to replace this HDD soon
 
 **1. Run a full backup (this is your safety net):**
 ```bash
-ssh loki3@homelab-01
+ssh username@homelab-01
 sudo mount /dev/sdc1 /mnt/backup
-cd ~/github/homelab/scripts
+cd ~/github/homelab-01/scripts
 ./backup-immich.sh
 ```
 
 **2. Verify backup completed successfully:**
 ```bash
-ssh loki3@homelab-01 "ls -lh /mnt/backup/immich-backup/"
+ssh username@homelab-01 "ls -lh /mnt/backup/immich-backup/"
 # Check latest backup has uploads/, database/, volumes/
-ssh loki3@homelab-01 "cat /mnt/backup/immich-backup/\$(ls -t /mnt/backup/immich-backup/ | head -1)/backup-manifest.txt"
+ssh username@homelab-01 "cat /mnt/backup/immich-backup/\$(ls -t /mnt/backup/immich-backup/ | head -1)/backup-manifest.txt"
 ```
 
 ### Implementation Steps (Run on server)
 
 **All commands below run on the server. SSH in first:**
 ```bash
-ssh loki3@homelab-01
+ssh username@homelab-01
 ```
 
 ---
@@ -78,19 +78,19 @@ ssh loki3@homelab-01
 ### 1. Create SSD directory
 
 ```bash
-sudo mkdir -p /home/loki3/immich-thumbs/encoded-video
-sudo chown -R 1000:1000 /home/loki3/immich-thumbs
-sudo chmod -R 755 /home/loki3/immich-thumbs
+sudo mkdir -p /home/username/immich-thumbs/encoded-video
+sudo chown -R 1000:1000 /home/username/immich-thumbs
+sudo chmod -R 755 /home/username/immich-thumbs
 
 # Verify
-ls -ld /home/loki3/immich-thumbs
-# Should show: drwxr-xr-x ... 1000 1000 ... /home/loki3/immich-thumbs
+ls -ld /home/username/immich-thumbs
+# Should show: drwxr-xr-x ... 1000 1000 ... /home/username/immich-thumbs
 ```
 
 ### 2. Stop Immich services
 
 ```bash
-cd ~/github/homelab/apps/immich
+cd ~/github/homelab-01/apps/immich
 docker compose down
 
 # Verify stopped
@@ -102,28 +102,28 @@ docker ps | grep immich
 
 ```bash
 # Check if source thumbnails exist
-ls -lh /home/loki3/immich/thumbs 2>/dev/null
-ls -lh /home/loki3/immich/encoded-video 2>/dev/null
+ls -lh /home/username/immich/thumbs 2>/dev/null
+ls -lh /home/username/immich/encoded-video 2>/dev/null
 
 # Copy (not move) to preserve originals during migration
-if [ -d "/home/loki3/immich/thumbs" ]; then
-    sudo rsync -av /home/loki3/immich/thumbs/ /home/loki3/immich-thumbs/
+if [ -d "/home/username/immich/thumbs" ]; then
+    sudo rsync -av /home/username/immich/thumbs/ /home/username/immich-thumbs/
     echo "Thumbnails copied"
 fi
 
-if [ -d "/home/loki3/immich/encoded-video" ]; then
-    sudo rsync -av /home/loki3/immich/encoded-video/ /home/loki3/immich-thumbs/encoded-video/
+if [ -d "/home/username/immich/encoded-video" ]; then
+    sudo rsync -av /home/username/immich/encoded-video/ /home/username/immich-thumbs/encoded-video/
     echo "Encoded videos copied"
 fi
 
 # Verify copy succeeded
-du -sh /home/loki3/immich-thumbs
+du -sh /home/username/immich-thumbs
 ```
 
 ### 4. Restart Immich
 
 ```bash
-cd ~/github/homelab/apps/immich
+cd ~/github/homelab-01/apps/immich
 docker compose up -d
 
 # Wait 10 seconds, then verify services started
@@ -155,7 +155,7 @@ After setup, monitor for issues:
 
 ```bash
 # Check disk usage
-df -h /home/loki3/immich-thumbs
+df -h /home/username/immich-thumbs
 
 # Check for errors
 docker compose logs immich-server --tail 100 | grep -i error
@@ -167,8 +167,8 @@ docker stats --no-stream
 ## Restore from backup
 
 ```bash
-ssh loki3@homelab-01
-cd ~/github/homelab/scripts
+ssh username@homelab-01
+cd ~/github/homelab-01/scripts
 ./restore-immich.sh
 # Select the backup from before the SSD migration
 ```

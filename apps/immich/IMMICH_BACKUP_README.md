@@ -16,13 +16,13 @@
 
 ```bash
 # 1. SSH to the server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # 2. Mount backup drive
 sudo mount /dev/sdc1 /mnt/backup
 
 # 3. Run backup
-cd ~/github/homelab/scripts
+cd ~/github/homelab-01/scripts
 ./backup-immich.sh
 ```
 
@@ -32,12 +32,12 @@ These scripts provide a complete backup and restore solution for your Immich pho
 
 **Critical Information:**
 - Immich will be**INACCESSIBLE** during backup (2-4 hours first time, 10-30 min incremental)
-- All commands run on**homelab server** (`ssh loki3@homelab-01`), not locally
+- All commands run on**homelab server** (`ssh username@homelab-01`), not locally
 - Postgres must be running before backup/restore
 
 ### What Gets Backed Up
 
-1.**Upload Directory** (`/home/loki3/immich`)
+1.**Upload Directory** (`/home/username/immich`)
    - All your photos, videos, and assets
    - Approximately 500GB on old HDD
 
@@ -55,7 +55,7 @@ These scripts provide a complete backup and restore solution for your Immich pho
 
 ```bash
 # SSH to server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # 1. Check Postgres is running (REQUIRED for backup/restore)
 docker ps | grep postgres
@@ -75,13 +75,13 @@ df -h /mnt/backup
 # Should show: 916G total with sufficient free space
 
 # 5. Make scripts executable (one-time setup)
-chmod +x ~/github/homelab/scripts/backup-immich.sh
-chmod +x ~/github/homelab/scripts/restore-immich.sh
+chmod +x ~/github/homelab-01/scripts/backup-immich.sh
+chmod +x ~/github/homelab-01/scripts/restore-immich.sh
 ```
 
 **If Postgres is NOT running:**
 ```bash
-cd ~/github/homelab
+cd ~/github/homelab-01
 ./scripts/start-all-services.sh
 # Wait 30 seconds for Postgres to start
 docker ps | grep postgres
@@ -93,9 +93,9 @@ docker ps | grep postgres
 
 ```bash
 # Make sure you're on the server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
-cd ~/github/homelab/scripts
+cd ~/github/homelab-01/scripts
 ./backup-immich.sh
 ```
 
@@ -127,7 +127,7 @@ cd ~/github/homelab/scripts
 
 ```bash
 # In another terminal, watch the backup
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # Watch log file
 tail -f /mnt/backup/immich-backup/backup.log
@@ -163,13 +163,13 @@ watch -n 5 "du -sh /mnt/backup/immich-backup/$(ls -t /mnt/backup/immich-backup/ 
 
 ```bash
 # On the server
-ssh loki3@homelab-01
+ssh username@homelab-01
 crontab -e
 ```
 
 Add this line for Sunday 2 AM backups:
 ```cron
-0 2 * * 0 /home/loki3/github/homelab-01/scripts/backup-immich.sh
+0 2 * * 0 /home/username/github/homelab-01/scripts/backup-immich.sh
 ```
 
 **To auto-mount backup drive on boot, add to `/etc/fstab`:**
@@ -185,7 +185,7 @@ Add this line for Sunday 2 AM backups:
 
 ```bash
 # SSH to server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # 1. Check Postgres is running (REQUIRED)
 docker ps | grep postgres
@@ -203,7 +203,7 @@ ls -lh /mnt/backup/immich-backup/
 
 ```bash
 # Make sure you're on the server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 cd ~/github/homelab-01/scripts
 ./restore-immich.sh
@@ -217,7 +217,7 @@ cd ~/github/homelab-01/scripts
 3. Shows backup manifest for review
 4.**Asks for confirmation - type 'yes'** (destructive operation!)
 5. Stops Immich services
-6. Backs up current data to `/home/loki3/immich.old`
+6. Backs up current data to `/home/username/immich.old`
 7. Restores uploads, database, and volumes
 8. Restarts Immich services
 
@@ -227,7 +227,7 @@ cd ~/github/homelab-01/scripts
 
 **CRITICAL**: Restore will**OVERWRITE** all current Immich data!
 
-- Your existing data is backed up to `/home/loki3/immich.old` before restore
+- Your existing data is backed up to `/home/username/immich.old` before restore
 - The restore process cannot be undone (except by restoring another backup)
 - Database will be dropped and recreated
 - All current photos/albums/users will be replaced with backup data
@@ -239,19 +239,19 @@ cd ~/github/homelab-01/scripts
 ### Check Backup Drive Space
 
 ```bash
-ssh loki3@homelab-01 "df -h /mnt/backup"
+ssh username@homelab-01 "df -h /mnt/backup"
 ```
 
 ### View Backup Log
 
 ```bash
-ssh loki3@homelab-01 "tail -f /mnt/backup/immich-backup/backup.log"
+ssh username@homelab-01 "tail -f /mnt/backup/immich-backup/backup.log"
 ```
 
 ### List All Backups
 
 ```bash
-ssh loki3@homelab-01 "ls -lh /mnt/backup/immich-backup/"
+ssh username@homelab-01 "ls -lh /mnt/backup/immich-backup/"
 ```
 
 ### Verify Backup Integrity
@@ -285,11 +285,11 @@ If you get permission errors on restore or Immich can't read uploaded files:
 
 ```bash
 # On the server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # Fix permissions (1000:1000 is the Immich container user)
-sudo chown -R 1000:1000 /home/loki3/immich
-sudo chown -R 1000:1000 /home/loki3/immich-thumbs  # If using SSD thumbnails
+sudo chown -R 1000:1000 /home/username/immich
+sudo chown -R 1000:1000 /home/username/immich-thumbs  # If using SSD thumbnails
 ```
 
 **When to use:**

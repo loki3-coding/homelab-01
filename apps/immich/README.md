@@ -20,10 +20,10 @@ Self-hosted photo and video backup solution with automatic organization, facial 
 ### Current Storage Layout
 
 ```
-Server: loki3@homelab-01
+Server: username@homelab-01
 
  Immich Data (500GB HDD /dev/sdb -  64 bad sectors!)
-/home/loki3/immich/                     [163GB total]
+/home/username/immich/                     [163GB total]
 ├── library/                            # User uploads
 │   └── [user-id]/
 │       ├── 2024/                       # Organized by year
@@ -40,7 +40,7 @@ Server: loki3@homelab-01
     └── encoded-video/                  # Transcoded videos
 
  Immich Thumbnails (SSD /dev/sda - FAST, NO BAD SECTORS)
-/home/loki3/immich-thumbs/              [~20-30GB estimated]
+/home/username/immich-thumbs/              [~20-30GB estimated]
 ├── [asset-id]/                         # Thumbnail cache
 │   ├── preview.webp                    # Fast loading previews
 │   └── thumbnail.webp                  # Grid view thumbnails
@@ -62,8 +62,8 @@ Database: immich                        # All metadata
 
 | Location | Storage | Speed | Purpose | Notes |
 |----------|---------|-------|---------|-------|
-| `/home/loki3/immich` | 500GB HDD | Slow | Original uploads | **64 bad sectors** causing corruption |
-| `/home/loki3/immich-thumbs` | 128GB SSD |**Fast** | Thumbnails & videos |  Eliminates thumbnail bugs |
+| `/home/username/immich` | 500GB HDD | Slow | Original uploads | **64 bad sectors** causing corruption |
+| `/home/username/immich-thumbs` | 128GB SSD |**Fast** | Thumbnails & videos |  Eliminates thumbnail bugs |
 | Docker volumes | SSD | Fast | ML models, cache | Managed automatically |
 | Postgres DB | SSD | Fast | Metadata | Lives with other DBs |
 
@@ -80,7 +80,7 @@ Database: immich                        # All metadata
 
 ```bash
 # SSH to server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # Start Immich (Postgres must be running first)
 cd ~/github/homelab-01/apps/immich
@@ -93,14 +93,14 @@ docker ps | grep immich
 ### View Logs
 
 ```bash
-cd ~/github/homelab/apps/immich
+cd ~/github/homelab-01/apps/immich
 docker compose logs -f
 ```
 
 ### Restart Immich
 
 ```bash
-cd ~/github/homelab/apps/immich
+cd ~/github/homelab-01/apps/immich
 docker compose restart
 ```
 
@@ -132,9 +132,9 @@ IMMICH_DB_PASSWORD=changeit
 
 | Container Path | Host Path | Purpose |
 |----------------|-----------|---------|
-| `/usr/src/app/upload` | `/home/loki3/immich` | Original uploads |
-| `/usr/src/app/upload/thumbs` | `/home/loki3/immich-thumbs` | Thumbnails (SSD) |
-| `/usr/src/app/upload/encoded-video` | `/home/loki3/immich-thumbs/encoded-video` | Videos (SSD) |
+| `/usr/src/app/upload` | `/home/username/immich` | Original uploads |
+| `/usr/src/app/upload/thumbs` | `/home/username/immich-thumbs` | Thumbnails (SSD) |
+| `/usr/src/app/upload/encoded-video` | `/home/username/immich-thumbs/encoded-video` | Videos (SSD) |
 
 ---
 
@@ -144,13 +144,13 @@ IMMICH_DB_PASSWORD=changeit
 
 ```bash
 # Immich uploads (HDD)
-du -sh /home/loki3/immich
+du -sh /home/username/immich
 
 # Immich thumbnails (SSD)
-du -sh /home/loki3/immich-thumbs
+du -sh /home/username/immich-thumbs
 
 # Breakdown by folder
-du -h --max-depth=1 /home/loki3/immich | sort -h
+du -h --max-depth=1 /home/username/immich | sort -h
 ```
 
 ### Check HDD Health

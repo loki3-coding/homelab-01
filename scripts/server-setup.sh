@@ -28,11 +28,11 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration Variables - CUSTOMIZE THESE!
-HOMELAB_USER="loki3"
+HOMELAB_USER="username"
 HOMELAB_HOSTNAME="homelab-01"
 LAN_INTERFACE="enp1s0f1"  # Your LAN network interface
 TAILSCALE_INTERFACE="tailscale0"
-MACBOOK_LAN_IP="192.168.100.100"
+MACBOOK_LAN_IP="192.168.x.100"
 TAILSCALE_SUBNET="100.64.0.0/10"
 
 # Logging functions

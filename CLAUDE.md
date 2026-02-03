@@ -23,16 +23,16 @@
 **SSH to Homelab Server:**
 ```bash
 # From anywhere (Tailscale VPN - recommended for Claude sessions)
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # From local network only
-ssh loki3@homeLAN-01
+ssh username@homeLAN-01
 ```
 
 **For Claude Code Sessions:**
-- Use: `ssh loki3@homelab-01` (works locally and remotely via Tailscale)
+- Use: `ssh username@homelab-01` (works locally and remotely via Tailscale)
 - SSH keys configured for passwordless authentication
-- Execute remote commands: `ssh loki3@homelab-01 "cd ~/github/homelab-01 && docker ps"`
+- Execute remote commands: `ssh username@homelab-01 "cd ~/github/homelab-01 && docker ps"`
 - Git operations work over SSH
 
 ## Project Structure
@@ -49,10 +49,10 @@ homelab-01/
 └── CLAUDE.md          # This file (main reference)
 ```
 
-**Server Data Paths** (`loki3@homelab-01`):
+**Server Data Paths** (`username@homelab-01`):
 - Repository clone: `~/github/homelab-01/`
-- Immich uploads: `/home/loki3/immich` (163GB on 500GB HDD - **has 64 bad sectors!**)
-- Immich thumbnails: `/home/loki3/immich-thumbs` (SSD - configured but not yet applied)
+- Immich uploads: `/home/username/immich` (163GB on 500GB HDD - **has 64 bad sectors!**)
+- Immich thumbnails: `/home/username/immich-thumbs` (SSD - configured but not yet applied)
 - Backup drive: `/mnt/backup` (916GB external HDD - manually mounted)
 
 ## Service Architecture
@@ -113,7 +113,7 @@ docker exec -it postgres psql -U <user>      # Access database
 **Quick Reference:**
 ```bash
 # 1. SSH to server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # 2. Verify prerequisites
 docker ps | grep postgres  # Postgres MUST be running
@@ -127,7 +127,7 @@ cd ~/github/homelab-01/scripts
 **Current Data Size:** 163GB actual (not 500GB as originally estimated)
 
 **What Gets Backed Up:**
-- Upload directory: `/home/loki3/immich` (163GB photos/videos on failing HDD)
+- Upload directory: `/home/username/immich` (163GB photos/videos on failing HDD)
 - Postgres database: `immich` database with all metadata
 - Docker volumes: ML model cache and Redis data
 - Auto-cleanup: Keeps last 3 backups only
@@ -139,7 +139,7 @@ cd ~/github/homelab-01/scripts
 
 **Restore:**
 ```bash
-ssh loki3@homelab-01
+ssh username@homelab-01
 cd ~/github/homelab-01/scripts
 ./restore-immich.sh  # Interactive - select backup to restore
 ```
@@ -169,9 +169,9 @@ cd ~/github/homelab-01/scripts
 - `monitoring/.env`: GRAFANA_ADMIN_PASSWORD
 
 **Data Storage (on homelab server):**
-- Postgres: `/home/loki3/github/homelab-01/platform/postgres/data`
-- Immich uploads: `/home/loki3/immich` (163GB on 500GB HDD - **64 bad sectors!**)
-- Immich thumbnails: `/home/loki3/immich-thumbs` (SSD - configured, not yet applied)
+- Postgres: `/home/username/github/homelab-01/platform/postgres/data`
+- Immich uploads: `/home/username/immich` (163GB on 500GB HDD - **64 bad sectors!**)
+- Immich thumbnails: `/home/username/immich-thumbs` (SSD - configured, not yet applied)
 - Gitea: Docker volumes (managed by Docker)
 - Backup drive: `/mnt/backup` (916GB external HDD - manually mounted)
 
@@ -221,11 +221,11 @@ docker exec -it postgres psql -U <admin-user> -l   # List databases
 **Fix Immich permissions (on server):**
 ```bash
 # Run on server
-ssh loki3@homelab-01
+ssh username@homelab-01
 
 # Fix permissions (1000:1000 is the Immich container user)
-sudo chown -R 1000:1000 /home/loki3/immich
-sudo chown -R 1000:1000 /home/loki3/immich-thumbs  # If using SSD thumbnails
+sudo chown -R 1000:1000 /home/username/immich
+sudo chown -R 1000:1000 /home/username/immich-thumbs  # If using SSD thumbnails
 ```
 **When to use:** After restore, manual file operations, or permission denied errors
 
