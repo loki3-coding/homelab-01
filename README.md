@@ -8,57 +8,66 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 ## Architecture
 
+### Three-Tier Service Model
+
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                              Clients                                   │
-│                          MacBook / iPhone                              │
-└──────────────────┬─────────────────────────────┬───────────────────────┘
-                   │                             │
-           DNS Query (L7)                  HTTPS Request (L7)
-                   │                             │
-                   ▼                             ▼
-         ┌──────────────────┐         ┌──────────────────────┐
-         │ Tailscale MagicDNS│         │  Tailscale WireGuard │
-         │  (DNS override)   │         │   (L3 encryption)    │
-         └─────────┬─────────┘         └──────────┬───────────┘
-                   │                              │
-                   │                              │
-┌──────────────────┼──────────────────────────────┼──────────────────────┐
-│                  │       Homelab Server         │                      │
-│                  │  Tailscale IP: 100.x.y.z.    │                      │
-│                  │   LAN IP: 192.168.x.200      │                      │
-│                  ▼                              ▼                      │
-│  ┌──────────────────────────────────┐  ┌──────────────────────────┐   │
-│  │      Pi-hole DNS (:53)           │  │  Caddy Reverse Proxy     │   │
-│  │  *.homelab.com → 100.x.y.z       │  │       (:443)             │   │
-│  └──────────────────────────────────┘  │  TLS Termination +       │   │
-│                                        │  Host Routing            │   │
-│                                        │  immich.homelab.com      │   │
-│                                        │  → :2283                 │   │
-│                                        │  gitea.homelab.com       │   │
-│                                        │  → :3000                 │   │
-│                                        │  grafana.homelab.com     │   │
-│                                        │  → :3002                 │   │
-│                                         └────────┬─────────────────┘   │
-│                                                  │ HTTP (internal)     │
-│               ┌──────────────────────────────────┼─────────────┐       │
-│               ▼          ▼                       ▼             ▼       │
-│  ┌──────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────┐    │
-│  │Infrastructure│  │Applications │  │   System    │  │          │    │
-│  ├──────────────┤  ├─────────────┤  ├─────────────┤  │          │    │
-│  │ Postgres     │  │ Gitea       │  │ Caddy       │  │          │    │
-│  │  Internal    │  │  :3000      │  │  :80, :443  │  │          │    │
-│  └──────────────┘  │  :2222      │  │             │  │          │    │
-│                    │             │  │ Pi-hole     │  │          │    │
-│                    │ Immich      │  │  :53, :8080 │  │          │    │
-│                    │  :2283      │  │             │  │          │    │
-│                    │             │  │ Monitoring  │  │          │    │
-│                    │ Homepage    │  │ Prometheus  │  │          │    │
-│                    │  :3000      │  │ Grafana     │  │          │    │
-│                    │             │  │ Loki        │  │          │    │
-│                    └─────────────┘  └─────────────┘  └──────────┘    │
-└───────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                     Homelab (Ubuntu Server)                     │
+│                  Docker Compose-based Services                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │ Phase 4: System Services (Networking & Monitoring)     │    │
+│  ├────────────────────────────────────────────────────────┤    │
+│  │ • Caddy      - HTTPS reverse proxy (TLS termination)   │    │
+│  │ • Pi-hole    - DNS & ad blocking                       │    │
+│  │ • Monitoring - Prometheus, Grafana, Loki               │    │
+│  └─────────────┬──────────────────────────────────────────┘    │
+│                │ (provides networking & observability)          │
+│                ▼                                                │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │ Phase 2-3: Applications (User-Facing Services)         │    │
+│  ├────────────────────────────────────────────────────────┤    │
+│  │ • Gitea      - Git repository hosting                  │    │
+│  │ • Immich     - Photo & video management                │    │
+│  │ • Homepage   - Homelab dashboard                       │    │
+│  └─────────────┬──────────────────────────────────────────┘    │
+│                │ (depends on database)                          │
+│                ▼                                                │
+│  ┌────────────────────────────────────────────────────────┐    │
+│  │ Phase 1: Core Services (Foundation)                    │    │
+│  ├────────────────────────────────────────────────────────┤    │
+│  │ • Postgres   - Database (Gitea, Immich, Grafana)       │    │
+│  │ • PgAdmin    - Database management UI                  │    │
+│  └────────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+### Key Design Principles
+
+**Dependency Order:**
+- Core services (database) start first
+- Applications depend on core services
+- System services start last (proxy to applications)
+
+**Security:**
+- All services behind Caddy reverse proxy (HTTPS)
+- Tailscale VPN for remote access
+- UFW firewall with restrictive rules
+- Self-signed TLS certificates via Caddy
+
+**Modularity:**
+- Each service in its own docker-compose.yml
+- Shared networks (proxy, db-net) for inter-service communication
+- Environment-based configuration (.env files)
+
+**Data Storage:**
+- Database: PostgreSQL (shared foundation)
+- Photos: HDD storage (163GB) + SSD thumbnails
+- Backups: External HDD (916GB)
+
+> **Detailed network flow:** See [NETWORKING.md](docs/NETWORKING.md) for DNS, HTTPS, and Tailscale architecture
 
 ---
 
@@ -121,19 +130,32 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 ## Documentation
 
-**Start here:**
+### 1. Architecture & Problem Solving
 
-1. **[CLAUDE.md](CLAUDE.md)** - Quick reference for Claude AI sessions and daily operations
+**Network & HTTPS:**
+- **[NETWORKING.md](docs/NETWORKING.md)** - HTTPS architecture and DNS flow diagram
+- **[Caddy README](system/caddy/README.md)** - Detailed Caddy configuration
 
-2. **[Immich Guide](apps/immich/README.md)** - Photo management setup
+**Issues & Solutions:**
+- **[PROBLEMS.md](docs/PROBLEMS.md)** - Known issues and resolved problems
 
-3. **[Scripts Reference](scripts/README.md)** - Automation scripts
+### 2. AI Assistant Guide
 
-**Detailed Guides:**
-- [SERVER-SETUP.md](docs/SERVER-SETUP.md) - Initial server setup from scratch
-- [STARTUP.md](docs/STARTUP.md) - Auto-start configuration
-- [NETWORKING.md](docs/NETWORKING.md) - HTTPS architecture and DNS flow diagram
-- [PROBLEMS.md](docs/PROBLEMS.md) - Open and Resolved Issues
+**For Claude Code / AI Sessions:**
+- **[CLAUDE.md](CLAUDE.md)** - Start here for AI-assisted homelab operations
+
+### 3. Setup & Operations
+
+**Initial Setup:**
+- **[SERVER-SETUP.md](docs/SERVER-SETUP.md)** - Complete server setup from scratch
+  - Ubuntu installation, network config, Docker setup
+  - Tailscale VPN, SSH hardening, firewall rules
+
+**Daily Operations:**
+- **[STARTUP.md](docs/STARTUP.md)** - Service startup/shutdown and auto-start
+- **[Scripts Reference](scripts/README.md)** - Automation scripts overview
+- **[Immich Guide](apps/immich/README.md)** - Photo management operations
+- **[Immich Backup Guide](apps/immich/IMMICH_BACKUP_README.md)** - Backup and restore procedures
 
 ## Services
 
