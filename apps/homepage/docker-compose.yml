@@ -28,3 +28,11 @@ services:
 
     tmpfs:
       - /tmp
+
+    networks:
+      - default
+      - proxy
+
+networks:
+  proxy:
+    external: true

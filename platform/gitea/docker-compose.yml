@@ -25,10 +25,14 @@ services:
     networks:
       - gitea-net
       - db-net
+      - proxy
 
 networks:
   gitea-net:
     driver: bridge
 
   db-net:
+    external: true
+
+  proxy:
     external: true
