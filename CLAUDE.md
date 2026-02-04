@@ -59,7 +59,7 @@ homelab-01/
 **Server Data Paths** (`username@homelab-01`):
 - Repository clone: `~/github/homelab-01/`
 - Immich uploads: `/home/username/immich` (163GB on 500GB HDD - **has 64 bad sectors!**)
-- Immich thumbnails: `/home/username/immich-thumbs` (SSD - configured but not yet applied)
+- Immich thumbnails: `/home/username/immich-thumbs` (SSD)
 - Backup drive: `/mnt/backup` (916GB external HDD - manually mounted)
 
 ## Service Architecture
@@ -206,7 +206,7 @@ cd ~/github/homelab-01/scripts
 **Data Storage (on homelab server):**
 - Postgres: `/home/username/github/homelab-01/core/postgres/data`
 - Immich uploads: `/home/username/immich` (163GB on 500GB HDD - **64 bad sectors!**)
-- Immich thumbnails: `/home/username/immich-thumbs` (SSD - configured, not yet applied)
+- Immich thumbnails: `/home/username/immich-thumbs` (SSD)
 - Gitea: Docker volumes (managed by Docker)
 - Backup drive: `/mnt/backup` (916GB external HDD - manually mounted)
 
@@ -260,7 +260,7 @@ ssh username@homelab-01
 
 # Fix permissions (1000:1000 is the Immich container user)
 sudo chown -R 1000:1000 /home/username/immich
-sudo chown -R 1000:1000 /home/username/immich-thumbs  # If using SSD thumbnails
+sudo chown -R 1000:1000 /home/username/immich-thumbs
 ```
 **When to use:** After restore, manual file operations, or permission denied errors
 
