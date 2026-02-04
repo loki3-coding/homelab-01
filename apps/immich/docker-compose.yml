@@ -21,6 +21,7 @@ services:
     depends_on:
       - immich-redis
     networks:
+      - proxy
       - db-net
       - immich-net
     deploy:
@@ -66,3 +67,5 @@ networks:
   immich-net:
     driver: bridge
 
+  proxy:
+    external: true

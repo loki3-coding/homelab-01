@@ -76,3 +76,13 @@ pihole.homelab.com {
 		format json
 	}
 }
+
+# Homepage - Dashboard
+home.homelab.com {
+	reverse_proxy homepage:3000
+
+	log {
+		output file /data/logs/homepage.log
+		format json
+	}
+}

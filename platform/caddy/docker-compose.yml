@@ -14,14 +14,10 @@ services:
     networks:
       - proxy
       - db-net
-      - monitoring-net
-      - immich-net
-      - gitea-net
+      - monitoring_monitoring-net
+      - immich_immich-net
+      - gitea_gitea-net
     environment:
-      # For Let's Encrypt DNS-01 challenge (if using)
-      # Uncomment and configure based on your DNS provider
-      # - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
-      # - NAMECHEAP_API_KEY=${NAMECHEAP_API_KEY}
       - ACME_AGREE=true
     healthcheck:
       test: ["CMD", "caddy", "version"]
@@ -40,9 +36,9 @@ networks:
     external: true
   db-net:
     external: true
-  monitoring-net:
+  monitoring_monitoring-net:
     external: true
-  immich-net:
+  immich_immich-net:
     external: true
-  gitea-net:
+  gitea_gitea-net:
     external: true
