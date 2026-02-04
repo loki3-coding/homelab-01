@@ -86,3 +86,13 @@ portainer.homelab.com {
 		format json
 	}
 }
+
+# Pi-hole - DNS & Ad Blocking
+pihole.homelab.com {
+	reverse_proxy 172.18.0.1:8080
+
+	log {
+		output file /data/logs/pihole.log
+		format json
+	}
+}

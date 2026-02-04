@@ -1,10 +1,10 @@
 # Known Issues and Limitations
 
-## Pi-hole Cannot Be Proxied Through Caddy
+## Pi-hole HTTPS Access Through Caddy (SOLVED)
 
 ### Problem
 
-Pi-hole cannot be accessed via HTTPS through Caddy reverse proxy. All attempts to proxy `pihole.homelab.com` result in 502 Bad Gateway errors.
+Pi-hole could not be accessed via HTTPS through Caddy reverse proxy. Attempts to proxy `pihole.homelab.com` resulted in connection timeouts.
 
 ### Root Cause
 
@@ -40,13 +40,25 @@ ss -tlnp | grep 8080
 # Shows: 0.0.0.0:8080 and [::]:8080
 ```
 
-### Solution
+### Solution (IMPLEMENTED)
 
-**Pi-hole is accessed directly via HTTP (not through Caddy):**
+**UFW Firewall Rule + Docker Bridge Gateway:**
 
-- **Via hostname**: http://homelab-01:8080/admin
-- **Via Tailscale IP**: http://100.126.93.59:8080/admin
-- **Via LAN IP**: http://192.168.100.200:8080/admin
+1. **UFW Rule**: Allow traffic from Caddy's proxy network to host port 8080:
+   ```bash
+   sudo ufw allow from 172.18.0.0/16 to any port 8080 proto tcp
+   ```
+
+2. **Caddyfile Configuration**: Use Docker bridge gateway IP:
+   ```
+   pihole.homelab.com {
+       reverse_proxy 172.18.0.1:8080
+   }
+   ```
+
+**Access Methods:**
+- **HTTPS via Caddy** (Preferred): https://pihole.homelab.com/admin
+- **Direct HTTP** (Backup): http://homelab-01:8080/admin
 
 ### Why This Is Acceptable
 
@@ -89,7 +101,7 @@ Let Tailscale handle HTTPS for Pi-hole using `*.ts.net` domains.
 | Grafana | ✅ Working | https://grafana.homelab.com |
 | Prometheus | ✅ Working | https://prometheus.homelab.com |
 | Loki | ✅ Working | https://loki.homelab.com |
-| **Pi-hole** | ❌ Not Possible | http://homelab-01:8080/admin |
+| **Pi-hole** | ✅ Working | https://pihole.homelab.com/admin |
 
 ## Lessons Learned
 

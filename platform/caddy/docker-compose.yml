@@ -13,7 +13,6 @@ services:
       - caddy-config:/config
     networks:
       - proxy
-      - db-net
       - monitoring_monitoring-net
       - immich_immich-net
       - gitea_gitea-net
@@ -33,8 +32,6 @@ volumes:
 
 networks:
   proxy:
-    external: true
-  db-net:
     external: true
   monitoring_monitoring-net:
     external: true
