@@ -1,12 +1,12 @@
 - Applications:
     - Gitea:
         icon: gitea
-        href: http://homelab-01:3000
+        href: https://gitea.homelab.com
         description: Self-hosted Git
 
     - Immich:
         icon: immich
-        href: http://homelab-01:2283
+        href: https://immich.homelab.com
         description: Photo & Video Backup
 
     - Homelab Github:
@@ -17,17 +17,17 @@
 - Monitoring:
     - Grafana:
         icon: grafana
-        href: http://homelab-01:3002
+        href: https://grafana.homelab.com
         description: Dashboards & Metrics
 
     - Prometheus:
         icon: prometheus
-        href: http://homelab-01:9091
+        href: https://prometheus.homelab.com
         description: Metrics Database
 
     - Loki:
         icon: loki
-        href: http://homelab-01:3002/explore?orgId=1&left=%7B%22datasource%22:%22loki%22%7D
+        href: https://grafana.homelab.com/explore?orgId=1&left=%7B%22datasource%22:%22loki%22%7D
         description: Log Aggregation
 
 - Infrastructure:
@@ -38,13 +38,13 @@
 
     - Pi-hole:
         icon: pi-hole
-        href: http://homelab-01:8080/admin
+        href: http://100.126.93.59:8080/admin
         description: DNS & Adblock
 
     - pgAdmin:
         icon: pgadmin
         href: http://homelab-01:5050
-        description: PostgreSQL Admin
+        description: PostgreSQL Admin (Manual Start)
 
     - Tailscale Admin:
         icon: mdi-vpn
