@@ -10,7 +10,7 @@
 - **[Immich Guide](apps/immich/README.md)** - Photo management operations
 - **[Scripts](scripts/README.md)** - Automation and backup scripts
 - **[Backup Guide](scripts/IMMICH_BACKUP_README.md)** - Detailed backup procedures
-- **[Caddy Setup](platform/caddy/QUICKSTART.md)** - HTTPS reverse proxy quick start
+- **[Caddy Setup](system/caddy/QUICKSTART.md)** - HTTPS reverse proxy quick start
 - **[HTTPS Architecture](docs/HTTPS-SETUP.md)** - Network architecture and TLS setup
 
 ---
@@ -42,16 +42,16 @@ ssh username@homeLAN-01
 **Local Repository** (`/Users/standard-xvy/Github/homelab-01`):
 ```
 homelab-01/
-├── platform/          # Core infrastructure
-│   ├── postgres/      # Database + pgAdmin
-│   ├── gitea/         # Git service
-│   └── caddy/         # HTTPS reverse proxy (NEW!)
+├── infrastructure/    # Foundation services
+│   └── postgres/      # Database + pgAdmin
 ├── apps/              # User-facing applications
+│   ├── gitea/         # Git service
 │   ├── homepage/      # Dashboard
-│   ├── immich/        # Photo management (includes SSD_THUMBNAILS_SETUP.md)
-│   └── pi-hole/       # DNS & ad blocking
+│   └── immich/        # Photo management (includes SSD_THUMBNAILS_SETUP.md)
 ├── system/            # System services
-│   └── monitoring/    # Prometheus/Grafana/Loki + scripts
+│   ├── caddy/         # HTTPS reverse proxy
+│   ├── monitoring/    # Prometheus/Grafana/Loki + scripts
+│   └── pi-hole/       # DNS & ad blocking
 ├── scripts/           # Automation (backup, startup, integration)
 └── CLAUDE.md          # This file (main reference)
 ```
@@ -87,7 +87,7 @@ homelab-01/
 - Requires Pi-hole as Tailscale DNS (already configured)
 - Uses self-signed certificates (trust Caddy's CA for no warnings)
 - **Pi-hole requires UFW rule**: `sudo ufw allow from 172.18.0.0/16 to any port 8080 proto tcp` (allows Caddy proxy network to access Pi-hole's host port)
-- See `platform/caddy/QUICKSTART.md` for setup
+- See `system/caddy/QUICKSTART.md` for setup
 
 ## Common Commands
 
@@ -98,27 +98,27 @@ homelab-01/
 
 **Note:** pgAdmin is excluded from automatic startup. Start manually when needed:
 ```bash
-cd platform/postgres && docker compose up -d pgadmin
+cd infrastructure/postgres && docker compose up -d pgadmin
 ```
 
 **Stop pgAdmin:**
 ```bash
-cd platform/postgres && docker compose stop pgadmin
+cd infrastructure/postgres && docker compose stop pgadmin
 ```
 
 **Caddy (HTTPS Reverse Proxy):**
 ```bash
 # Start Caddy
-cd platform/caddy && docker compose up -d
+cd system/caddy && docker compose up -d
 
 # Stop Caddy
-cd platform/caddy && docker compose down
+cd system/caddy && docker compose down
 
 # View logs
-cd platform/caddy && docker compose logs -f
+cd system/caddy && docker compose logs -f
 
 # Reload configuration (without downtime)
-cd platform/caddy && docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
+cd system/caddy && docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
 
 # Integrate existing services with Caddy
 ./scripts/integrate-caddy.sh
@@ -204,7 +204,7 @@ cd ~/github/homelab-01/scripts
 - `monitoring/.env`: GRAFANA_ADMIN_PASSWORD
 
 **Data Storage (on homelab server):**
-- Postgres: `/home/username/github/homelab-01/platform/postgres/data`
+- Postgres: `/home/username/github/homelab-01/infrastructure/postgres/data`
 - Immich uploads: `/home/username/immich` (163GB on 500GB HDD - **64 bad sectors!**)
 - Immich thumbnails: `/home/username/immich-thumbs` (SSD - configured, not yet applied)
 - Gitea: Docker volumes (managed by Docker)

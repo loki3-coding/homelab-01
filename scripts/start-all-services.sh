@@ -168,7 +168,7 @@ main() {
     log "Phase 1: Starting database services..."
     log "Starting PostgreSQL (pgAdmin excluded - start manually if needed)..."
 
-    cd "${PROJECT_ROOT}/platform/postgres"
+    cd "${PROJECT_ROOT}/infrastructure/postgres"
     if docker compose up -d postgres; then
         log_success "PostgreSQL started successfully"
     else
@@ -181,14 +181,14 @@ main() {
 
     # Phase 2: Start services that depend on PostgreSQL
     log "Phase 2: Starting database-dependent services..."
-    start_service "Gitea" "platform/gitea" || log_warning "Gitea failed to start, continuing..."
+    start_service "Gitea" "apps/gitea" || log_warning "Gitea failed to start, continuing..."
     start_service "Immich" "apps/immich" || log_warning "Immich failed to start, continuing..."
     echo ""
 
     # Phase 3: Start independent services
     log "Phase 3: Starting independent services..."
     start_service "Homepage" "apps/homepage" || log_warning "Homepage failed to start, continuing..."
-    start_service "Pi-hole" "apps/pi-hole" || log_warning "Pi-hole failed to start, continuing..."
+    start_service "Pi-hole" "system/pi-hole" || log_warning "Pi-hole failed to start, continuing..."
     echo ""
 
     # Phase 4: Start monitoring stack
@@ -198,7 +198,7 @@ main() {
 
     # Phase 5: Start reverse proxy (Caddy)
     log "Phase 5: Starting reverse proxy..."
-    start_service "Caddy (HTTPS Reverse Proxy)" "platform/caddy" || log_warning "Caddy failed to start, continuing..."
+    start_service "Caddy (HTTPS Reverse Proxy)" "system/caddy" || log_warning "Caddy failed to start, continuing..."
     echo ""
 
     # Summary
@@ -227,7 +227,7 @@ main() {
     log "  - Pi-hole:     https://pihole.homelab.com"
     echo ""
     log "To start pgAdmin manually:"
-    log "  cd platform/postgres && docker compose up -d pgadmin"
+    log "  cd infrastructure/postgres && docker compose up -d pgadmin"
     echo ""
 }
 

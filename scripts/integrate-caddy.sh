@@ -42,7 +42,7 @@ backup_file() {
 # Update Gitea docker-compose.yml
 update_gitea() {
     log "Updating Gitea configuration..."
-    local compose_file="${PROJECT_ROOT}/platform/gitea/docker-compose.yml"
+    local compose_file="${PROJECT_ROOT}/infrastructure/gitea/docker-compose.yml"
 
     if [ ! -f "$compose_file" ]; then
         log_error "Gitea docker-compose.yml not found"
@@ -192,7 +192,7 @@ main() {
     log "Next steps:"
     log "1. Review the changes in each docker-compose.yml file"
     log "2. Restart services: cd <service-dir> && docker compose down && docker compose up -d"
-    log "3. Start Caddy: cd platform/caddy && docker compose up -d"
+    log "3. Start Caddy: cd system/caddy && docker compose up -d"
     log "4. Test access: curl -k https://immich.homelab.com"
     echo
     log "Backup files created with .backup-* extension"

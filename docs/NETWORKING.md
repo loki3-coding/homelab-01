@@ -42,6 +42,9 @@
                                                 │  Immich   → 127.0.0.1:2283     │
                                                 │  Gitea    → 127.0.0.1:3000     │
                                                 │  Grafana  → 127.0.0.1:3001     │
+                                                │  PiHole   → 127.0.0.1:8080     │
+                                                │  Portainer→ 127.0.0.1:9000     │
+                                                |  ...                           |
                                                 └───────────────────────────────┘
 
 ```
@@ -52,4 +55,6 @@ grafana.homelab.com	100.x.y.z
 home.homelab.com	100.x.y.z
 immich.homelab.com	100.x.y.z
 loki.homelab.com	100.x.y.z
+pihole.homelab.com	100.x.y.z
+portainer.homelab.com   100.x.y.z
 prometheus.homelab.com	100.x.y.z

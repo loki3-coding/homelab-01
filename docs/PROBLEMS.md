@@ -1,5 +1,31 @@
 # Known Issues and Limitations
 
+## Current Known Issues
+
+### Hardware: Failing HDD ⚠️ MONITORING
+
+**Issue:** Main storage HDD (500GB Seagate ST500LT012) has 64 reallocated sectors (bad sectors).
+
+**Status:** Under monitoring - thumbnails moved to SSD as mitigation
+
+**Drive Details:**
+- Model: Seagate 500GB (ST500LT012-1DG142)
+- Status: FAILING - 64 bad sectors reallocated
+- Power-On: 19,004 hours (~2.2 years)
+- Usage: Stores Immich photo uploads (163GB of 500GB)
+
+**Monitor command:**
+```bash
+ssh loki3@homelab-01
+sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending|Uncorrectable)"
+```
+
+**Action needed:** Replace HDD when reallocated sectors exceed 100, or immediately if uncorrectable sectors appear.
+
+**See also:** [apps/immich/SSD_THUMBNAILS_SETUP.md](../apps/immich/SSD_THUMBNAILS_SETUP.md) for mitigation strategy
+
+---
+
 ## Resolved Issues
 
 ### Pi-hole HTTPS Access Through Caddy ✅ SOLVED
@@ -10,7 +36,7 @@
 
 **Solution:** UFW firewall rule + Docker bridge gateway configuration
 
-**See full documentation:** [platform/caddy/PIHOLE_HTTPS_SOLUTION.md](../platform/caddy/PIHOLE_HTTPS_SOLUTION.md)
+**See full documentation:** [system/caddy/PIHOLE_HTTPS_SOLUTION.md](../system/caddy/PIHOLE_HTTPS_SOLUTION.md)
 
 **Quick reference:**
 ```bash
@@ -27,30 +53,33 @@ pihole.homelab.com {
 
 ---
 
-## Current Known Issues
+### Immich Thumbnail Corruption on Failing HDD ✅ SOLVED
 
-*No unresolved issues at this time.*
+**Problem:** Immich thumbnails were corrupting due to HDD with 64 bad sectors (reallocated sectors).
 
----
+**Status:** Resolved on 2026-02-02
 
-## All Services Status
+**Solution:** Move thumbnails to SSD while keeping original uploads on HDD
 
-| Service | HTTPS via Caddy | Access Method |
-|---------|----------------|---------------|
-| Homepage | ✅ Working | https://home.homelab.com |
-| Immich | ✅ Working | https://immich.homelab.com |
-| Gitea | ✅ Working | https://gitea.homelab.com |
-| Grafana | ✅ Working | https://grafana.homelab.com |
-| Prometheus | ✅ Working | https://prometheus.homelab.com |
-| Loki | ✅ Working | https://loki.homelab.com |
-| Pi-hole | ✅ Working | https://pihole.homelab.com/admin |
+**See full documentation:** [apps/immich/SSD_THUMBNAILS_SETUP.md](../apps/immich/SSD_THUMBNAILS_SETUP.md)
 
-**Result:** 🎉 All 7 services successfully accessible via HTTPS through Caddy!
+**Quick reference:**
+```bash
+# Create SSD directory for thumbnails
+sudo mkdir -p /home/loki3/immich-thumbs/encoded-video
+sudo chown -R 1000:1000 /home/loki3/immich-thumbs
 
----
+# Update docker-compose.yml to mount SSD paths
+# Then restart Immich
+cd ~/github/homelab/apps/immich
+docker compose down
+docker compose up -d
+```
 
-## Useful References
+**Results:**
+- ✅ No more thumbnail corruption
+- ✅ Faster thumbnail loading (SSD vs HDD)
+- ✅ Reduced wear on failing HDD
+- ⚠️ HDD still needs replacement (monitor reallocated sectors)
 
-- Docker Networking: https://docs.docker.com/network/
-- Caddy Documentation: https://caddyserver.com/docs/
-- UFW with Docker: https://github.com/chaifeng/ufw-docker
+

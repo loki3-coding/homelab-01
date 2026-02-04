@@ -175,9 +175,8 @@ The script will:
 3. Install Docker
 4. Install Portainer
 5. Install and configure Tailscale
-6. Install Cockpit
-7. Create Docker networks (db-net, proxy)
-8. Configure UFW firewall
+6. Create Docker networks (db-net, proxy)
+7. Configure UFW firewall
 
 **Estimated time**: 10-15 minutes
 
@@ -299,6 +298,7 @@ This will start:
 - PostgreSQL + PgAdmin (Phase 1)
 - Gitea + Immich (Phase 2)
 - Homepage + Pi-hole (Phase 3)
+- Monitoring + Caddy (Phase 4)
 
 ### 2. Update DNS After Pi-hole Starts
 
@@ -322,11 +322,24 @@ options edns0 trust-ad
 
 Each service needs initial configuration:
 
+**Direct HTTP access (initial setup):**
 - **Gitea**: http://homelab-01:3000 - Create admin account
 - **Immich**: http://homelab-01:2283 - Create admin account
 - **PgAdmin**: http://homelab-01:5050 - Add server connections
 - **Portainer**: http://homelab-01:9000 - Set admin password
 - **Grafana**: http://homelab-01:3002 - Login with admin credentials
+
+**HTTPS access (via Caddy reverse proxy):**
+- **Homepage**: https://home.homelab.com
+- **Immich**: https://immich.homelab.com
+- **Gitea**: https://gitea.homelab.com
+- **Grafana**: https://grafana.homelab.com
+- **Prometheus**: https://prometheus.homelab.com
+- **Loki**: https://loki.homelab.com
+- **Pi-hole**: https://pihole.homelab.com/admin
+- **Portainer**: https://portainer.homelab.com
+
+See [system/caddy/QUICKSTART.md](../system/caddy/QUICKSTART.md) for Caddy setup.
 
 ## Security Checklist
 
@@ -391,8 +404,8 @@ Status: active
 [ 4] 53 on tailscale0           ALLOW IN    Anywhere
 [ 5] 22 on enp1s0f1             ALLOW IN    Anywhere
 [ 6] 22 on tailscale0           DENY IN     Anywhere
-[ 7] 8080/tcp                   ALLOW IN    172.18.0.0/16
-[ 8] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on br-3a82f996c3e5
+[ 7] 8080/tcp                   ALLOW IN    172.18.0.0/16                # Caddy to Pi-hole
+[ 8] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on br-3a82f996c3e5  # Caddy proxy network
 [ 9] Anywhere (v6) on tailscale0 ALLOW IN    Anywhere (v6)
 [10] Anywhere (v6) on enp1s0f1  ALLOW FWD   Anywhere (v6) on tailscale0
 [11] 53 (v6) on enp1s0f1        ALLOW IN    Anywhere (v6)
@@ -405,17 +418,22 @@ Status: active
 
 ### Service Ports
 
-| Port | Service | Access |
-|------|---------|--------|
-| 22 | SSH | LAN only |
-| 53 | DNS (Pi-hole) | LAN only |
-| 2222 | Gitea SSH | LAN + Tailscale |
-| 2283 | Immich | LAN + Tailscale |
-| 3000 | Gitea Web | LAN + Tailscale |
-| 3002 | Grafana | LAN + Tailscale |
-| 5050 | PgAdmin | LAN + Tailscale |
-| 8080 | Pi-hole Admin | LAN + Docker |
-| 9000 | Portainer | LAN + Tailscale |
-| 9091 | Prometheus | LAN + Tailscale |
+| Port | Service | Access | HTTPS (via Caddy) |
+|------|---------|--------|-------------------|
+| 22 | SSH | LAN only | N/A |
+| 53 | DNS (Pi-hole) | LAN only | N/A |
+| 80 | Caddy HTTP | Tailscale | Redirects to 443 |
+| 443 | Caddy HTTPS | Tailscale | All services |
+| 2222 | Gitea SSH | LAN + Tailscale | N/A |
+| 2283 | Immich | Internal | https://immich.homelab.com |
+| 3000 | Gitea Web | Internal | https://gitea.homelab.com |
+| 3002 | Grafana | Internal | https://grafana.homelab.com |
+| 3100 | Loki | Internal | https://loki.homelab.com |
+| 5050 | PgAdmin | LAN + Tailscale | N/A (manual start) |
+| 8080 | Pi-hole Admin | Internal | https://pihole.homelab.com/admin |
+| 9000 | Portainer | Internal | https://portainer.homelab.com |
+| 9090 | Prometheus | Internal | https://prometheus.homelab.com |
+
+**Note:** "Internal" means accessible only through Caddy reverse proxy (HTTPS) or direct container access from host.
 
 ---

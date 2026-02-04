@@ -67,7 +67,7 @@ pihole.homelab.com {
 
 ```bash
 # On local machine (commit changes)
-git add platform/caddy/Caddyfile
+git add system/caddy/Caddyfile
 git commit -m "Add Pi-hole HTTPS reverse proxy"
 git push
 
@@ -77,7 +77,7 @@ cd ~/github/homelab
 git pull
 
 # IMPORTANT: Restart Caddy (reload is not enough for new sites)
-cd platform/caddy
+cd system/caddy
 docker compose restart caddy
 
 # Verify configuration loaded

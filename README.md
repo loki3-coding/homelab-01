@@ -25,36 +25,38 @@ A compact, Docker Compose-driven personal homelab for local/home server services
                    │                              │
 ┌──────────────────┼──────────────────────────────┼──────────────────────┐
 │                  │       Homelab Server         │                      │
-│                  │  Tailscale IP: 100.x.y.z │                      │
-│                  │   LAN IP: 192.168.x.200    │                      │
+│                  │  Tailscale IP: 100.x.y.z.    │                      │
+│                  │   LAN IP: 192.168.x.200      │                      │
 │                  ▼                              ▼                      │
 │  ┌──────────────────────────────────┐  ┌──────────────────────────┐   │
 │  │      Pi-hole DNS (:53)           │  │  Caddy Reverse Proxy     │   │
-│  │  *.homelab.com → 100.x.y.z   │  │       (:443)             │   │
+│  │  *.homelab.com → 100.x.y.z       │  │       (:443)             │   │
 │  └──────────────────────────────────┘  │  TLS Termination +       │   │
-│                                         │  Host Routing            │   │
-│                                         │  immich.homelab.com      │   │
-│                                         │  → :2283                 │   │
-│                                         │  gitea.homelab.com       │   │
-│                                         │  → :3000                 │   │
-│                                         │  grafana.homelab.com     │   │
-│                                         │  → :3002                 │   │
+│                                        │  Host Routing            │   │
+│                                        │  immich.homelab.com      │   │
+│                                        │  → :2283                 │   │
+│                                        │  gitea.homelab.com       │   │
+│                                        │  → :3000                 │   │
+│                                        │  grafana.homelab.com     │   │
+│                                        │  → :3002                 │   │
 │                                         └────────┬─────────────────┘   │
 │                                                  │ HTTP (internal)     │
 │               ┌──────────────────────────────────┼─────────────┐       │
 │               ▼          ▼                       ▼             ▼       │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────┐     │
-│  │  Platform   │  │Applications │  │ Monitoring  │  │ Database │     │
-│  ├─────────────┤  ├─────────────┤  ├─────────────┤  ├──────────┤     │
-│  │ Gitea       │  │ Immich      │  │ Prometheus  │  │ Postgres │     │
-│  │  :3000      │  │  :2283      │  │  :9091      │  │ Internal │     │
-│  │  :2222      │  │             │  │             │  │          │     │
-│  │             │  │ Homepage    │  │ Grafana     │  └──────────┘     │
-│  │             │  │  :3000      │  │  :3002      │                   │
-│  │             │  │             │  │             │                   │
-│  │             │  │ Pi-hole     │  │ Loki        │                   │
-│  │             │  │  :53, :8080 │  │  :3100      │                   │
-│  └─────────────┘  └─────────────┘  └─────────────┘                   │
+│  ┌──────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────┐    │
+│  │Infrastructure│  │Applications │  │   System    │  │          │    │
+│  ├──────────────┤  ├─────────────┤  ├─────────────┤  │          │    │
+│  │ Postgres     │  │ Gitea       │  │ Caddy       │  │          │    │
+│  │  Internal    │  │  :3000      │  │  :80, :443  │  │          │    │
+│  └──────────────┘  │  :2222      │  │             │  │          │    │
+│                    │             │  │ Pi-hole     │  │          │    │
+│                    │ Immich      │  │  :53, :8080 │  │          │    │
+│                    │  :2283      │  │             │  │          │    │
+│                    │             │  │ Monitoring  │  │          │    │
+│                    │ Homepage    │  │ Prometheus  │  │          │    │
+│                    │  :3000      │  │ Grafana     │  │          │    │
+│                    │             │  │ Loki        │  │          │    │
+│                    └─────────────┘  └─────────────┘  └──────────┘    │
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -80,12 +82,12 @@ A compact, Docker Compose-driven personal homelab for local/home server services
    Copy the example files and set your own secure passwords:
    ```bash
    # Platform services
-   cp platform/postgres/.env.example platform/postgres/.env
-   cp platform/gitea/.env.example platform/gitea/.env
+   cp infrastructure/postgres/.env.example infrastructure/postgres/.env
+   cp infrastructure/gitea/.env.example infrastructure/gitea/.env
 
    # Applications
    cp apps/immich/.env.example apps/immich/.env
-   cp apps/pi-hole/.env.example apps/pi-hole/.env
+   cp system/pi-hole/.env.example system/pi-hole/.env
 
    # Monitoring
    cp system/monitoring/.env.example system/monitoring/.env
@@ -94,10 +96,10 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 3. **Edit each `.env` file:**
    ```bash
    # Replace all instances of "your-secure-password-here" with strong passwords
-   nano platform/postgres/.env
-   nano platform/gitea/.env
+   nano infrastructure/postgres/.env
+   nano infrastructure/gitea/.env
    nano apps/immich/.env
-   nano apps/pi-hole/.env
+   nano system/pi-hole/.env
    nano system/monitoring/.env
    ```
 
@@ -113,13 +115,6 @@ A compact, Docker Compose-driven personal homelab for local/home server services
    ./scripts/start-all-services.sh
    ```
 
-5. **Access services:**
-   - Homepage: http://homelab-01/
-   - Immich: http://homelab-01:2283
-   - Gitea: http://homelab-01:3000
-   - Pi-hole Admin: http://homelab-01:8080/admin
-   - Grafana: http://homelab-01:3002
-
 **For detailed setup instructions, see [SERVER-SETUP.md](docs/SERVER-SETUP.md)**
 
 ---
@@ -128,37 +123,42 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 **Start here:**
 
-1.**[CLAUDE.md](CLAUDE.md)** - Quick reference for Claude AI sessions and daily operations
+1. **[CLAUDE.md](CLAUDE.md)** - Quick reference for Claude AI sessions and daily operations
 
-2.**[Immich Guide](apps/immich/README.md)** - Photo management setup
+2. **[Immich Guide](apps/immich/README.md)** - Photo management setup
 
-3.**[Scripts Reference](scripts/README.md)** - Automation scripts
+3. **[Scripts Reference](scripts/README.md)** - Automation scripts
 
 **Detailed Guides:**
 - [SERVER-SETUP.md](docs/SERVER-SETUP.md) - Initial server setup from scratch
 - [STARTUP.md](docs/STARTUP.md) - Auto-start configuration
-- [HTTPS-SETUP.md](docs/HTTPS-SETUP.md) - HTTPS architecture and DNS flow diagram
+- [NETWORKING.md](docs/NETWORKING.md) - HTTPS architecture and DNS flow diagram
+- [PROBLEMS.md](docs/PROBLEMS.md) - Open and Resolved Issues
 
 ## Services
 
-### Platform
+### Infrastructure (Foundation)
 | Service | Port | Description | Directory |
 |---------|------|-------------|-----------|
-|**Postgres** | Internal | Database for Gitea, Immich | [`platform/postgres/`](platform/postgres/) |
-|**Gitea** | 3000, 2222 | Self-hosted Git service | [`platform/gitea/`](platform/gitea/) |
+|**Postgres** | Internal | Database for Gitea, Immich, Grafana | [`infrastructure/postgres/`](infrastructure/postgres/) |
+|**PgAdmin** | 5050 | Database management UI | [`infrastructure/postgres/`](infrastructure/postgres/) |
 
-### Applications
-| Service | Port | Description | Directory |
-|---------|------|-------------|-----------|
-|**Homepage** | 3000 | Dashboard | [`apps/homepage/`](apps/homepage/) |
-|**Immich** | 2283 | Photo & video management | [`apps/immich/`](apps/immich/) |
-|**Pi-hole** | 53, 8080 | Network ad blocker | [`apps/pi-hole/`](apps/pi-hole/) |
+### Applications (User-Facing)
+| Service | Port | Description | HTTPS Access | Directory |
+|---------|------|-------------|--------------|-----------|
+|**Gitea** | 3000, 2222 | Self-hosted Git service | https://gitea.homelab.com | [`apps/gitea/`](apps/gitea/) |
+|**Immich** | 2283 | Photo & video management | https://immich.homelab.com | [`apps/immich/`](apps/immich/) |
+|**Homepage** | 3000 | Homelab dashboard | https://home.homelab.com | [`apps/homepage/`](apps/homepage/) |
 
-### System
-| Service | Port | Description | Directory |
-|---------|------|-------------|-----------|
-|**Prometheus** | 9091 | Metrics collection | [`system/monitoring/`](system/monitoring/) |
-|**Grafana** | 3002 | Monitoring dashboards | [`system/monitoring/`](system/monitoring/) |
+### System Services (Infrastructure)
+| Service | Port | Description | HTTPS Access | Directory |
+|---------|------|-------------|--------------|-----------|
+|**Caddy** | 80, 443 | HTTPS reverse proxy & TLS termination | N/A (proxy) | [`system/caddy/`](system/caddy/) |
+|**Pi-hole** | 53, 8080 | DNS & network ad blocker | https://pihole.homelab.com/admin | [`system/pi-hole/`](system/pi-hole/) |
+|**Prometheus** | 9091 | Metrics collection | https://prometheus.homelab.com | [`system/monitoring/`](system/monitoring/) |
+|**Grafana** | 3002 | Monitoring dashboards | https://grafana.homelab.com | [`system/monitoring/`](system/monitoring/) |
+|**Loki** | 3100 | Log aggregation | https://loki.homelab.com | [`system/monitoring/`](system/monitoring/) |
+|**Portainer** | 9000 | Docker management UI | https://portainer.homelab.com | N/A (external) |
 
 ---
 
@@ -166,13 +166,29 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 ```
 homelab-01/
-├── platform/          # Core services (Postgres, Gitea)
-├── apps/              # User applications (Immich, Pi-hole, Homepage)
-├── system/            # Infrastructure (Nginx, Monitoring)
+├── infrastructure/    # Foundation services (Phase 1)
+│   └── postgres/      # Database + pgAdmin
+│
+├── apps/              # User-facing applications (Phase 2-3)
+│   ├── gitea/         # Git service
+│   ├── homepage/      # Dashboard
+│   └── immich/        # Photo management
+│
+├── system/            # System services (Phase 3-4)
+│   ├── caddy/         # HTTPS reverse proxy
+│   ├── monitoring/    # Prometheus, Grafana, Loki
+│   └── pi-hole/       # DNS & ad blocking
+│
 ├── scripts/           # Automation and backup scripts
+├── docs/              # Documentation
 ├── CLAUDE.md          # Main operational reference
 └── README.md          # This file
 ```
+
+**Service Tiers:**
+- **infrastructure/**: Foundation services that others depend on
+- **apps/**: User-facing applications (depend on infrastructure)
+- **system/**: Infrastructure services (networking, monitoring, reverse proxy)
 
 **Data Storage on Server:**
 - Immich uploads: `/home/username/immich` (163GB on 500GB HDD)

@@ -49,12 +49,14 @@ The scripts follow this order:
 2.**Phase 1**: PostgreSQL + PgAdmin (wait for ready)
 3.**Phase 2**: Gitea, Immich (depend on Postgres)
 4.**Phase 3**: Homepage, Pi-hole (independent)
+5.**Phase 4**: Monitoring (Prometheus, Grafana, Loki) + Caddy (HTTPS reverse proxy)
 
 ### Stop Sequence
-1.**Phase 1**: Pi-hole, Homepage (independent)
-2.**Phase 2**: Immich, Gitea (database-dependent)
-3.**Phase 3**: PostgreSQL + PgAdmin (database)
-4.**Phase 4**: Tailscale VPN (optional - disabled by default)
+1.**Phase 1**: Caddy (reverse proxy - stop first)
+2.**Phase 2**: Monitoring, Pi-hole, Homepage (independent)
+3.**Phase 3**: Immich, Gitea (database-dependent)
+4.**Phase 4**: PostgreSQL + PgAdmin (database)
+5.**Phase 5**: Tailscale VPN (optional - disabled by default)
 
 ## Automatic Startup on Boot (Systemd)
 
@@ -174,11 +176,29 @@ sudo journalctl -u homelab -n 100 --no-pager
 
 Once all services are running:
 
-- Homepage: http://homelab-01/
-- Immich: http://localhost:2283
-- PgAdmin: http://localhost:5050
-- Pi-hole Admin: http://localhost:8080/admin
-- Gitea: http://localhost:3000
+**HTTPS Access (via Caddy - Recommended):**
+- Homepage: https://home.homelab.com
+- Immich: https://immich.homelab.com
+- Gitea: https://gitea.homelab.com
+- Grafana: https://grafana.homelab.com
+- Prometheus: https://prometheus.homelab.com
+- Loki: https://loki.homelab.com
+- Pi-hole: https://pihole.homelab.com/admin
+- Portainer: https://portainer.homelab.com
+
+**Direct HTTP Access (Fallback):**
+- Homepage: http://homelab-01:3000
+- Immich: http://homelab-01:2283
+- PgAdmin: http://homelab-01:5050 (manual start only)
+- Pi-hole Admin: http://homelab-01:8080/admin
+- Gitea: http://homelab-01:3000
+- Grafana: http://homelab-01:3002
+- Portainer: http://homelab-01:9000
+
+**Note:** HTTPS URLs require:
+- Pi-hole configured as Tailscale DNS
+- Local DNS entries for `*.homelab.com`
+- Trust Caddy's self-signed certificate (see [system/caddy/QUICKSTART.md](../system/caddy/QUICKSTART.md))
 
 ## Recovery After Power Failure
 

@@ -41,4 +41,4 @@ echo "Existing networks:"
 docker network ls | grep -E "NETWORK ID|proxy|db-net|monitoring-net|immich-net|gitea-net"
 echo
 echo "You can now start Caddy with:"
-echo "  cd ~/github/homelab-01/platform/caddy && docker compose up -d"
+echo "  cd ~/github/homelab-01/system/caddy && docker compose up -d"

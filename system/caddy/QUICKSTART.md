@@ -23,7 +23,7 @@ docker network create proxy 2>/dev/null || echo "proxy network already exists"
 docker network create db-net 2>/dev/null || echo "db-net already exists"
 
 # 4. Start Caddy
-cd platform/caddy
+cd system/caddy
 docker compose up -d
 
 # 5. Check Caddy is running
@@ -51,7 +51,7 @@ This script will:
 
 Edit each service's `docker-compose.yml`:
 
-**Gitea** (`platform/gitea/docker-compose.yml`):
+**Gitea** (`infrastructure/gitea/docker-compose.yml`):
 ```yaml
 networks:
   - gitea-net
@@ -95,7 +95,7 @@ services:
 
 ```bash
 # Restart each service after updating
-cd ~/github/homelab-01/platform/gitea
+cd ~/github/homelab-01/infrastructure/gitea
 docker compose down && docker compose up -d
 
 cd ~/github/homelab-01/apps/immich
@@ -192,7 +192,7 @@ This will start services in the correct order:
 
 4. **Check Caddy logs**:
    ```bash
-   cd ~/github/homelab-01/platform/caddy
+   cd ~/github/homelab-01/system/caddy
    docker compose logs -f
    ```
 

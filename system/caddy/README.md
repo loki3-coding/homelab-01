@@ -57,7 +57,7 @@ ssh username@homelab-01
 cd ~/github/homelab-01
 docker network create proxy 2>/dev/null || true
 ./scripts/integrate-caddy.sh  # Add proxy network to services
-cd platform/caddy && docker compose up -d
+cd system/caddy && docker compose up -d
 ```
 
 ## Certificate Options

@@ -92,21 +92,21 @@ main() {
 
     # Phase 2: Stop independent services
     log "Phase 2: Stopping independent services..."
-    stop_service "Pi-hole" "apps/pi-hole" || log_error "Failed to stop Pi-hole"
+    stop_service "Pi-hole" "system/pi-hole" || log_error "Failed to stop Pi-hole"
     stop_service "Homepage" "apps/homepage" || log_error "Failed to stop Homepage"
     echo ""
 
     # Phase 3: Stop database-dependent services
     log "Phase 3: Stopping database-dependent services..."
     stop_service "Immich" "apps/immich" || log_error "Failed to stop Immich"
-    stop_service "Gitea" "platform/gitea" || log_error "Failed to stop Gitea"
+    stop_service "Gitea" "apps/gitea" || log_error "Failed to stop Gitea"
     echo ""
 
     # Phase 4: Stop database (pgAdmin excluded - stop manually if running)
     log "Phase 4: Stopping database services..."
     log "Stopping PostgreSQL (pgAdmin excluded - stop manually if needed)..."
 
-    cd "${PROJECT_ROOT}/platform/postgres"
+    cd "${PROJECT_ROOT}/infrastructure/postgres"
     if docker compose stop postgres; then
         log_success "PostgreSQL stopped successfully"
     else
@@ -128,7 +128,7 @@ main() {
     docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "postgres|gitea|immich|homepage|pihole|prometheus|grafana|loki|promtail|node-exporter|cadvisor" || log_success "All homelab services stopped"
     echo ""
     log "Note: If pgAdmin is running, stop it manually:"
-    log "  cd platform/postgres && docker compose stop pgadmin"
+    log "  cd infrastructure/postgres && docker compose stop pgadmin"
     echo ""
 }
 
