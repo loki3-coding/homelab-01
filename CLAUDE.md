@@ -10,6 +10,8 @@
 - **[Immich Guide](apps/immich/README.md)** - Photo management operations
 - **[Scripts](scripts/README.md)** - Automation and backup scripts
 - **[Backup Guide](scripts/IMMICH_BACKUP_README.md)** - Detailed backup procedures
+- **[Caddy Setup](platform/caddy/QUICKSTART.md)** - HTTPS reverse proxy quick start
+- **[HTTPS Architecture](docs/HTTPS-SETUP.md)** - Network architecture and TLS setup
 
 ---
 
@@ -40,12 +42,17 @@ ssh username@homeLAN-01
 **Local Repository** (`/Users/standard-xvy/Github/homelab-01`):
 ```
 homelab-01/
-├── platform/          # Postgres, Gitea + their .env files
-├── apps/              # Homepage, Immich, Pi-hole + their .env files
-│   └── immich/        # Includes SSD_THUMBNAILS_SETUP.md
-├── system/            # Monitoring (Prometheus/Grafana/Loki)
-│   └── monitoring/scripts/  # Container name export script
-├── scripts/           # Automation scripts + IMMICH_BACKUP_README.md
+├── platform/          # Core infrastructure
+│   ├── postgres/      # Database + pgAdmin
+│   ├── gitea/         # Git service
+│   └── caddy/         # HTTPS reverse proxy (NEW!)
+├── apps/              # User-facing applications
+│   ├── homepage/      # Dashboard
+│   ├── immich/        # Photo management (includes SSD_THUMBNAILS_SETUP.md)
+│   └── pi-hole/       # DNS & ad blocking
+├── system/            # System services
+│   └── monitoring/    # Prometheus/Grafana/Loki + scripts
+├── scripts/           # Automation (backup, startup, integration)
 └── CLAUDE.md          # This file (main reference)
 ```
 
@@ -60,17 +67,26 @@ homelab-01/
 **Critical Dependencies:**
 - Postgres MUST start before Gitea and Immich
 - Services use `db-net` network for database connections
+- Caddy provides HTTPS access via `proxy` network
 
-| Service | Container | Ports | Dependencies | Access |
-|---------|-----------|-------|--------------|--------|
-| Postgres | postgres | Internal | None | Auto-start |
-| PgAdmin | pgadmin | 5050 | postgres | Manual start - http://localhost:5050 |
-| Gitea | gitea | 3000, 2222 | postgres | Via nginx proxy |
-| Immich | immich-server | 2283 | postgres, redis | http://localhost:2283 |
-| Homepage | homepage | 3000 | None | http://homelab-01/ |
-| Pi-hole | pihole | 53, 8080 | None | http://localhost:8080/admin |
-| Prometheus | prometheus | 9091 | None | http://localhost:9091 |
-| Grafana | grafana | 3002 | prometheus, loki | http://localhost:3002 |
+| Service | Container | Ports | Dependencies | Direct Access | HTTPS Access (via Caddy) |
+|---------|-----------|-------|--------------|---------------|--------------------------|
+| Caddy | caddy | 80, 443 | None (last to start) | N/A | Reverse proxy for all services |
+| Postgres | postgres | Internal | None | Auto-start | N/A |
+| PgAdmin | pgadmin | 5050 | postgres | http://localhost:5050 | N/A (manual start) |
+| Gitea | gitea | 3000, 2222 | postgres | http://localhost:3000 | https://gitea.homelab.com |
+| Immich | immich-server | 2283 | postgres, redis | http://localhost:2283 | https://immich.homelab.com |
+| Homepage | homepage | 3000 | None | http://homelab-01/ | N/A |
+| Pi-hole | pihole | 53, 8080 | None | http://localhost:8080/admin | https://pihole.homelab.com |
+| Prometheus | prometheus | 9091 | None | http://localhost:9091 | https://prometheus.homelab.com |
+| Grafana | grafana | 3002 | prometheus, loki | http://localhost:3002 | https://grafana.homelab.com |
+| Loki | loki | 3100 | None | http://localhost:3100 | https://loki.homelab.com |
+
+**HTTPS Access Notes:**
+- Accessible from any device on Tailscale network
+- Requires Pi-hole as Tailscale DNS (already configured)
+- Uses self-signed certificates (trust Caddy's CA for no warnings)
+- See `platform/caddy/QUICKSTART.md` for setup
 
 ## Common Commands
 
@@ -87,6 +103,24 @@ cd platform/postgres && docker compose up -d pgadmin
 **Stop pgAdmin:**
 ```bash
 cd platform/postgres && docker compose stop pgadmin
+```
+
+**Caddy (HTTPS Reverse Proxy):**
+```bash
+# Start Caddy
+cd platform/caddy && docker compose up -d
+
+# Stop Caddy
+cd platform/caddy && docker compose down
+
+# View logs
+cd platform/caddy && docker compose logs -f
+
+# Reload configuration (without downtime)
+cd platform/caddy && docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
+
+# Integrate existing services with Caddy
+./scripts/integrate-caddy.sh
 ```
 
 **Manual service management:**

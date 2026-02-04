@@ -196,6 +196,11 @@ main() {
     start_service "Monitoring (Prometheus, Grafana, Loki)" "system/monitoring" || log_warning "Monitoring failed to start, continuing..."
     echo ""
 
+    # Phase 5: Start reverse proxy (Caddy)
+    log "Phase 5: Starting reverse proxy..."
+    start_service "Caddy (HTTPS Reverse Proxy)" "platform/caddy" || log_warning "Caddy failed to start, continuing..."
+    echo ""
+
     # Summary
     log "========================================"
     log "Startup Complete"
@@ -206,12 +211,20 @@ main() {
     echo ""
     log_success "All services startup sequence completed!"
     echo ""
-    log "Access points:"
+    log "Direct access points (localhost):"
     log "  - Homepage:    http://homelab-01/"
     log "  - Immich:      http://localhost:2283"
     log "  - Pi-hole:     http://localhost:8080/admin"
     log "  - Grafana:     http://localhost:3002"
     log "  - Prometheus:  http://localhost:9091"
+    echo ""
+    log "HTTPS access via Caddy (from Tailscale network):"
+    log "  - Immich:      https://immich.homelab.com"
+    log "  - Gitea:       https://gitea.homelab.com"
+    log "  - Grafana:     https://grafana.homelab.com"
+    log "  - Prometheus:  https://prometheus.homelab.com"
+    log "  - Loki:        https://loki.homelab.com"
+    log "  - Pi-hole:     https://pihole.homelab.com"
     echo ""
     log "To start pgAdmin manually:"
     log "  cd platform/postgres && docker compose up -d pgadmin"
