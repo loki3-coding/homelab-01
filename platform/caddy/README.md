@@ -24,7 +24,7 @@ Internet/Tailscale → Caddy (443) → Internal Services
          │   grafana.homelab.com     │ → grafana:3000
          │   prometheus.homelab.com  │ → prometheus:9090
          │   loki.homelab.com        │ → loki:3100
-         │   pihole.homelab.com      │ → localhost:8080
+         │   home.homelab.com        │ → homepage:3000
          └───────────────────────────┘
 ```
 
@@ -37,7 +37,10 @@ Internet/Tailscale → Caddy (443) → Internal Services
 | Grafana | http://localhost:3002 | https://grafana.homelab.com |
 | Prometheus | http://localhost:9091 | https://prometheus.homelab.com |
 | Loki | http://localhost:3100 | https://loki.homelab.com |
-| Pi-hole | http://localhost:8080/admin | https://pihole.homelab.com |
+| Homepage | http://localhost:3001 | https://home.homelab.com |
+| Pi-hole | http://100.126.93.59:8080/admin | Direct HTTP only* |
+
+**Note:** Pi-hole uses host network mode and is accessed directly (not through Caddy) due to Docker networking limitations. Access via Tailscale IP or LAN IP.
 
 ## First-Time Setup
 
