@@ -33,7 +33,7 @@
 - Infrastructure:
     - Portainer:
         icon: docker
-        href: http://homelab-01:9000
+        href: https://portainer.homelab.com
         description: Docker UI
 
     - Pi-hole:

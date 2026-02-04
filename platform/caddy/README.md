@@ -37,6 +37,7 @@ Internet/Tailscale → Caddy (443) → Internal Services
 | Grafana | http://localhost:3002 | https://grafana.homelab.com |
 | Prometheus | http://localhost:9091 | https://prometheus.homelab.com |
 | Loki | http://localhost:3100 | https://loki.homelab.com |
+| Portainer | http://localhost:9000 | https://portainer.homelab.com |
 | Homepage | http://localhost:3001 | https://home.homelab.com |
 | Pi-hole | http://100.126.93.59:8080/admin | Direct HTTP only* |
 
