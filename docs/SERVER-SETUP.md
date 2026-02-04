@@ -217,17 +217,22 @@ This will:
 - Configure temporary DNS (1.1.1.1)
 - Prepare for Pi-hole DNS
 
-### 5. Service Firewall Rules
+### 5. Verify Firewall Configuration
 
-After starting services (Pi-hole, etc.), run:
+The main setup script (`server-setup.sh`) already configures basic firewall rules. If you need to recreate all firewall rules from scratch with proper comments:
 
 ```bash
-sudo ./scripts/setup-firewall-services.sh
+sudo ./scripts/setup-firewall-documented.sh
 ```
 
-This adds firewall rules for:
-- Pi-hole admin interface (port 8080)
-- Docker bridge forwarding
+This will backup existing rules and configure:
+- Tailscale VPN to LAN forwarding
+- DNS (Pi-hole) on LAN and Tailscale
+- SSH on LAN only (blocked on Tailscale)
+- Caddy proxy to Pi-hole (port 8080)
+- HTTPS (Caddy) on LAN and Tailscale
+
+See [FIREWALL-RULES.md](FIREWALL-RULES.md) for detailed firewall documentation.
 
 ### 6. Reboot
 
@@ -390,7 +395,7 @@ Common names:
 
 ### Firewall Rules Template
 
-Current configuration from notes:
+Current configuration (15 rules: 8 IPv4 + 7 IPv6):
 
 ```
 username@homelab-01:~$ sudo ufw status numbered
@@ -398,23 +403,31 @@ Status: active
 
      To                         Action      From
      --                         ------      ----
-[ 1] Anywhere on tailscale0     ALLOW IN    Anywhere
-[ 2] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on tailscale0
-[ 3] 53 on enp1s0f1             ALLOW IN    Anywhere
-[ 4] 53 on tailscale0           ALLOW IN    Anywhere
-[ 5] 22 on enp1s0f1             ALLOW IN    Anywhere
-[ 6] 22 on tailscale0           DENY IN     Anywhere
-[ 7] 8080/tcp                   ALLOW IN    172.18.0.0/16                # Caddy to Pi-hole
-[ 8] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on br-3a82f996c3e5  # Caddy proxy network
-[ 9] Anywhere (v6) on tailscale0 ALLOW IN    Anywhere (v6)
-[10] Anywhere (v6) on enp1s0f1  ALLOW FWD   Anywhere (v6) on tailscale0
-[11] 53 (v6) on enp1s0f1        ALLOW IN    Anywhere (v6)
-[12] 53 (v6) on tailscale0      ALLOW IN    Anywhere (v6)
-[13] 22 (v6) on enp1s0f1        ALLOW IN    Anywhere (v6)
-[14] 22 (v6) on tailscale0      DENY IN     Anywhere (v6)
-[15] Anywhere (v6) on enp1s0f1  ALLOW FWD   Anywhere (v6) on docker0
-[16] Anywhere (v6) on enp1s0f1  ALLOW FWD   Anywhere (v6) on br-3a82f996c3e5
+[ 1] Anywhere on enp1s0f1       ALLOW FWD   Anywhere on tailscale0       # Tailscale VPN to LAN forwarding
+[ 2] 53 on enp1s0f1             ALLOW IN    Anywhere                     # Pi-hole DNS on LAN
+[ 3] 53 on tailscale0           ALLOW IN    Anywhere                     # Pi-hole DNS on Tailscale
+[ 4] 22 on enp1s0f1             ALLOW IN    Anywhere                     # SSH on LAN only
+[ 5] 22 on tailscale0           DENY IN     Anywhere                     # Block SSH on Tailscale (security)
+[ 6] 8080/tcp                   ALLOW IN    172.18.0.0/16                # Caddy proxy to Pi-hole
+[ 7] 443/tcp on enp1s0f1        ALLOW IN    Anywhere                     # Caddy HTTPS on LAN
+[ 8] 443/tcp on tailscale0      ALLOW IN    Anywhere                     # Caddy HTTPS on Tailscale
+[ 9] Anywhere (v6) on enp1s0f1  ALLOW FWD   Anywhere (v6) on tailscale0  # Tailscale to LAN (IPv6)
+[10] 53 (v6) on enp1s0f1        ALLOW IN    Anywhere (v6)                # Pi-hole DNS on LAN (IPv6)
+[11] 53 (v6) on tailscale0      ALLOW IN    Anywhere (v6)                # Pi-hole DNS on Tailscale (IPv6)
+[12] 22 (v6) on enp1s0f1        ALLOW IN    Anywhere (v6)                # SSH on LAN only (IPv6)
+[13] 22 (v6) on tailscale0      DENY IN     Anywhere (v6)                # Block SSH on Tailscale (IPv6)
+[14] 443/tcp (v6) on enp1s0f1   ALLOW IN    Anywhere (v6)                # Caddy HTTPS on LAN (IPv6)
+[15] 443/tcp (v6) on tailscale0 ALLOW IN    Anywhere (v6)                # Caddy HTTPS on Tailscale (IPv6)
 ```
+
+**Key Rules:**
+- **Rules 1, 9**: Tailscale VPN → LAN forwarding (allows VPN access to LAN resources)
+- **Rules 2-3, 10-11**: DNS on both LAN and Tailscale (Pi-hole)
+- **Rules 4-5, 12-13**: SSH allowed on LAN only, blocked on Tailscale (security)
+- **Rule 6**: Caddy proxy network (172.18.0.0/16) → Pi-hole on host network (port 8080)
+- **Rules 7-8, 14-15**: HTTPS on both LAN and Tailscale (Caddy reverse proxy)
+
+See [FIREWALL-RULES.md](FIREWALL-RULES.md) for detailed documentation and setup scripts.
 
 ### Service Ports
 

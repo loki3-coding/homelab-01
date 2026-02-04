@@ -148,8 +148,6 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 **Initial Setup:**
 - **[SERVER-SETUP.md](docs/SERVER-SETUP.md)** - Complete server setup from scratch
-  - Ubuntu installation, network config, Docker setup
-  - Tailscale VPN, SSH hardening, firewall rules
 
 **Daily Operations:**
 - **[STARTUP.md](docs/STARTUP.md)** - Service startup/shutdown and auto-start

@@ -235,40 +235,37 @@ phase7_configure_firewall() {
     ufw default deny incoming
     ufw default allow outgoing
 
-    # Allow all traffic on Tailscale interface
-    log "Allowing traffic on ${TAILSCALE_INTERFACE}..."
-    ufw allow in on ${TAILSCALE_INTERFACE}
-
-    # Allow traffic from MacBook on LAN
-    log "Allowing traffic from MacBook (${MACBOOK_LAN_IP})..."
-    ufw allow in from ${MACBOOK_LAN_IP}
-
-    # Allow forwarding from Tailscale to LAN
+    # Rule 1: Allow forwarding from Tailscale to LAN
     log "Allowing forwarding from Tailscale to LAN..."
-    ufw route allow in on ${TAILSCALE_INTERFACE} out on ${LAN_INTERFACE}
+    ufw route allow in on ${TAILSCALE_INTERFACE} out on ${LAN_INTERFACE} comment 'Tailscale VPN to LAN forwarding'
 
-    # Allow DNS (port 53) on LAN interface
+    # Rule 2-3: Allow DNS (port 53) - Pi-hole
     log "Allowing DNS (port 53) on ${LAN_INTERFACE}..."
-    ufw allow in on ${LAN_INTERFACE} to any port 53
+    ufw allow in on ${LAN_INTERFACE} to any port 53 comment 'Pi-hole DNS on LAN'
 
-    # Deny DNS on Tailscale (optional - use LAN DNS only)
-    log "Denying DNS on ${TAILSCALE_INTERFACE}..."
-    ufw deny in on ${TAILSCALE_INTERFACE} to any port 53
+    log "Allowing DNS (port 53) on ${TAILSCALE_INTERFACE}..."
+    ufw allow in on ${TAILSCALE_INTERFACE} to any port 53 comment 'Pi-hole DNS on Tailscale'
 
-    # Enable SSH service
-    log "Enabling SSH service..."
+    # Rule 4-5: SSH Access
+    log "Configuring SSH access..."
     systemctl enable ssh
     systemctl start ssh
     log_success "SSH service enabled and started"
 
-    # Allow SSH on LAN interface only
-    log "Allowing SSH (port 22) on ${LAN_INTERFACE}..."
-    ufw allow in on ${LAN_INTERFACE} to any port 22
+    # Allow SSH on LAN only
+    ufw allow in on ${LAN_INTERFACE} to any port 22 comment 'SSH on LAN only'
 
-    # Deny SSH on other interfaces
-    log "Denying SSH on non-LAN interfaces..."
-    ufw deny 22
-    ufw deny in on ${TAILSCALE_INTERFACE} to any port 22
+    # Deny SSH on Tailscale (security)
+    ufw deny in on ${TAILSCALE_INTERFACE} to any port 22 comment 'Block SSH on Tailscale (security)'
+
+    # Rule 6: Caddy proxy to Pi-hole (add after Caddy is installed)
+    log "Note: Rule 6 (Caddy → Pi-hole) should be added after Caddy setup:"
+    log "  sudo ufw allow from 172.18.0.0/16 to any port 8080 proto tcp comment 'Caddy proxy to Pi-hole'"
+
+    # Rule 7-8: HTTPS (Caddy) - add after Caddy is installed
+    log "Note: HTTPS rules should be added after Caddy setup:"
+    log "  sudo ufw allow in on ${LAN_INTERFACE} to any port 443 proto tcp comment 'Caddy HTTPS on LAN'"
+    log "  sudo ufw allow in on ${TAILSCALE_INTERFACE} to any port 443 proto tcp comment 'Caddy HTTPS on Tailscale'"
 
     # Enable UFW
     log "Enabling UFW..."
@@ -278,6 +275,10 @@ phase7_configure_firewall() {
     echo ""
     log "Current firewall rules:"
     ufw status numbered
+
+    echo ""
+    log_success "Initial firewall setup complete"
+    log "Additional rules (Caddy HTTPS, Docker) will be added during service setup"
     echo ""
 }
 
