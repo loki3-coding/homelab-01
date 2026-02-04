@@ -9,6 +9,7 @@ Caddy serves as the HTTPS/TLS reverse proxy for all homelab services, providing:
 ## Quick Links
 
 - **[QUICKSTART.md](QUICKSTART.md)** - Get HTTPS working in 5 minutes
+- **[PIHOLE_HTTPS_SOLUTION.md](PIHOLE_HTTPS_SOLUTION.md)** - Pi-hole HTTPS setup (requires UFW rule)
 - **[Caddy Documentation](https://caddyserver.com/docs/)** - Official Caddy docs
 
 ## Architecture
@@ -25,7 +26,10 @@ Internet/Tailscale → Caddy (443) → Internal Services
          │   prometheus.homelab.com  │ → prometheus:9090
          │   loki.homelab.com        │ → loki:3100
          │   home.homelab.com        │ → homepage:3000
+         │   pihole.homelab.com      │ → 172.18.0.1:8080 (host)*
          └───────────────────────────┘
+
+         * Pi-hole requires UFW rule (see PIHOLE_HTTPS_SOLUTION.md)
 ```
 
 ## Service URLs
@@ -39,9 +43,9 @@ Internet/Tailscale → Caddy (443) → Internal Services
 | Loki | http://localhost:3100 | https://loki.homelab.com |
 | Portainer | http://localhost:9000 | https://portainer.homelab.com |
 | Homepage | http://localhost:3001 | https://home.homelab.com |
-| Pi-hole | http://100.126.93.59:8080/admin | Direct HTTP only* |
+| Pi-hole | http://homelab-01:8080/admin | https://pihole.homelab.com/admin* |
 
-**Note:** Pi-hole uses host network mode and is accessed directly (not through Caddy) due to Docker networking limitations. Access via Tailscale IP or LAN IP.
+**Note:** Pi-hole uses host network mode and requires a [special UFW firewall rule](PIHOLE_HTTPS_SOLUTION.md) to allow Caddy to proxy HTTPS traffic.
 
 ## First-Time Setup
 
@@ -109,6 +113,10 @@ docker ps | grep <service-name>     # Check backend running
 docker network inspect proxy        # Verify both on proxy network
 nslookup immich.homelab.com         # Verify DNS (should return 100.x.y.z)
 ```
+
+**Pi-hole specific issues:**
+- See [PIHOLE_HTTPS_SOLUTION.md](PIHOLE_HTTPS_SOLUTION.md) for detailed troubleshooting
+- Requires UFW rule: `sudo ufw allow from 172.18.0.0/16 to any port 8080 proto tcp`
 
 **Caddy won't start:**
 ```bash

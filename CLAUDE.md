@@ -86,6 +86,7 @@ homelab-01/
 - Accessible from any device on Tailscale network
 - Requires Pi-hole as Tailscale DNS (already configured)
 - Uses self-signed certificates (trust Caddy's CA for no warnings)
+- **Pi-hole requires UFW rule**: `sudo ufw allow from 172.18.0.0/16 to any port 8080 proto tcp` (allows Caddy proxy network to access Pi-hole's host port)
 - See `platform/caddy/QUICKSTART.md` for setup
 
 ## Common Commands

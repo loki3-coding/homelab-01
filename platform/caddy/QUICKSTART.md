@@ -230,6 +230,25 @@ docker network ls | grep -E "proxy|db-net|monitoring-net|immich-net|gitea-net"
 docker network create <network-name>
 ```
 
+### Pi-hole specific: "Connection timeout" or "TLS handshake error"
+
+**Pi-hole requires a special UFW firewall rule** because it runs in host network mode.
+
+**Add the required rule:**
+```bash
+sudo ufw allow from 172.18.0.0/16 to any port 8080 proto tcp comment 'Caddy to Pi-hole'
+```
+
+**Verify it's working:**
+```bash
+# Test from Caddy container
+docker exec caddy wget -q -O- http://172.18.0.1:8080/admin | head -5
+
+# Should return HTML (<!doctype html>)
+```
+
+**See full details:** [PIHOLE_HTTPS_SOLUTION.md](PIHOLE_HTTPS_SOLUTION.md)
+
 ## Next Steps
 
 1. **Bookmark HTTPS URLs** (see [README.md](README.md#service-urls) for full list)
