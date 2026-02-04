@@ -38,7 +38,7 @@
 
     - Pi-hole:
         icon: pi-hole
-        href: http://100.126.93.59:8080/admin
+        href: http://homelab-01:8080/admin
         description: DNS & Adblock
 
     - pgAdmin:
