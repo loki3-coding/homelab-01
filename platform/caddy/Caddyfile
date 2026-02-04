@@ -66,16 +66,6 @@ loki.homelab.com {
 	}
 }
 
-# Pi-hole - DNS & Ad Blocking
-# Note: Pi-hole uses host network mode, so we connect to localhost
-pihole.homelab.com {
-	reverse_proxy localhost:8080
-
-	log {
-		output file /data/logs/pihole.log
-		format json
-	}
-}
 
 # Homepage - Dashboard
 home.homelab.com {
