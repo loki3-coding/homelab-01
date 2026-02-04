@@ -52,5 +52,4 @@ grafana.homelab.com	100.x.y.z
 home.homelab.com	100.x.y.z
 immich.homelab.com	100.x.y.z
 loki.homelab.com	100.x.y.z
-portainer.homelab.com	100.x.y.z
 prometheus.homelab.com	100.x.y.z
