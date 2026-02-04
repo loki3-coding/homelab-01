@@ -76,3 +76,13 @@ home.homelab.com {
 		format json
 	}
 }
+
+# Portainer - Docker Management UI
+portainer.homelab.com {
+	reverse_proxy portainer:9000
+
+	log {
+		output file /data/logs/portainer.log
+		format json
+	}
+}
