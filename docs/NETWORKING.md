@@ -31,7 +31,7 @@
                 │ DNS response returned         │     Caddy Reverse Proxy        │
                 ▼                               │   (TLS terminate – L7)         │
 ┌───────────────────────────────┐               │   - Listens on :443            │
-│           Client(s)            │              │   - Let's Encrypt DNS-01       │
+│           Client(s)            │              │   - Caddy Local CA.            │
 │  DNS resolved: 100.x.y.z       │              │   - Host-based routing         │
 └───────────────────────────────┘               └───────────────┬───────────────┘
                                                                 │
