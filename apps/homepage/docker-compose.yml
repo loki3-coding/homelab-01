@@ -16,7 +16,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - HOMEPAGE_ALLOWED_HOSTS=homelab-01,home.homelab.com
+      - HOMEPAGE_ALLOWED_HOSTS=home.homelab.com
 
     security_opt:
       - no-new-privileges:true
