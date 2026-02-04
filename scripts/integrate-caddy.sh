@@ -42,7 +42,7 @@ backup_file() {
 # Update Gitea docker-compose.yml
 update_gitea() {
     log "Updating Gitea configuration..."
-    local compose_file="${PROJECT_ROOT}/infrastructure/gitea/docker-compose.yml"
+    local compose_file="${PROJECT_ROOT}/core/gitea/docker-compose.yml"
 
     if [ ! -f "$compose_file" ]; then
         log_error "Gitea docker-compose.yml not found"

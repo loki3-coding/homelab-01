@@ -82,8 +82,8 @@ A compact, Docker Compose-driven personal homelab for local/home server services
    Copy the example files and set your own secure passwords:
    ```bash
    # Platform services
-   cp infrastructure/postgres/.env.example infrastructure/postgres/.env
-   cp infrastructure/gitea/.env.example infrastructure/gitea/.env
+   cp core/postgres/.env.example core/postgres/.env
+   cp core/gitea/.env.example core/gitea/.env
 
    # Applications
    cp apps/immich/.env.example apps/immich/.env
@@ -96,8 +96,8 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 3. **Edit each `.env` file:**
    ```bash
    # Replace all instances of "your-secure-password-here" with strong passwords
-   nano infrastructure/postgres/.env
-   nano infrastructure/gitea/.env
+   nano core/postgres/.env
+   nano core/gitea/.env
    nano apps/immich/.env
    nano system/pi-hole/.env
    nano system/monitoring/.env
@@ -137,20 +137,20 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 ## Services
 
-### Infrastructure (Foundation)
+### Core Services
 | Service | Port | Description | Directory |
 |---------|------|-------------|-----------|
-|**Postgres** | Internal | Database for Gitea, Immich, Grafana | [`infrastructure/postgres/`](infrastructure/postgres/) |
-|**PgAdmin** | 5050 | Database management UI | [`infrastructure/postgres/`](infrastructure/postgres/) |
+|**Postgres** | Internal | Database for Gitea, Immich, Grafana | [`core/postgres/`](core/postgres/) |
+|**PgAdmin** | 5050 | Database management UI | [`core/postgres/`](core/postgres/) |
 
-### Applications (User-Facing)
+### Applications
 | Service | Port | Description | HTTPS Access | Directory |
 |---------|------|-------------|--------------|-----------|
 |**Gitea** | 3000, 2222 | Self-hosted Git service | https://gitea.homelab.com | [`apps/gitea/`](apps/gitea/) |
 |**Immich** | 2283 | Photo & video management | https://immich.homelab.com | [`apps/immich/`](apps/immich/) |
 |**Homepage** | 3000 | Homelab dashboard | https://home.homelab.com | [`apps/homepage/`](apps/homepage/) |
 
-### System Services (Infrastructure)
+### System Services
 | Service | Port | Description | HTTPS Access | Directory |
 |---------|------|-------------|--------------|-----------|
 |**Caddy** | 80, 443 | HTTPS reverse proxy & TLS termination | N/A (proxy) | [`system/caddy/`](system/caddy/) |
@@ -166,7 +166,7 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 ```
 homelab-01/
-├── infrastructure/    # Foundation services (Phase 1)
+├── core/    # Foundation services (Phase 1)
 │   └── postgres/      # Database + pgAdmin
 │
 ├── apps/              # User-facing applications (Phase 2-3)
@@ -186,7 +186,7 @@ homelab-01/
 ```
 
 **Service Tiers:**
-- **infrastructure/**: Foundation services that others depend on
+- **core/**: Foundation services that others depend on
 - **apps/**: User-facing applications (depend on infrastructure)
 - **system/**: Infrastructure services (networking, monitoring, reverse proxy)
 

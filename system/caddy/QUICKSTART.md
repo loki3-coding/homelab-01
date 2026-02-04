@@ -51,7 +51,7 @@ This script will:
 
 Edit each service's `docker-compose.yml`:
 
-**Gitea** (`infrastructure/gitea/docker-compose.yml`):
+**Gitea** (`core/gitea/docker-compose.yml`):
 ```yaml
 networks:
   - gitea-net
@@ -95,7 +95,7 @@ services:
 
 ```bash
 # Restart each service after updating
-cd ~/github/homelab-01/infrastructure/gitea
+cd ~/github/homelab-01/core/gitea
 docker compose down && docker compose up -d
 
 cd ~/github/homelab-01/apps/immich

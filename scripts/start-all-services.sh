@@ -168,7 +168,7 @@ main() {
     log "Phase 1: Starting database services..."
     log "Starting PostgreSQL (pgAdmin excluded - start manually if needed)..."
 
-    cd "${PROJECT_ROOT}/infrastructure/postgres"
+    cd "${PROJECT_ROOT}/core/postgres"
     if docker compose up -d postgres; then
         log_success "PostgreSQL started successfully"
     else
@@ -227,7 +227,7 @@ main() {
     log "  - Pi-hole:     https://pihole.homelab.com"
     echo ""
     log "To start pgAdmin manually:"
-    log "  cd infrastructure/postgres && docker compose up -d pgadmin"
+    log "  cd core/postgres && docker compose up -d pgadmin"
     echo ""
 }
 

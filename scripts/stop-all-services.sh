@@ -106,7 +106,7 @@ main() {
     log "Phase 4: Stopping database services..."
     log "Stopping PostgreSQL (pgAdmin excluded - stop manually if needed)..."
 
-    cd "${PROJECT_ROOT}/infrastructure/postgres"
+    cd "${PROJECT_ROOT}/core/postgres"
     if docker compose stop postgres; then
         log_success "PostgreSQL stopped successfully"
     else
@@ -128,7 +128,7 @@ main() {
     docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "postgres|gitea|immich|homepage|pihole|prometheus|grafana|loki|promtail|node-exporter|cadvisor" || log_success "All homelab services stopped"
     echo ""
     log "Note: If pgAdmin is running, stop it manually:"
-    log "  cd infrastructure/postgres && docker compose stop pgadmin"
+    log "  cd core/postgres && docker compose stop pgadmin"
     echo ""
 }
 

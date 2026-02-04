@@ -42,7 +42,7 @@ ssh username@homeLAN-01
 **Local Repository** (`/Users/standard-xvy/Github/homelab-01`):
 ```
 homelab-01/
-├── infrastructure/    # Foundation services
+├── core/    # Foundation services
 │   └── postgres/      # Database + pgAdmin
 ├── apps/              # User-facing applications
 │   ├── gitea/         # Git service
@@ -98,12 +98,12 @@ homelab-01/
 
 **Note:** pgAdmin is excluded from automatic startup. Start manually when needed:
 ```bash
-cd infrastructure/postgres && docker compose up -d pgadmin
+cd core/postgres && docker compose up -d pgadmin
 ```
 
 **Stop pgAdmin:**
 ```bash
-cd infrastructure/postgres && docker compose stop pgadmin
+cd core/postgres && docker compose stop pgadmin
 ```
 
 **Caddy (HTTPS Reverse Proxy):**
@@ -204,7 +204,7 @@ cd ~/github/homelab-01/scripts
 - `monitoring/.env`: GRAFANA_ADMIN_PASSWORD
 
 **Data Storage (on homelab server):**
-- Postgres: `/home/username/github/homelab-01/infrastructure/postgres/data`
+- Postgres: `/home/username/github/homelab-01/core/postgres/data`
 - Immich uploads: `/home/username/immich` (163GB on 500GB HDD - **64 bad sectors!**)
 - Immich thumbnails: `/home/username/immich-thumbs` (SSD - configured, not yet applied)
 - Gitea: Docker volumes (managed by Docker)
