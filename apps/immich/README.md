@@ -156,9 +156,67 @@ du -h --max-depth=1 /home/username/immich | sort -h
 ### Check HDD Health
 
 ```bash
-sudo smartctl -H /dev/sdb              # Quick health check
+sudo smartctl -H /dev/sdb              # Quick health check (use /dev/sdc if device name changed)
 sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending)"  # Bad sectors
 ```
+
+---
+
+## ⚠️ Troubleshooting
+
+### Images Not Loading / "Failed to Download" Errors
+
+**Symptoms:**
+- Immich web interface shows images but they won't open
+- "Failed to download original image" errors
+- Thumbnails work but full images don't load
+- Mobile app can't download photos
+
+**Cause:**
+The Immich data drive is not mounted at `/home/loki3/immich`. This can happen when:
+- Server reboots and automount fails
+- USB drive is unplugged/replugged
+- Device names change (the HDD device name changed from `/dev/sdb` to `/dev/sdc`)
+
+**Quick Fix:**
+
+1. **Check if drive is mounted:**
+   ```bash
+   df -h | grep immich
+   mountpoint /home/loki3/immich
+   ```
+   If you see "is not a mountpoint", the drive isn't mounted.
+
+2. **Mount the drive:**
+   ```bash
+   sudo mount /home/loki3/immich
+   ```
+   This uses the `/etc/fstab` entry which is already configured with the UUID.
+
+3. **Verify data is accessible:**
+   ```bash
+   ls /home/loki3/immich
+   ```
+   You should see: `library/`, `upload/`, `profile/`, `thumbs/`
+
+4. **Restart Immich:**
+   ```bash
+   cd ~/github/homelab-01/apps/immich
+   docker compose restart
+   ```
+
+5. **Check logs for errors:**
+   ```bash
+   docker compose logs -f immich-server
+   ```
+
+**Prevention:**
+The drive is configured in `/etc/fstab` with UUID (not device name) and `x-systemd.automount`, so it should automount on boot. If this issue persists, check systemd mount status:
+```bash
+systemctl status home-loki3-immich.automount
+```
+
+**Note:** The data drive is labeled `IMMICH_DATA` with UUID `66bb0d49-4ffa-4dbe-9ddc-a25cdb9e3b7d`. Device names like `/dev/sdb` or `/dev/sdc` can change, but the UUID stays constant.
 
 ---
 

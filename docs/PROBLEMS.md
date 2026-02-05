@@ -17,6 +17,7 @@
 **Monitor command:**
 ```bash
 ssh loki3@homelab-01
+# Note: Device name changed to /dev/sdc - verify with `lsblk` or `sudo blkid`
 sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending|Uncorrectable)"
 ```
 

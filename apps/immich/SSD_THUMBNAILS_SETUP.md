@@ -182,6 +182,7 @@ Your HDD is showing signs of failure (64 bad sectors). Consider:
 
 Check HDD health regularly:
 ```bash
+# Note: Device name may be /dev/sdc if it changed - check with `lsblk` or `sudo blkid`
 sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending|Uncorrectable)"
 ```
 

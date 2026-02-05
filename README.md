@@ -2,7 +2,7 @@
 
 A compact, Docker Compose-driven personal homelab for local/home server services.
 
-**Homepage:** [http://homelab-01/](http://homelab-01/)
+**Homepage:** [https://home.homelab.com/](https://home.homelab.com/)
 
 ---
 
