@@ -182,6 +182,16 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 ---
 
+## Grafana Dashboards
+
+**Server Metrics Dashboard:**
+![Grafana Server Metrics](img/grafana-server-metrics.png)
+
+**Container Metrics Dashboard:**
+![Grafana Container Metrics](img/grafana-container-metrics.png)
+
+---
+
 ## Repository Structure
 
 ```

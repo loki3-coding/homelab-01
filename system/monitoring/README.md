@@ -90,6 +90,20 @@ Grafana will automatically load them.
 ### Dashboards
 - **Homelab Overview**: System metrics, container stats, and network traffic
 
+## Grafana Dashboards
+
+**Server Metrics Dashboard:**
+
+![Grafana Server Metrics](../../img/grafana-server-metrics.png)
+
+*Real-time monitoring of CPU, memory, disk usage, and system load*
+
+**Container Metrics Dashboard:**
+
+![Grafana Container Metrics](../../img/grafana-container-metrics.png)
+
+*Docker container resource usage, CPU, memory, and network statistics*
+
 ## Memory Usage
 
 Estimated memory usage for the monitoring stack:
