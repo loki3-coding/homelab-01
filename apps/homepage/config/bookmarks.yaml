@@ -1,5 +1,10 @@
 - Community:
-    - r/selfhosted:
+    - Reddit:
         - abbr: SH
           href: https://www.reddit.com/r/selfhosted/
           description: Self-hosting community
+
+    - Hacker News:
+        - abbr: HN
+          href: https://news.ycombinator.com
+          description: Tech news and discussions
