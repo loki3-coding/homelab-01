@@ -4,14 +4,26 @@ Complete monitoring solution for homelab-01 using Prometheus, Grafana, and Loki.
 
 ## Services
 
-| Service | Purpose | Port |
-|---------|---------|------|
-| Prometheus | Metrics collection and storage | 9091 |
-| Grafana | Visualization and dashboards | 3002 |
-| Loki | Log aggregation | 3100 (internal) |
-| Promtail | Log shipping agent | - |
-| Node Exporter | Host system metrics | 9100 (internal) |
-| cAdvisor | Container metrics | 8081 |
+| Service | Purpose | Port | Status |
+|---------|---------|------|--------|
+| Prometheus | Metrics collection and storage | 9091 | ✅ Active |
+| Grafana | Visualization and dashboards | 3002 | ✅ Active |
+| Loki | Log aggregation | 3100 (internal) | ✅ Active |
+| Promtail | Log shipping agent | - | ✅ Active |
+| Node Exporter | Host system metrics | 9100 (internal) | ✅ Active |
+| cAdvisor | Container metrics | 8081 | ✅ Active |
+
+## Metrics Overview
+
+| Metric Type | Status | Details |
+|-------------|--------|---------|
+| CPU Usage | ✅ Available | Node Exporter |
+| Memory Usage | ✅ Available | Node Exporter |
+| Disk Usage | ✅ Available | Node Exporter |
+| Network Traffic | ✅ Available | Node Exporter |
+| Container Metrics | ✅ Available | cAdvisor |
+| System Logs | ✅ Available | Loki + Promtail |
+| **Power Consumption** | ❌ **Not Configured** | **[Setup Guide](ENERGY-MONITORING.md)** |
 
 ## Architecture
 
@@ -89,6 +101,20 @@ Grafana will automatically load them.
 
 ### Dashboards
 - **Homelab Overview**: System metrics, container stats, and network traffic
+
+## Energy Monitoring
+
+**Status**: ❌ Not currently configured
+
+Power consumption monitoring is available through multiple methods:
+
+- **[Quick Start Guide](QUICK-START-ENERGY.md)** - Get started in 5 minutes with Tasmota smart plug
+- **[Full Energy Monitoring Guide](ENERGY-MONITORING.md)** - Complete documentation covering:
+  - IPMI/BMC power monitoring (for servers with IPMI)
+  - Smart plug integration (Tasmota, TP-Link Kasa, Shelly)
+  - Software-based power estimation (Scaphandre)
+  - UPS monitoring (Network UPS Tools)
+  - Grafana dashboard examples and cost tracking
 
 ## Grafana Dashboards
 
