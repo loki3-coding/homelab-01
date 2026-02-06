@@ -108,7 +108,6 @@ Grafana will automatically load them.
 
 Power consumption monitoring is available through multiple methods:
 
-- **[Quick Start Guide](QUICK-START-ENERGY.md)** - Get started in 5 minutes with Tasmota smart plug
 - **[Full Energy Monitoring Guide](ENERGY-MONITORING.md)** - Complete documentation covering:
   - IPMI/BMC power monitoring (for servers with IPMI)
   - Smart plug integration (Tasmota, TP-Link Kasa, Shelly)
