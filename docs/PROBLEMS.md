@@ -27,21 +27,32 @@ sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending|Uncorrectable)"
 
 ---
 
-### Git Security: Prevent Committing Secrets 🔒 IMPORTANT
+## Resolved Issues
 
-**Issue:** Risk of accidentally committing sensitive files (private keys, .env files, passwords) to git history.
+### Git Security: Accidentally Committed Private Key ✅ SOLVED
 
-**Status:** Protection available via git hooks
+**Problem:** A private key (`nginx/certs/cockpit.homelab-key.pem`) was accidentally committed to git history.
 
-**Background:**
-- A private key (`nginx/certs/cockpit.homelab-key.pem`) was previously committed to git history
-- Even though the file was later deleted, it remained in git history
+**Status:** Resolved on 2026-02-07
+
+**What happened:**
+- Private key for Cockpit was committed in initial nginx setup (never actually used)
+- File was later deleted, but remained accessible in git history
 - GitGuardian detected the exposed key and sent security alert
-- Required complete git history rewrite to remove the key
+- Anyone with repository access could retrieve the key from old commits
 
-**Solution:** Pre-commit hook that blocks dangerous commits
+**Solution implemented:**
+1. **Removed key from git history** using `git-filter-repo`
+   - Rewrote entire git history (123 commits processed)
+   - Force-pushed to both Gitea and GitHub
+   - Key completely removed from all commits
 
-**Installation:**
+2. **Installed pre-commit hooks** to prevent future incidents
+   - Automatically blocks dangerous commits before they happen
+   - Checks for private keys, .env files, API tokens
+   - Added to server setup process (step 5)
+
+**How to install protection:**
 ```bash
 # Install git hooks (one-time setup after cloning repo)
 cd ~/github/homelab-01
@@ -70,24 +81,24 @@ git commit -m "Add key"
 ❌ COMMIT BLOCKED
 ```
 
-**Benefits:**
-- ✅ Prevents accidents before they reach git history
-- ✅ No workflow changes (runs automatically)
-- ✅ Protects against security breaches
-- ✅ Avoids costly git history rewrites
+**Results:**
+- ✅ Private key completely removed from git history
+- ✅ GitGuardian alert resolved
+- ✅ Pre-commit hooks protect against future incidents
+- ✅ Hooks automatically installed in server setup process
+- ✅ Both GitHub and Gitea repositories cleaned
 
 **See also:**
-- [scripts/git-hooks/README.md](../scripts/git-hooks/README.md) - Full documentation
+- [scripts/git-hooks/README.md](../scripts/git-hooks/README.md) - Full git hooks documentation
 - [scripts/git-hooks/pre-commit](../scripts/git-hooks/pre-commit) - Hook source code
+- [scripts/server-setup.sh](../scripts/server-setup.sh) - Includes git hooks installation (step 5)
 
-**Important:**
+**Important notes:**
 - Hooks are LOCAL only (not synced via git for security)
 - Must be installed manually after cloning repository
-- Can be bypassed with `--no-verify` (use with extreme caution!)
+- Included in server setup next steps for new installations
 
 ---
-
-## Resolved Issues
 
 ### Pi-hole HTTPS Access Through Caddy ✅ SOLVED
 
