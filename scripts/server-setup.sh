@@ -308,7 +308,6 @@ phase8_summary() {
     log "     cd ~/github"
     log "     git clone ssh://gitea.homelab/vynguyen/homelab-01.git"
     log "     cd homelab-01"
-    log "     ./scripts/git-hooks/install-hooks.sh"
     log "  4. Configure SSH hardening (run setup-ssh.sh)"
     log "  5. Set up DNS resolution (disable systemd-resolved)"
     log "  6. Start services (see CLAUDE.md for service startup)"

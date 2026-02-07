@@ -128,6 +128,33 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 
 ---
 
+## Developer Setup (Local Machine)
+
+### Install Git Hooks (Prevent Committing Secrets)
+
+**⚠️ IMPORTANT:** Install git hooks on your **local development machine** (MacBook, laptop, etc.) where you commit code.
+
+Git hooks prevent accidentally committing sensitive files like private keys, `.env` files, and passwords to the repository.
+
+**One-time setup after cloning:**
+```bash
+# On your local machine (NOT the server)
+cd ~/path/to/homelab-01
+./scripts/git-hooks/install-hooks.sh
+```
+
+**What it protects against:**
+- ❌ Private keys (`.pem`, `.key`, `.p12`, `.pfx`)
+- ❌ Environment files (`.env`)
+- ❌ API keys and tokens
+
+**How it works:**
+The hook runs automatically before every `git commit` and blocks dangerous commits. Your normal workflow stays the same - no extra steps needed!
+
+**See full documentation:** [Git Hooks README](scripts/git-hooks/README.md)
+
+---
+
 ## Documentation
 
 ### 1. Architecture & Problem Solving
