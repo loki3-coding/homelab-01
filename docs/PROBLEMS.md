@@ -27,6 +27,66 @@ sudo smartctl -a /dev/sdb | grep -E "(Reallocated|Pending|Uncorrectable)"
 
 ---
 
+### Git Security: Prevent Committing Secrets 🔒 IMPORTANT
+
+**Issue:** Risk of accidentally committing sensitive files (private keys, .env files, passwords) to git history.
+
+**Status:** Protection available via git hooks
+
+**Background:**
+- A private key (`nginx/certs/cockpit.homelab-key.pem`) was previously committed to git history
+- Even though the file was later deleted, it remained in git history
+- GitGuardian detected the exposed key and sent security alert
+- Required complete git history rewrite to remove the key
+
+**Solution:** Pre-commit hook that blocks dangerous commits
+
+**Installation:**
+```bash
+# Install git hooks (one-time setup after cloning repo)
+cd ~/github/homelab-01
+./scripts/git-hooks/install-hooks.sh
+```
+
+**What the hook prevents:**
+- ❌ Private key files (`.pem`, `.key`, `.p12`, `.pfx`, `.keystore`)
+- ❌ Private key content (`BEGIN PRIVATE KEY`, `BEGIN RSA PRIVATE KEY`)
+- ❌ Environment files (`.env` - secrets should never be committed)
+- ⚠️  API keys and tokens (warns but doesn't block)
+
+**How it works:**
+```bash
+# Normal workflow - no changes
+git add README.md
+git commit -m "Update docs"
+🔍 Scanning for secrets...
+✅ No secrets detected - commit allowed
+
+# Trying to commit a secret - BLOCKED
+git add server.key
+git commit -m "Add key"
+🔍 Scanning for secrets...
+❌ ERROR: Attempting to commit private key file!
+❌ COMMIT BLOCKED
+```
+
+**Benefits:**
+- ✅ Prevents accidents before they reach git history
+- ✅ No workflow changes (runs automatically)
+- ✅ Protects against security breaches
+- ✅ Avoids costly git history rewrites
+
+**See also:**
+- [scripts/git-hooks/README.md](../scripts/git-hooks/README.md) - Full documentation
+- [scripts/git-hooks/pre-commit](../scripts/git-hooks/pre-commit) - Hook source code
+
+**Important:**
+- Hooks are LOCAL only (not synced via git for security)
+- Must be installed manually after cloning repository
+- Can be bypassed with `--no-verify` (use with extreme caution!)
+
+---
+
 ## Resolved Issues
 
 ### Pi-hole HTTPS Access Through Caddy ✅ SOLVED
