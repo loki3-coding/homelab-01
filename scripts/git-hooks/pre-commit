@@ -1,0 +1,94 @@
+#!/bin/bash
+# Pre-commit hook to prevent committing secrets
+# This hook runs automatically before every git commit
+# Location: .git/hooks/pre-commit
+
+set -e  # Exit on error
+
+echo "🔍 Scanning for secrets before commit..."
+
+# Flag to track if any issues found
+FOUND_ISSUE=0
+
+# Check 1: Block private key files by extension
+echo "  → Checking for private key files..."
+BLOCKED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E "\.(pem|key|p12|pfx|keystore)$" || true)
+if [ -n "$BLOCKED_FILES" ]; then
+    echo ""
+    echo "❌ ERROR: Attempting to commit private key files!"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Blocked files:"
+    echo "$BLOCKED_FILES" | sed 's/^/  - /'
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "💡 These file types should NEVER be committed:"
+    echo "   .pem, .key, .p12, .pfx, .keystore"
+    echo ""
+    echo "To fix: git reset HEAD <file>"
+    FOUND_ISSUE=1
+fi
+
+# Check 2: Block private key content in files
+echo "  → Checking for private key content..."
+if git diff --cached | grep -q "BEGIN.*PRIVATE KEY"; then
+    echo ""
+    echo "❌ ERROR: Private key content detected in staged changes!"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Found patterns like:"
+    echo "  - BEGIN RSA PRIVATE KEY"
+    echo "  - BEGIN PRIVATE KEY"
+    echo "  - BEGIN OPENSSH PRIVATE KEY"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "💡 Remove the private key content before committing"
+    FOUND_ISSUE=1
+fi
+
+# Check 3: Block .env files (except .env.example)
+echo "  → Checking for .env files..."
+ENV_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E "\.env$" | grep -v "\.env\.example$" || true)
+if [ -n "$ENV_FILES" ]; then
+    echo ""
+    echo "❌ ERROR: Attempting to commit .env files!"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Blocked files:"
+    echo "$ENV_FILES" | sed 's/^/  - /'
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "💡 .env files contain secrets and should NOT be committed"
+    echo "   Only .env.example files should be in git"
+    echo ""
+    echo "To fix: git reset HEAD <file>"
+    FOUND_ISSUE=1
+fi
+
+# Check 4: Warn about potential API keys/tokens (not blocking, just warning)
+echo "  → Checking for potential API keys/tokens..."
+POTENTIAL_SECRETS=$(git diff --cached | grep -iE "(api[_-]?key|api[_-]?secret|bearer[_ ]token|password[_ ]?=|secret[_ ]?=)" | grep -v "your-" | grep -v "example" | grep -v "placeholder" | grep -v "CHANGE_ME" || true)
+if [ -n "$POTENTIAL_SECRETS" ]; then
+    echo ""
+    echo "⚠️  WARNING: Potential API keys or secrets detected!"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Please review these lines:"
+    echo "$POTENTIAL_SECRETS" | head -5 | sed 's/^/  /'
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "💡 If these are real secrets, remove them before committing"
+    echo "   Press Ctrl+C to cancel, or Enter to continue anyway"
+    read -r
+fi
+
+# If any critical issues found, block the commit
+if [ $FOUND_ISSUE -eq 1 ]; then
+    echo ""
+    echo "❌ COMMIT BLOCKED due to security issues"
+    echo "   Fix the issues above and try again"
+    echo ""
+    exit 1
+fi
+
+# All checks passed
+echo "✅ No secrets detected - commit allowed"
+echo ""
+
+exit 0
