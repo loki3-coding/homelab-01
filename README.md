@@ -1,6 +1,6 @@
 # homelab-01
 
-A compact, Docker Compose-driven personal homelab for local/home server services.
+Personal home server. Reduce paying for Cloud Services.
 
 **Homepage:** [https://home.homelab.com/](https://home.homelab.com/)
 
@@ -44,114 +44,7 @@ A compact, Docker Compose-driven personal homelab for local/home server services
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Key Design Principles
-
-**Dependency Order:**
-- Core services (database) start first
-- Applications depend on core services
-- System services start last (proxy to applications)
-
-**Security:**
-- All services behind Caddy reverse proxy (HTTPS)
-- Tailscale VPN for remote access
-- UFW firewall with restrictive rules
-- Self-signed TLS certificates via Caddy
-
-**Modularity:**
-- Each service in its own docker-compose.yml
-- Shared networks (proxy, db-net) for inter-service communication
-- Environment-based configuration (.env files)
-
-**Data Storage:**
-- Database: PostgreSQL (shared foundation)
-- Photos: HDD storage (163GB) + SSD thumbnails
-- Backups: External HDD (916GB)
-
 > **Detailed network flow:** See [NETWORKING.md](docs/NETWORKING.md) for DNS, HTTPS, and Tailscale architecture
-
----
-
-## Quick Setup
-
-### Prerequisites
-- Docker Engine and Docker Compose v2
-- Ubuntu Server (or similar Linux distribution)
-- Tailscale account (for VPN access)
-
-### Initial Setup
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/homelab-01.git
-   cd homelab-01
-   ```
-
-2. **Configure environment files:**
-
-   Copy the example files and set your own secure passwords:
-   ```bash
-   # Platform services
-   cp core/postgres/.env.example core/postgres/.env
-   cp core/gitea/.env.example core/gitea/.env
-
-   # Applications
-   cp apps/immich/.env.example apps/immich/.env
-   cp system/pi-hole/.env.example system/pi-hole/.env
-
-   # Monitoring
-   cp system/monitoring/.env.example system/monitoring/.env
-   ```
-
-3. **Edit each `.env` file:**
-   ```bash
-   # Replace all instances of "your-secure-password-here" with strong passwords
-   nano core/postgres/.env
-   nano core/gitea/.env
-   nano apps/immich/.env
-   nano system/pi-hole/.env
-   nano system/monitoring/.env
-   ```
-
-4. **Start all services:**
-   ```bash
-   # SSH to your homelab server
-   ssh username@homelab-01
-
-   # Navigate to repository
-   cd ~/github/homelab-01
-
-   # Start everything
-   ./scripts/start-all-services.sh
-   ```
-
-**For detailed setup instructions, see [SERVER-SETUP.md](docs/SERVER-SETUP.md)**
-
----
-
-## Developer Setup (Local Machine)
-
-### Install Git Hooks (Prevent Committing Secrets)
-
-**⚠️ IMPORTANT:** Install git hooks on your **local development machine** (MacBook, laptop, etc.) where you commit code.
-
-Git hooks prevent accidentally committing sensitive files like private keys, `.env` files, and passwords to the repository.
-
-**One-time setup after cloning:**
-```bash
-# On your local machine (NOT the server)
-cd ~/path/to/homelab-01
-./scripts/git-hooks/install-hooks.sh
-```
-
-**What it protects against:**
-- ❌ Private keys (`.pem`, `.key`, `.p12`, `.pfx`)
-- ❌ Environment files (`.env`)
-- ❌ API keys and tokens
-
-**How it works:**
-The hook runs automatically before every `git commit` and blocks dangerous commits. Your normal workflow stays the same - no extra steps needed!
-
-**See full documentation:** [Git Hooks README](scripts/git-hooks/README.md)
 
 ---
 
@@ -209,6 +102,13 @@ The hook runs automatically before every `git commit` and blocks dangerous commi
 
 ---
 
+## Homepage Dashboard
+
+**Homelab Service Overview:**
+![Homepage Dashboard](img/homepage.png)
+
+---
+
 ## Grafana Dashboards
 
 **Server Metrics Dashboard:**
@@ -251,5 +151,32 @@ homelab-01/
 - Immich uploads: `/home/username/immich` (163GB on 500GB HDD)
 - Immich thumbnails: `/home/username/immich-thumbs` (SSD)
 - Backups: `/mnt/backup` (916GB external HDD)
+
+---
+
+## Developer Setup (Local Machine)
+
+### Install Git Hooks (Prevent Committing Secrets)
+
+**⚠️ IMPORTANT:** Install git hooks on your **local development machine** (MacBook, laptop, etc.) where you commit code.
+
+Git hooks prevent accidentally committing sensitive files like private keys, `.env` files, and passwords to the repository.
+
+**One-time setup after cloning:**
+```bash
+# On your local machine (NOT the server)
+cd ~/path/to/homelab-01
+./scripts/git-hooks/install-hooks.sh
+```
+
+**What it protects against:**
+- ❌ Private keys (`.pem`, `.key`, `.p12`, `.pfx`)
+- ❌ Environment files (`.env`)
+- ❌ API keys and tokens
+
+**How it works:**
+The hook runs automatically before every `git commit` and blocks dangerous commits. Your normal workflow stays the same - no extra steps needed!
+
+**See full documentation:** [Git Hooks README](scripts/git-hooks/README.md)
 
 ---

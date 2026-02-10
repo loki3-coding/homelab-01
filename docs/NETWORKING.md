@@ -49,12 +49,19 @@
 
 ```
 
+**Security:**
+- All services behind Caddy reverse proxy (HTTPS)
+- Tailscale VPN for remote access
+- UFW firewall with restrictive rules
+- Self-signed TLS certificates via Caddy
+
 ## Pi Hole Local DNS
-gitea.homelab.com	100.x.y.z	
-grafana.homelab.com	100.x.y.z
-home.homelab.com	100.x.y.z
-immich.homelab.com	100.x.y.z
-loki.homelab.com	100.x.y.z
-pihole.homelab.com	100.x.y.z
-portainer.homelab.com   100.x.y.z
-prometheus.homelab.com	100.x.y.z
+
+- gitea.homelab.com	100.x.y.z	
+- grafana.homelab.com	100.x.y.z
+- home.homelab.com	100.x.y.z
+- immich.homelab.com	100.x.y.z
+- loki.homelab.com	100.x.y.z
+- pihole.homelab.com	100.x.y.z
+- portainer.homelab.com   100.x.y.z
+- prometheus.homelab.com	100.x.y.z

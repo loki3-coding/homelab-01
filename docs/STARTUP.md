@@ -209,10 +209,28 @@ If the server experiences a power failure:
 
 ## Environment Variables
 
-Ensure all `.env` files are present in their respective service directories:
-- `postgres/.env` - Database credentials
-- `gitea/.env` - Gitea configuration
-- `immich/.env` - Immich database credentials
-- `pi-hole/.env` - Pi-hole admin password
-
 The scripts do not manage `.env` files - they must exist before running.
+
+Copy the example files and set your own secure passwords:
+```bash
+# Platform services
+cp core/postgres/.env.example core/postgres/.env
+cp core/gitea/.env.example core/gitea/.env
+
+# Applications
+cp apps/immich/.env.example apps/immich/.env
+cp system/pi-hole/.env.example system/pi-hole/.env
+
+# Monitoring
+cp system/monitoring/.env.example system/monitoring/.env
+```
+
+**Edit each `.env` file:**
+```bash
+# Replace all instances of "your-secure-password-here" with strong passwords
+nano core/postgres/.env
+nano core/gitea/.env
+nano apps/immich/.env
+nano system/pi-hole/.env
+nano system/monitoring/.env
+```
