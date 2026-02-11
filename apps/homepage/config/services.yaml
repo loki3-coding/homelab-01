@@ -10,12 +10,12 @@
         description: Photo & Video Backup
 
     - Actual Budget:
-        icon: mdi-wallet
+        icon: /images/actualbudget.png
         href: https://actualbudget.homelab.com
         description: Personal Finance Manager
 
     - Speedtest:
-        icon: mdi-speedometer
+        icon: /images/speedtest.png
         href: https://speedtest.homelab.com
         description: Network Speed Test
 
@@ -57,6 +57,6 @@
         description: PostgreSQL Admin (Manual Start)
 
     - Tailscale Admin:
-        icon: mdi-vpn
+        icon: /images/tailscale.jpg
         href: https://login.tailscale.com/admin/machines
         description: Network management
