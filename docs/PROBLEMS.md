@@ -154,4 +154,56 @@ docker compose up -d
 - ✅ Reduced wear on failing HDD
 - ⚠️ HDD still needs replacement (monitor reallocated sectors)
 
+---
+
+### Tailscale Slow Speeds via DERP Relay ✅ SOLVED
+
+**Problem:** Tailscale connections were routing through Hong Kong relay server (DERP) instead of using direct local network connections, causing extremely slow speeds.
+
+**Status:** Resolved on 2026-02-11
+
+**Symptoms:**
+- Ping: 83ms (should be <10ms on local network)
+- Download: 7.75 Mbps (should be 100+ Mbps)
+- Upload: 28.7 Mbps
+- `tailscale status` showed: `relay "hkg"` instead of `direct`
+
+**Root cause:** UFW firewall was blocking Tailscale's direct connection port (UDP 41641), forcing fallback to DERP relay servers.
+
+**Solution:** Add UFW rule to allow Tailscale direct connections on the tailscale0 interface.
+
+```bash
+# On homelab server
+ssh loki3@homelab-01
+sudo ufw allow in on tailscale0 from any to any port 41641 proto udp comment 'Tailscale direct connections'
+
+# Restart Tailscale to re-negotiate connections
+sudo systemctl restart tailscaled
+```
+
+**Verify fix:**
+```bash
+# Check connection type (should show "direct" instead of "relay")
+tailscale status
+
+# From MacBook (requires Tailscale CLI or bundled app)
+/Applications/Tailscale.app/Contents/MacOS/Tailscale ping homelab-01
+```
+
+**Results after fix:**
+- ✅ Ping: 83ms → **10ms** (8.3x improvement)
+- ✅ Download: 7.75 Mbps → **440 Mbps** (56.8x improvement)
+- ✅ Upload: 28.7 Mbps → **225 Mbps** (7.8x improvement)
+- ✅ Connection: `relay "hkg"` → `direct 192.168.100.192:41641`
+- ✅ Using local LAN network instead of routing through Hong Kong
+
+**Why it happened:**
+- UFW was configured with explicit allow rules for specific services
+- Tailscale's UDP 41641 port was not included in the allowed rules
+- Without the rule, UFW's default deny policy blocked direct connection attempts
+- Tailscale automatically fell back to DERP relay servers as designed
+- Nearest relay happened to be in Hong Kong, adding significant latency and bandwidth limitations
+
+**Lesson learned:** When using restrictive firewall rules with Tailscale, remember to explicitly allow UDP 41641 for optimal direct connections.
+
 
