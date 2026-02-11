@@ -45,9 +45,11 @@ homelab-01/
 ├── core/    # Foundation services
 │   └── postgres/      # Database + pgAdmin
 ├── apps/              # User-facing applications
+│   ├── actualbudget/  # Personal finance manager
 │   ├── gitea/         # Git service
 │   ├── homepage/      # Dashboard
-│   └── immich/        # Photo management (includes SSD_THUMBNAILS_SETUP.md)
+│   ├── immich/        # Photo management (includes SSD_THUMBNAILS_SETUP.md)
+│   └── speedtest/     # Network speed test
 ├── system/            # System services
 │   ├── caddy/         # HTTPS reverse proxy
 │   ├── monitoring/    # Prometheus/Grafana/Loki + scripts
@@ -77,6 +79,8 @@ homelab-01/
 | Gitea | gitea | 3000, 2222 | postgres | http://localhost:3000 | https://gitea.homelab.com |
 | Immich | immich-server | 2283 | postgres, redis | http://localhost:2283 | https://immich.homelab.com |
 | Homepage | homepage | 3000 | None | http://homelab-01/ | N/A |
+| Speedtest | speedtest | 8765 | None | http://localhost:8765 | https://speedtest.homelab.com |
+| Actual Budget | actualbudget | 5006 | None | http://localhost:5006 | https://actualbudget.homelab.com |
 | Pi-hole | pihole | 53, 8080 | None | http://localhost:8080/admin | https://pihole.homelab.com |
 | Prometheus | prometheus | 9091 | None | http://localhost:9091 | https://prometheus.homelab.com |
 | Grafana | grafana | 3002 | prometheus, loki | http://localhost:3002 | https://grafana.homelab.com |
@@ -217,6 +221,30 @@ cd ~/github/homelab-01/scripts
 3. Never commit `.env` files
 4. Respect service dependencies (Postgres first)
 5. Update relevant README when changing services
+
+## Adding New Apps Checklist
+
+**When adding a new application to `apps/`, you MUST update these three components:**
+
+1. **Pi-hole DNS** (`system/pi-hole/custom.list`)
+   - Add DNS record: `<tailscale-ip> <appname>.homelab.com`
+   - Restart Pi-hole or reload DNS: `ssh username@homelab-01 "docker exec pihole pihole restartdns"`
+
+2. **Caddy Reverse Proxy** (`system/caddy/Caddyfile`)
+   - Add route block for the new service to enable HTTPS access
+   - Example:
+     ```
+     newapp.homelab.com {
+         reverse_proxy newapp:PORT
+     }
+     ```
+   - Reload Caddy config: `cd system/caddy && docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile`
+
+3. **Homepage Dashboard** (`apps/homepage/config/services.yaml`)
+   - Add service entry with icon, href, and description
+   - Restart homepage: `cd apps/homepage && docker compose restart`
+
+**Remember:** All three must be updated for the app to be fully accessible via HTTPS with a friendly name!
 
 ## Container Name Mapping (Grafana)
 

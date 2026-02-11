@@ -95,3 +95,23 @@ pihole.homelab.com {
 		format json
 	}
 }
+
+# Speedtest - Network Speed Test
+speedtest.homelab.com {
+	reverse_proxy speedtest:80
+
+	log {
+		output file /data/logs/speedtest.log
+		format json
+	}
+}
+
+# Actual Budget - Personal Finance
+actualbudget.homelab.com {
+	reverse_proxy actualbudget:5006
+
+	log {
+		output file /data/logs/actualbudget.log
+		format json
+	}
+}

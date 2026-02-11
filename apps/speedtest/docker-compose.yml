@@ -1,0 +1,30 @@
+services:
+  speedtest:
+    image: ghcr.io/librespeed/speedtest:latest
+    container_name: speedtest
+    restart: unless-stopped
+
+    ports:
+      - "8765:80"
+
+    environment:
+      - MODE=standalone
+      - TITLE=Homelab Speed Test
+      - TELEMETRY=false
+      - ENABLE_ID_OBFUSCATION=false
+      - REDACT_IP_ADDRESSES=false
+      - PASSWORD=${PASSWORD}
+      - EMAIL=${EMAIL}
+      - DISABLE_IPINFO=false
+      - DISTANCE=km
+      - WEBPORT=80
+
+    security_opt:
+      - no-new-privileges:true
+
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

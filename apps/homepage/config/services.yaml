@@ -9,6 +9,16 @@
         href: https://immich.homelab.com
         description: Photo & Video Backup
 
+    - Actual Budget:
+        icon: actualbudget
+        href: https://actualbudget.homelab.com
+        description: Personal Finance Manager
+
+    - Speedtest:
+        icon: speedtest
+        href: https://speedtest.homelab.com
+        description: Network Speed Test
+
     - Homelab Github:
         icon: mdi-github
         href: https://github.com/loki3-coding/homelab-01

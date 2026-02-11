@@ -28,9 +28,11 @@ Personal home server. Reduce paying for Cloud Services.
 │  ┌────────────────────────────────────────────────────────┐    │
 │  │ Phase 2-3: Applications (User-Facing Services)         │    │
 │  ├────────────────────────────────────────────────────────┤    │
-│  │ • Gitea      - Git repository hosting                  │    │
-│  │ • Immich     - Photo & video management                │    │
-│  │ • Homepage   - Homelab dashboard                       │    │
+│  │ • Gitea         - Git repository hosting               │    │
+│  │ • Immich        - Photo & video management             │    │
+│  │ • Homepage      - Homelab dashboard                    │    │
+│  │ • Speedtest     - Network speed test                   │    │
+│  │ • Actual Budget - Personal finance manager             │    │
 │  └─────────────┬──────────────────────────────────────────┘    │
 │                │ (depends on database)                          │
 │                ▼                                                │
@@ -86,9 +88,11 @@ Personal home server. Reduce paying for Cloud Services.
 ### Applications
 | Service | Port | Description | HTTPS Access | Directory |
 |---------|------|-------------|--------------|-----------|
+|**Actual Budget** | 5006 | Personal finance manager | https://actualbudget.homelab.com | [`apps/actualbudget/`](apps/actualbudget/) |
 |**Gitea** | 3000, 2222 | Self-hosted Git service | https://gitea.homelab.com | [`apps/gitea/`](apps/gitea/) |
 |**Immich** | 2283 | Photo & video management | https://immich.homelab.com | [`apps/immich/`](apps/immich/) |
 |**Homepage** | 3000 | Homelab dashboard | https://home.homelab.com | [`apps/homepage/`](apps/homepage/) |
+|**Speedtest** | 8765 | Network speed test | https://speedtest.homelab.com | [`apps/speedtest/`](apps/speedtest/) |
 
 ### System Services
 | Service | Port | Description | HTTPS Access | Directory |
@@ -127,9 +131,11 @@ homelab-01/
 │   └── postgres/      # Database + pgAdmin
 │
 ├── apps/              # User-facing applications (Phase 2-3)
+│   ├── actualbudget/  # Personal finance manager
 │   ├── gitea/         # Git service
 │   ├── homepage/      # Dashboard
-│   └── immich/        # Photo management
+│   ├── immich/        # Photo management
+│   └── speedtest/     # Network speed test
 │
 ├── system/            # System services (Phase 3-4)
 │   ├── caddy/         # HTTPS reverse proxy
