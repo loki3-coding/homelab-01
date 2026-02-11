@@ -10,12 +10,12 @@
         description: Photo & Video Backup
 
     - Actual Budget:
-        icon: actualbudget
+        icon: mdi-wallet
         href: https://actualbudget.homelab.com
         description: Personal Finance Manager
 
     - Speedtest:
-        icon: speedtest
+        icon: mdi-speedometer
         href: https://speedtest.homelab.com
         description: Network Speed Test
 
